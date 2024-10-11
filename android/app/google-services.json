@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "500394411761",
+    "project_id": "ticket-resell-10bfb",
+    "storage_bucket": "ticket-resell-10bfb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:500394411761:android:5e24ee27abe045daf78b50",
+        "android_client_info": {
+          "package_name": "com.prn.ticket_resell_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuQ59CjFOZvEwbJTo37np7JBZA_NRSJsc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

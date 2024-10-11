@@ -1,0 +1,13 @@
+flutter_native_splash:
+  color: "#FFFFFF"
+  color_dark: "#272727"
+  image: assets/logos/tripwonder_logo.JPG
+  image_dark: assets/logos/tripwonder_logo.JPG
+
+  android_12:
+    color: "#FFFFFF"
+    color_dark: "#272727"
+    image: assets/logos/tripwonder_logo.JPG
+    image_dark: assets/logos/tripwonder_logo.JPG
+
+  web: false

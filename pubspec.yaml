@@ -1,0 +1,70 @@
+name: ticket_resell
+description: "A new Flutter project."
+
+
+publish_to: 'none'
+
+
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.3
+
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+
+
+
+  cupertino_icons: ^1.0.8
+  google_fonts: ^6.2.1
+  flutter_svg: ^2.0.10+1
+  flutter_native_splash: ^2.4.1
+  iconsax: ^0.0.8
+  get: ^4.6.5
+  intl: ^0.19.0
+  carousel_slider: ^5.0.0
+  url_launcher: ^6.3.0
+  flutter_rating_bar: ^4.0.1
+  readmore: ^3.0.0
+  #  google_maps_flutter: ^2.9.0
+  google_maps_flutter: ^2.2.0  # cập nhật phiên bản mới nhất
+
+  firebase_core: ^3.6.0
+  cloud_firestore: ^5.4.3
+  file_picker: ^8.1.2
+  firebase_storage: ^12.3.2
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+
+
+
+
+  flutter_lints: ^4.0.0
+
+
+
+
+
+flutter:
+
+  assets:
+    - assets/images/
+    - assets/logos/
+    - assets/banner/
+    - assets/vectors/
+    - assets/users/
+    - assets/movies/
+    - assets/concerts/
+
+
+  uses-material-design: true
+
