@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:ticket_resell/models/user_profile.dart';
 import 'package:ticket_resell/screens/chat/chat_screen.dart';
 import 'package:ticket_resell/screens/product_detail/product_reviews.dart';
 import '../../styles&text&sizes/image_strings.dart';
@@ -296,7 +297,7 @@ class PlaceScreen extends StatelessWidget {
                 ),
               ),
               GestureDetector(
-                onTap: () => Get.to(() => const ChatScreen()),
+                onTap: () => Get.to(() => ChatScreen(chatUser: UserProfile.new(uid: "uid", name: "name", pfpURL: "pfpURL"),)),
                 child: Container(
                   height: 60,
                   width: MediaQuery.of(context).size.width / 2,
