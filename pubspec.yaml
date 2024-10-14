@@ -34,9 +34,16 @@ dependencies:
   google_maps_flutter: ^2.2.0  # cập nhật phiên bản mới nhất
 
   firebase_core: ^3.6.0
+  firebase_auth: ^5.3.1
   cloud_firestore: ^5.4.3
   file_picker: ^8.1.2
+  dash_chat_2: ^0.0.20
   firebase_storage: ^12.3.2
+  firebase_analytics: ^11.3.3
+  delightful_toast: ^1.1.0
+  get_it: ^8.0.0
+  image_picker: ^1.0.7
+  path: ^1.9.0
 
 
 dev_dependencies:
@@ -48,7 +55,7 @@ dev_dependencies:
 
 
 
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
 
 
 
