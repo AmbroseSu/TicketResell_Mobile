@@ -4,11 +4,13 @@ class Chat {
   String? id;
   List<String>? participants;
   List<Message>? messages;
+  int? unreadCount;
 
   Chat({
    required this.id,
    required this.participants,
    required this.messages,
+    this.unreadCount = 0,
 });
 
   Chat.fromJson(Map<String, dynamic> json) {
@@ -18,6 +20,7 @@ class Chat {
     // messages = (json['messages'] != null)
     //     ? List.from(json['messages']).map((m) => Message.fromJson(m)).toList()
     //     : [];
+    unreadCount = json['unreadCount'] ?? 0;
   }
 
   Map<String, dynamic> toJson() {
@@ -25,6 +28,7 @@ class Chat {
     data['id'] = id;
     data['paracipants'] = participants;
     data['messages'] = messages?.map((m) => m.toJson()).toList();
+    data['unreadCount'] = unreadCount;
     return data;
   }
 

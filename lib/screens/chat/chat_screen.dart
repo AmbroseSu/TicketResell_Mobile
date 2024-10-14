@@ -232,6 +232,7 @@ class _ChatScreenState extends State<ChatScreen> {
           content: chatMessage.medias!.first.url,
           messageType: MessageType.Image,
           sentAt: Timestamp.fromDate(chatMessage.createdAt),
+          isRead: false,
         );
         await _databaseService.sendChatMessage(
             currentUser!.id, otherUser!.id, message);
@@ -242,6 +243,7 @@ class _ChatScreenState extends State<ChatScreen> {
         content: chatMessage.text,
         messageType: MessageType.Text,
         sentAt: Timestamp.fromDate(chatMessage.createdAt),
+        isRead: false,
       );
       await _databaseService.sendChatMessage(
         currentUser!.id,

@@ -45,14 +45,14 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
     "Wed", // Matching the number of messages
   ];
 
-  List messages = [
-    "Hi, How are you?",
-    "Where are you now?",
-    "Bye",
-    "Hi",
-    "How much for this ticket?",
-    "Welcome",
-  ];
+  // List messages = [
+  //   "Hi, How are you?",
+  //   "Where are you now?",
+  //   "Bye",
+  //   "Hi",
+  //   "How much for this ticket?",
+  //   "Welcome",
+  // ];
 
   final GetIt _getIt = GetIt.instance;
 
@@ -275,6 +275,7 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
                       ),
                     );
                   },
+                  messages: [],
                 ),
               );
             },
