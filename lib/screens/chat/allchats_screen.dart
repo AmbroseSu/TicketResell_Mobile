@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -72,126 +73,6 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
     _databaseService = _getIt.get<DatabaseService>();
   }
 
-  //AllChatsScreen({super.key});
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Material(
-  //     child: Container(
-  //       color: Colors.white,
-  //       child: SingleChildScrollView(
-  //         child: SafeArea(
-  //           child: Padding(
-  //             padding: EdgeInsets.only(top: 15, left: 15),
-  //             child: Column(
-  //               crossAxisAlignment: CrossAxisAlignment.start,
-  //               children: [
-  //                 // Padding(
-  //                 //   padding: const EdgeInsets.only(right: 15),
-  //                 //   child: Row(
-  //                 //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                 //     children: [
-  //                 //       BackButton(),
-  //                 //       Text(
-  //                 //         "Messages",
-  //                 //         style: TextStyle(
-  //                 //           fontSize: 30,
-  //                 //           fontWeight: FontWeight.bold,
-  //                 //           letterSpacing: 1,
-  //                 //           color: Colors.black87,
-  //                 //         ),
-  //                 //       ),
-  //                 //       IconButton(
-  //                 //           onPressed: () {}, icon: Icon(Icons.search, size: 35))
-  //                 //     ],
-  //                 //   ),
-  //                 // ),
-  //                 // SizedBox(
-  //                 //   height: 5,
-  //                 // ),
-  //                 // Text(
-  //                 //   "Recent",
-  //                 //   style: TextStyle(
-  //                 //     fontSize: 18,
-  //                 //     fontWeight: FontWeight.w500,
-  //                 //     letterSpacing: 1,
-  //                 //     color: Colors.black54,
-  //                 //   ),
-  //                 // ),
-  //                 // SizedBox(height: 20),
-  //                 // SizedBox(
-  //                 //   height: 100,
-  //                 //   child: ListView.builder(
-  //                 //     scrollDirection: Axis.horizontal,
-  //                 //     shrinkWrap: true,
-  //                 //     itemCount: images.length,
-  //                 //     itemBuilder: (context, index) {
-  //                 //       return Padding(
-  //                 //         padding: EdgeInsets.only(right: 25),
-  //                 //         child: Column(
-  //                 //           children: [
-  //                 //             CircleAvatar(
-  //                 //               backgroundImage: AssetImage(
-  //                 //                 images[index],
-  //                 //               ),
-  //                 //               minRadius: 33,
-  //                 //             ),
-  //                 //             SizedBox(
-  //                 //               height: 8,
-  //                 //             ),
-  //                 //             Text(
-  //                 //               names[index],
-  //                 //               style: TextStyle(
-  //                 //                 fontSize: 17,
-  //                 //                 fontWeight: FontWeight.w500,
-  //                 //                 letterSpacing: 1,
-  //                 //                 color: Colors.black,
-  //                 //               ),
-  //                 //             ),
-  //                 //           ],
-  //                 //         ),
-  //                 //       );
-  //                 //     },
-  //                 //   ),
-  //                 // ),
-  //                 // SizedBox(height: 10),
-  //                 // Divider(),
-  //                 // SizedBox(height: 20),
-  //                 _chatsList(),
-  //
-  //                 // ListView.builder(
-  //                 //   itemCount: images
-  //                 //       .length, // Ensure itemCount is based on `images` list
-  //                 //   shrinkWrap: true,
-  //                 //   physics: NeverScrollableScrollPhysics(),
-  //                 //   itemBuilder: (context, index) {
-  //                 //     return ListTile(
-  //                 //       onTap: () {
-  //                 //         Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(chatUser: UserProfile(uid: "uid", name: "name", pfpURL: "pfpURL"),)));
-  //                 //       },
-  //                 //       leading: ClipRRect(
-  //                 //         borderRadius: BorderRadius.circular(60),
-  //                 //         child: Image.asset(
-  //                 //           images[index],
-  //                 //           height: 60,
-  //                 //           width: 60,
-  //                 //           fit: BoxFit.cover,
-  //                 //         ),
-  //                 //       ),
-  //                 //       title: Text(names[index]),
-  //                 //       subtitle: Text(messages[index]),
-  //                 //       trailing: Text(msgTiming[index]),
-  //                 //     );
-  //                 //   },
-  //                 // ),
-  //               ],
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -200,21 +81,6 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
           "Messages",
         ),
         actions: [
-          // IconButton(
-          //   onPressed: () async {
-          //     bool result = await _authService.logout();
-          //     if (result) {
-          //       _alertService.showToast(
-          //         text: "Successfully logged out!",
-          //         icon: Icons.check,
-          //       );
-          //       _navigationService.pushReplacementNamed("/login");
-          //     }
-          //   },
-          //   icon: const Icon(
-          //     Icons.logout,
-          //   ),
-          // ),
         ],
       ),
       body: _buildUI(),
@@ -226,7 +92,7 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
       child: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 15.0,
-          vertical: 20.0,
+          vertical: 0.0,
         ),
         child: _chatsList(),
       ),
@@ -234,7 +100,7 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
   }
 
 
-  Widget _chatsList() {
+  /*Widget _chatsList() {
     return StreamBuilder(
       stream: _databaseService.getUserProfiles(),
       builder: (context, snapshot) {
@@ -252,7 +118,7 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
               UserProfile user = users[index].data();
               return Padding(
                 padding: const EdgeInsets.symmetric(
-                  vertical: 10.0,
+                  vertical: 5.0,
                 ),
                 child: ChatTile(
                   userProfile: user,
@@ -314,5 +180,124 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
         );
       },
     );
+  }*/
+  Widget _chatsList() {
+    return StreamBuilder(
+      stream: _databaseService.getUserProfiles(), // Lấy danh sách người dùng
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return const Center(
+            child: Text("Unable to load data."),
+          );
+        }
+
+        if (snapshot.hasData && snapshot.data != null) {
+          final users = snapshot.data!.docs;
+
+          return ListView.builder(
+            itemCount: users.length,
+            itemBuilder: (context, index) {
+              UserProfile otherUser = users[index].data();
+
+              // Sử dụng FutureBuilder để lấy dữ liệu chat giữa currentUser và otherUser
+              return FutureBuilder<DocumentSnapshot<Chat>>(
+                future: _databaseService.getChatData(
+                  _authService.user!.uid, // currentUser ID
+                  otherUser.uid!,         // otherUser ID
+                ).first, // Lấy bản ghi đầu tiên từ Stream
+                builder: (context, chatSnapshot) {
+                  if (chatSnapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (chatSnapshot.hasError) {
+                    return const Center(child: Text("Error loading chat."));
+                  }
+
+                  if (!chatSnapshot.hasData || chatSnapshot.data == null) {
+                    // Nếu không có dữ liệu, trả về một widget trống
+                    return const SizedBox.shrink();
+                  }
+
+                  // Lấy dữ liệu từ DocumentSnapshot
+                  final chatData = chatSnapshot.data!.data();
+                  if (chatData == null || chatData.messages == null) {
+                    return const SizedBox.shrink();
+                  }
+
+                  Chat? chat = chatSnapshot.data!.data();
+
+                  // Kiểm tra nếu không có tin nhắn giữa currentUser và otherUser
+                  if (chat != null && (chat.messages == null || chat.messages!.isEmpty)) {
+                    return const SizedBox(); // Không hiển thị nếu không có tin nhắn
+                  }
+
+                  // Nếu có tin nhắn, hiển thị ChatTile
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5.0),
+                    child: ChatTile(
+                      userProfile: otherUser,
+                      onTap: () async {
+                        final chatExists = await _databaseService.checkChatExists(
+                          _authService.user!.uid,
+                          otherUser.uid!,
+                        );
+
+                        if (chatExists) {
+                          // Lấy tất cả tin nhắn từ chat hiện tại
+                          final chatData = await _databaseService.getChatData(
+                            _authService.user!.uid,
+                            otherUser.uid!,
+                          ).first;
+
+                          Chat? chat = chatData.data();
+
+                          if (chat != null && chat.messages != null) {
+                            // Kiểm tra và cập nhật trạng thái isRead cho các tin nhắn chưa đọc
+                            for (Message message in chat.messages!) {
+                              if (message.senderID != _authService.user!.uid && !message.isRead) {
+                                message.isRead = true;
+                                await _databaseService.updateMessageReadStatus(
+                                  _authService.user!.uid,
+                                  otherUser.uid!,
+                                  message,
+                                );
+                              }
+                            }
+                          }
+                        } else {
+                          // Tạo cuộc trò chuyện mới nếu chưa tồn tại
+                          await _databaseService.createNewChat(
+                            _authService.user!.uid,
+                            otherUser.uid!,
+                          );
+                        }
+
+                        // Điều hướng đến màn hình chat
+                        _navigationService.push(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return ChatScreen(
+                                chatUser: otherUser,
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      messages: chat!.messages!, // Truyền danh sách tin nhắn vào ChatTile
+                    ),
+                  );
+                },
+              );
+            },
+          );
+        }
+
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
   }
+
 }

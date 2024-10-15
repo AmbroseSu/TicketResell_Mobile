@@ -37,7 +37,7 @@ class _SignupScreenState extends State<SignupScreen> {
   late DatabaseService _databaseService;
   String? password, name;
   //String? name = UserManager().email;
-  String? email = "ambrose@gmail.com";
+  String? email = "ambrose2@gmail.com";
   File? selectedImage;
   String? selectedGender; // Variable to store selected gender
   bool isLoading = false;
@@ -233,12 +233,22 @@ class _SignupScreenState extends State<SignupScreen> {
                             print(email);
                             print(password);
                             bool result = await _authService.signup(email!, password!);
+                            print("9999999999999999999999999999999999999999999999999999999999999");
                             print(result);
                             if (result) {
-                              String? pfpURL = await _storageService.uploadUserPfp(
-                                file: selectedImage!,
-                                uid: _authService.user!.uid,
-                              );
+                              print("7777777777777777777777777777777777777777777777777777");
+                              print(selectedImage);
+                              print(_authService.user!.uid);
+                              String? pfpURL;
+                              try{
+                                 pfpURL = await _storageService.uploadUserPfp(
+                                  file: selectedImage!,
+                                  uid: _authService.user!.uid,
+                                );
+                              }catch(e){
+                                print("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+                              }
+
 
 
                               if (pfpURL != null) {

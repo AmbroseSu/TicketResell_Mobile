@@ -118,7 +118,7 @@ class _TLoginFormState extends State<TLoginForm> {
                   print(result);
                   if (result) {
                     print("1111111111111111111111111111111111111111111111111111111");
-                    _navigationService.pushReplacementNamed("/allchat");
+                    _navigationService.pushReplacementNamed("/navigation_menu");
                   } else {
                     print("6666666666666666666666666666666666666666666666666666666666666666");
                     // _alertService.showToast(

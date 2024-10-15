@@ -16,7 +16,7 @@ class StorageService {
         .child('$uid${p.extension(file.path)}');
     UploadTask task = fileRef.putFile(file);
     return task.then(
-      (p) {
+          (p) {
         if (p.state == TaskState.success) {
           return fileRef.getDownloadURL();
         }

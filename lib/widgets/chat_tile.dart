@@ -127,12 +127,10 @@ class _ChatTileState extends State<ChatTile> {
       firstName: widget.userProfile.name,
       profileImage: widget.userProfile.pfpURL,
     );
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     return StreamBuilder<DocumentSnapshot<Chat>>(
       stream: _databaseService.getChatData(currentUser!.id, otherUser!.id),
       builder: (context, snapshot) {
@@ -150,10 +148,11 @@ class _ChatTileState extends State<ChatTile> {
               backgroundImage: NetworkImage(
                 widget.userProfile.pfpURL!,
               ),
+              radius: 27,
             ),
             title: Text(
               widget.userProfile.name!,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17,),
             ),
             subtitle: Text(
               "No messages yet", // Nếu không có tin nhắn nào
@@ -164,9 +163,14 @@ class _ChatTileState extends State<ChatTile> {
 
         // Gọi hàm để lấy tin nhắn gần nhất từ danh sách
         Message? latestMessage = _getLatestMessageFromList(chat.messages!);
-        print("0000000000000000000000000000111111111111111111111111111111111111111111111111");
-        print(latestMessage!.isRead);
-        print(latestMessage.senderID);
+        print(
+            "0000000000000000000000000000111111111111111111111111111111111111111111111111");
+        if (latestMessage != null) {
+          print(latestMessage.isRead);
+          print(latestMessage.senderID);
+        } else {
+          print("No latest message found.");
+        }
         print(otherUser!.id);
         print(currentUser!.id);
 
@@ -179,67 +183,75 @@ class _ChatTileState extends State<ChatTile> {
             backgroundImage: NetworkImage(
               widget.userProfile.pfpURL!,
             ),
+            radius: 27,
           ),
           title: Text(
             widget.userProfile.name!,
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 17,
+            ),
           ),
           subtitle: latestMessage != null
-          //     ? Text(
-          //   latestMessage.content ?? "Image message", // Hiển thị tin nhắn gần nhất
-          //   style: TextStyle(color: (latestMessage.senderID == currentUser!.id)
-          //       ? Colors.grey  // Tin nhắn của currentUser không bao giờ in đậm
-          //       : (latestMessage.isRead ? Colors.grey : Colors.black),
-          //     fontWeight: (latestMessage.senderID == currentUser!.id)
-          //         ? FontWeight.normal  // Tin nhắn của currentUser không bao giờ in đậm
-          //         : (latestMessage.isRead ? FontWeight.normal : FontWeight.bold), // In đậm nếu tin nhắn chưa đọc
-          //   ),
-          //   maxLines: 1, // Chỉ hiển thị 1 dòng
-          //   overflow: TextOverflow.ellipsis,
-          // )
+              //     ? Text(
+              //   latestMessage.content ?? "Image message", // Hiển thị tin nhắn gần nhất
+              //   style: TextStyle(color: (latestMessage.senderID == currentUser!.id)
+              //       ? Colors.grey  // Tin nhắn của currentUser không bao giờ in đậm
+              //       : (latestMessage.isRead ? Colors.grey : Colors.black),
+              //     fontWeight: (latestMessage.senderID == currentUser!.id)
+              //         ? FontWeight.normal  // Tin nhắn của currentUser không bao giờ in đậm
+              //         : (latestMessage.isRead ? FontWeight.normal : FontWeight.bold), // In đậm nếu tin nhắn chưa đọc
+              //   ),
+              //   maxLines: 1, // Chỉ hiển thị 1 dòng
+              //   overflow: TextOverflow.ellipsis,
+              // )
               ? Row(
-            children: [
-              Expanded(
-                child: Text(
-                  latestMessage.content ?? "Image message", // Hiển thị tin nhắn gần nhất
-                  style: TextStyle(
-                    color: (latestMessage.senderID == currentUser!.id)
-                        ? Colors.grey // Tin nhắn của currentUser không bao giờ in đậm
-                        : (latestMessage.isRead
-                        ? Colors.grey
-                        : Colors.red),
-                    fontWeight:
-                    (latestMessage.senderID == currentUser!.id)
-                        ? FontWeight.normal // Không in đậm
-                        : (latestMessage.isRead
-                        ? FontWeight.normal
-                        : FontWeight.bold), // In đậm nếu tin nhắn chưa đọc
-                  ),
-                  maxLines: 1, // Chỉ hiển thị 1 dòng
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              if (unreadCount > 0)
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: CircleAvatar(
-                    radius: 10,
-                    backgroundColor: Colors.red,
-                    child: Text(
-                      '$unreadCount',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        latestMessage.content ?? "Image message",
+                        // Hiển thị tin nhắn gần nhất
+                        style: TextStyle(
+                          color: (latestMessage.senderID == currentUser!.id)
+                              ? Colors
+                                  .grey // Tin nhắn của currentUser không bao giờ in đậm
+                              : (latestMessage.isRead
+                                  ? Colors.grey
+                                  : Colors.black),
+                          fontSize: 15,
+                          fontWeight: (latestMessage.senderID ==
+                                  currentUser!.id)
+                              ? FontWeight.normal // Không in đậm
+                              : (latestMessage.isRead
+                                  ? FontWeight.normal
+                                  : FontWeight
+                                      .bold), // In đậm nếu tin nhắn chưa đọc
+                        ),
+                        maxLines: 1, // Chỉ hiển thị 1 dòng
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                  ),
-                ),
-            ],
-          )
+                    if (unreadCount > 0)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: CircleAvatar(
+                          radius: 10,
+                          backgroundColor: Colors.red,
+                          child: Text(
+                            '$unreadCount',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                )
               : Text(
-            "No messages yet",
-            style: TextStyle(color: Colors.grey),
-          ),
+                  "No messages yet",
+                  style: TextStyle(color: Colors.grey),
+                ),
         );
       },
     );
@@ -258,6 +270,7 @@ class _ChatTileState extends State<ChatTile> {
 
     return latestMessage;
   }
+
   int _getUnreadMessageCount(List<Message> messages, String otherUserId) {
     int count = 0;
     for (var message in messages) {
