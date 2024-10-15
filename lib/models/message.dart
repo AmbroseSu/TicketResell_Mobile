@@ -7,7 +7,7 @@ class Message {
   String? content;
   MessageType? messageType;
   Timestamp? sentAt;
-  late final bool isRead;
+  bool isRead = false;
 
   Message({
     required this.senderID,

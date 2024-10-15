@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:ticket_resell/models/chat.dart';
+import 'package:ticket_resell/models/message.dart';
 import 'package:ticket_resell/models/user_profile.dart';
 import 'package:ticket_resell/services/auth_service.dart';
 import 'package:ticket_resell/services/database_service.dart';
@@ -259,6 +261,32 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
                       _authService.user!.uid,
                       user.uid!,
                     );
+                    if (chatExists) {
+                      // Lấy tất cả tin nhắn từ chat hiện tại
+                      final chatData = await _databaseService.getChatData(
+                        _authService.user!.uid,
+                        user.uid!,
+                      ).first; // Lấy bản ghi đầu tiên từ Stream
+
+                      Chat? chat = chatData.data();
+
+                      if (chat != null && chat.messages != null) {
+                        // Kiểm tra tất cả tin nhắn chưa đọc và cập nhật trạng thái isRead
+                        for (Message message in chat.messages!) {
+                          if (message.senderID != _authService.user!.uid && message.isRead == false) {
+                            // Cập nhật trạng thái isRead thành true
+                            message.isRead = true;
+
+                            // Gửi bản cập nhật tin nhắn lên Firestore
+                            await _databaseService.updateMessageReadStatus(
+                              _authService.user!.uid,
+                              user.uid!,
+                              message,
+                            );
+                          }
+                        }
+                      }
+                    }
                     if (!chatExists) {
                       await _databaseService.createNewChat(
                         _authService.user!.uid,

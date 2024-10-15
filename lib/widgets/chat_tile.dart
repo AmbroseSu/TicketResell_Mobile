@@ -166,6 +166,11 @@ class _ChatTileState extends State<ChatTile> {
         Message? latestMessage = _getLatestMessageFromList(chat.messages!);
         print("0000000000000000000000000000111111111111111111111111111111111111111111111111");
         print(latestMessage!.isRead);
+        print(latestMessage.senderID);
+        print(otherUser!.id);
+        print(currentUser!.id);
+
+        int unreadCount = _getUnreadMessageCount(chat.messages!, otherUser!.id);
         return ListTile(
           onTap: () {
             widget.onTap();
@@ -180,11 +185,56 @@ class _ChatTileState extends State<ChatTile> {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           subtitle: latestMessage != null
-              ? Text(
-            latestMessage.content ?? "Image message", // Hiển thị tin nhắn gần nhất
-            style: TextStyle(color: latestMessage.isRead ? Colors.grey : Colors.black,
-              fontWeight: latestMessage.isRead ? FontWeight.normal : FontWeight.bold, // In đậm nếu tin nhắn chưa đọc
-            ),
+          //     ? Text(
+          //   latestMessage.content ?? "Image message", // Hiển thị tin nhắn gần nhất
+          //   style: TextStyle(color: (latestMessage.senderID == currentUser!.id)
+          //       ? Colors.grey  // Tin nhắn của currentUser không bao giờ in đậm
+          //       : (latestMessage.isRead ? Colors.grey : Colors.black),
+          //     fontWeight: (latestMessage.senderID == currentUser!.id)
+          //         ? FontWeight.normal  // Tin nhắn của currentUser không bao giờ in đậm
+          //         : (latestMessage.isRead ? FontWeight.normal : FontWeight.bold), // In đậm nếu tin nhắn chưa đọc
+          //   ),
+          //   maxLines: 1, // Chỉ hiển thị 1 dòng
+          //   overflow: TextOverflow.ellipsis,
+          // )
+              ? Row(
+            children: [
+              Expanded(
+                child: Text(
+                  latestMessage.content ?? "Image message", // Hiển thị tin nhắn gần nhất
+                  style: TextStyle(
+                    color: (latestMessage.senderID == currentUser!.id)
+                        ? Colors.grey // Tin nhắn của currentUser không bao giờ in đậm
+                        : (latestMessage.isRead
+                        ? Colors.grey
+                        : Colors.red),
+                    fontWeight:
+                    (latestMessage.senderID == currentUser!.id)
+                        ? FontWeight.normal // Không in đậm
+                        : (latestMessage.isRead
+                        ? FontWeight.normal
+                        : FontWeight.bold), // In đậm nếu tin nhắn chưa đọc
+                  ),
+                  maxLines: 1, // Chỉ hiển thị 1 dòng
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              if (unreadCount > 0)
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: CircleAvatar(
+                    radius: 10,
+                    backgroundColor: Colors.red,
+                    child: Text(
+                      '$unreadCount',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
           )
               : Text(
             "No messages yet",
@@ -207,5 +257,14 @@ class _ChatTileState extends State<ChatTile> {
     }
 
     return latestMessage;
+  }
+  int _getUnreadMessageCount(List<Message> messages, String otherUserId) {
+    int count = 0;
+    for (var message in messages) {
+      if (message.senderID == otherUserId && message.isRead == false) {
+        count++;
+      }
+    }
+    return count;
   }
 }

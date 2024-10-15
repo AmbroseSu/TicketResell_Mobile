@@ -88,5 +88,34 @@ class DatabaseService {
         as Stream<DocumentSnapshot<Chat>>;
   }
 
+  Future<void> updateMessageReadStatus(String currentUserId, String otherUserId, Message message) async {
+    try {
+      String chatID = generateChatID(uid1: currentUserId, uid2: otherUserId);
+
+      final chatDoc = _firebaseFirestore.collection('chats').doc(chatID);
+
+      final chatSnapshot = await chatDoc.get();
+      final chatData = chatSnapshot.data() as Map<String, dynamic>;
+
+      List<dynamic> messages = chatData['messages'];
+
+      // Tìm vị trí của tin nhắn cần cập nhật
+      int messageIndex = messages.indexWhere((m) => m['sentAt'] == message.sentAt && m['senderID'] == message.senderID);
+
+      if (messageIndex != -1) {
+        // Cập nhật trạng thái isRead cho tin nhắn ở vị trí đó
+        messages[messageIndex]['isRead'] = true;
+
+        // Cập nhật lại mảng messages trong Firestore
+        await chatDoc.update({
+          'messages': messages,
+        });
+      } else {
+        print("Message not found!");
+      }
+    } catch (e) {
+      print("Failed to update message read status: $e");
+    }
+  }
 
 }
