@@ -240,14 +240,17 @@
 // }
 
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import '../../styles&text&sizes/image_strings.dart';
 import '../../styles&text&sizes/sizes.dart';
 import '../../styles&text&sizes/text_strings.dart';
 import '../signup/signup.dart';
+import 'package:http/http.dart' as http;
 import '../success_screen/success_screen.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
@@ -300,6 +303,47 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       }
     } else if (index > 0) {
       FocusScope.of(context).requestFocus(_focusNodes[index - 1]);
+    }
+  }
+
+  UserManager userManager = UserManager();
+
+  Future<void> verifyOtp(String otp) async {
+    final url =
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Authentication/validate-email?token=$otp&id=${userManager.id}';
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+
+    print('Sending POST request to $url');
+    print('Headers: $headers');
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+      );
+
+      print('Status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        print('Success: $responseData');
+        Get.to(() => SuccessScreen(
+          image: TImages.verifyEmailSuccess,
+          title: TTexts.yourAccountCreatedTitle,
+          subTitle: TTexts.yourAccountCreatedSubTitle,
+          onPressed: () => Get.to(() => const SignupScreen()),
+        ));
+      } else {
+        print('Failed to verify OTP');
+        Get.snackbar('Error', 'Failed to verify OTP: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Error: $error');
+      Get.snackbar('Error', 'An error occurred: $error');
     }
   }
 
@@ -412,12 +456,13 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         final otp = _otpControllers.map((controller) => controller.text).join();
                         if (otp.length == 6) {
                           // Directly navigate to SuccessScreen for UI testing
-                          Get.to(() => SuccessScreen(
-                            image: TImages.verifyEmailSuccess,
-                            title: TTexts.yourAccountCreatedTitle,
-                            subTitle: TTexts.yourAccountCreatedSubTitle,
-                            onPressed: () => Get.to(() => const SignupScreen()),
-                          ));
+                          // Get.to(() => SuccessScreen(
+                          //   image: TImages.verifyEmailSuccess,
+                          //   title: TTexts.yourAccountCreatedTitle,
+                          //   subTitle: TTexts.yourAccountCreatedSubTitle,
+                          //   onPressed: () => Get.to(() => const SignupScreen()),
+                          // ));
+                          verifyOtp(otp);
                         } else {
                           Get.snackbar('Error', 'Please enter the complete OTP');
                         }

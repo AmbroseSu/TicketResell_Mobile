@@ -116,15 +116,19 @@
 //     );
 //   }
 // }
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import '../../styles&text&sizes/sizes.dart';
 import '../../styles&text&sizes/text_strings.dart';
 import '../../widgets/helper_functions.dart';
 import '../login/login.dart';
+import 'package:http/http.dart' as http;
 import '../otp_verification/otp_verification.dart';
 
 class VerifyEmailScreen extends StatefulWidget {
@@ -136,6 +140,47 @@ class VerifyEmailScreen extends StatefulWidget {
 
 class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
   final TextEditingController _emailController = TextEditingController();
+
+  Future<void> checkEmail(String email) async {
+    final url = 'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Authentication/check-email?email=$email';
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+    final body = jsonEncode({'email': email});
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: headers,
+        body: body,
+      );
+
+      print('Status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        //final userId = responseData['content']['id'];
+        //final userRole = responseData['content']['role'];
+        //final userEmail = responseData['content']['email'];
+
+        UserManager userManager = UserManager();
+        userManager.id = responseData['content']['id'];
+        userManager.email = responseData['content']['email'];
+        userManager.role = responseData['content']['role'];
+
+        // Chuyển đến OtpVerificationScreen với id và role
+        Get.to(() => OtpVerificationScreen());
+      } else {
+        print('Failed to check email');
+        Get.snackbar('Error', 'Failed to check email: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Error: $error');
+      Get.snackbar('Error', 'An error occurred: $error');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -193,7 +238,7 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                   final email = _emailController.text.trim();
                   if (email.isNotEmpty) {
                     // Directly navigate to the OtpVerificationScreen
-                    Get.to(() => OtpVerificationScreen());
+                    checkEmail(email);
                   } else {
                     Get.snackbar('Error', 'Please enter your email');
                   }

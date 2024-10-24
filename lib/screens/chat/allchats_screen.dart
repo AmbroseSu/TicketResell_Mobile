@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
+//import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:flutter/widgets.dart';
 import 'package:ticket_resell/models/chat.dart';
 import 'package:ticket_resell/models/message.dart';
 import 'package:ticket_resell/models/user_profile.dart';
@@ -48,15 +49,6 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
     "Wed", // Matching the number of messages
   ];
 
-  // List messages = [
-  //   "Hi, How are you?",
-  //   "Where are you now?",
-  //   "Bye",
-  //   "Hi",
-  //   "How much for this ticket?",
-  //   "Welcome",
-  // ];
-
   final GetIt _getIt = GetIt.instance;
 
   late AuthService _authService;
@@ -73,17 +65,35 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
     _databaseService = _getIt.get<DatabaseService>();
   }
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     appBar: AppBar(
+  //       automaticallyImplyLeading: false,
+  //       title: const Text(
+  //         "Messages",
+  //       ),
+  //       actions: [
+  //       ],
+  //     ),
+  //     body: _buildUI(),
+  //   );
+  // }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          "Messages",
+    return WillPopScope(
+      onWillPop: () async {
+        // Trả về false để vô hiệu hóa nút back của điện thoại
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false, // Bỏ nút back trong AppBar
+          title: const Text("Messages"),
+          actions: [],
         ),
-        actions: [
-        ],
+        body: _buildUI(),
       ),
-      body: _buildUI(),
     );
   }
 
@@ -99,88 +109,6 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
     );
   }
 
-
-  /*Widget _chatsList() {
-    return StreamBuilder(
-      stream: _databaseService.getUserProfiles(),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return const Center(
-            child: Text("Unable to load data."),
-          );
-        }
-        print(snapshot.data);
-        if (snapshot.hasData && snapshot.data != null) {
-          final users = snapshot.data!.docs;
-          return ListView.builder(
-            itemCount: users.length,
-            itemBuilder: (context, index) {
-              UserProfile user = users[index].data();
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 5.0,
-                ),
-                child: ChatTile(
-                  userProfile: user,
-                  onTap: () async {
-                    final chatExists = await _databaseService.checkChatExists(
-                      _authService.user!.uid,
-                      user.uid!,
-                    );
-                    if (chatExists) {
-                      // Lấy tất cả tin nhắn từ chat hiện tại
-                      final chatData = await _databaseService.getChatData(
-                        _authService.user!.uid,
-                        user.uid!,
-                      ).first; // Lấy bản ghi đầu tiên từ Stream
-
-                      Chat? chat = chatData.data();
-
-                      if (chat != null && chat.messages != null) {
-                        // Kiểm tra tất cả tin nhắn chưa đọc và cập nhật trạng thái isRead
-                        for (Message message in chat.messages!) {
-                          if (message.senderID != _authService.user!.uid && message.isRead == false) {
-                            // Cập nhật trạng thái isRead thành true
-                            message.isRead = true;
-
-                            // Gửi bản cập nhật tin nhắn lên Firestore
-                            await _databaseService.updateMessageReadStatus(
-                              _authService.user!.uid,
-                              user.uid!,
-                              message,
-                            );
-                          }
-                        }
-                      }
-                    }
-                    if (!chatExists) {
-                      await _databaseService.createNewChat(
-                        _authService.user!.uid,
-                        user.uid!,
-                      );
-                    }
-                    _navigationService.push(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return ChatScreen(
-                            chatUser: user,
-                          );
-                        },
-                      ),
-                    );
-                  },
-                  messages: [],
-                ),
-              );
-            },
-          );
-        }
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
-  }*/
   Widget _chatsList() {
     return StreamBuilder(
       stream: _databaseService.getUserProfiles(), // Lấy danh sách người dùng
@@ -198,6 +126,10 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
             itemCount: users.length,
             itemBuilder: (context, index) {
               UserProfile otherUser = users[index].data();
+
+              print("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
+              print(_authService.user!.uid);
+              print(otherUser.uid!);
 
               // Sử dụng FutureBuilder để lấy dữ liệu chat giữa currentUser và otherUser
               return FutureBuilder<DocumentSnapshot<Chat>>(
@@ -299,5 +231,60 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
       },
     );
   }
+
+  // Widget _chatsList() {
+  //   return StreamBuilder(
+  //     stream: _databaseService.getUserProfiles(),
+  //     builder: (context, snapshot) {
+  //       if (snapshot.hasError) {
+  //         return const Center(
+  //           child: Text("Unable to load data."),
+  //         );
+  //       }
+  //       print(snapshot.data);
+  //       if (snapshot.hasData && snapshot.data != null) {
+  //         final users = snapshot.data!.docs;
+  //         return ListView.builder(
+  //           itemCount: users.length,
+  //           itemBuilder: (context, index) {
+  //             UserProfile user = users[index].data();
+  //             return Padding(
+  //               padding: const EdgeInsets.symmetric(
+  //                 vertical: 10.0,
+  //               ),
+  //               child: ChatTile(
+  //                 userProfile: user,
+  //                 onTap: () async {
+  //                   final chatExists = await _databaseService.checkChatExists(
+  //                     _authService.user!.uid,
+  //                     user.uid!,
+  //                   );
+  //                   if (!chatExists) {
+  //                     await _databaseService.createNewChat(
+  //                       _authService.user!.uid,
+  //                       user.uid!,
+  //                     );
+  //                   }
+  //                   _navigationService.push(
+  //                     MaterialPageRoute(
+  //                       builder: (context) {
+  //                         return ChatScreen(
+  //                           chatUser: user,
+  //                         );
+  //                       },
+  //                     ),
+  //                   );
+  //                 }, messages: [],
+  //               ),
+  //             );
+  //           },
+  //         );
+  //       }
+  //       return const Center(
+  //         child: CircularProgressIndicator(),
+  //       );
+  //     },
+  //   );
+  // }
 
 }

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:ticket_resell/api/global_variables/fcm_token_manage.dart';
 import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/consts.dart';
 import 'package:ticket_resell/models/user_profile.dart';
@@ -13,7 +15,7 @@ import 'package:ticket_resell/services/database_service.dart';
 import 'package:ticket_resell/services/media_service.dart';
 import 'package:ticket_resell/services/navigation_service.dart';
 import 'package:ticket_resell/services/storage_service.dart';
-
+import 'package:http/http.dart' as http;
 import '../../styles&text&sizes/sizes.dart';
 import '../../styles&text&sizes/text_strings.dart';
 import '../../widgets/login_signup/form_divider.dart';
@@ -36,11 +38,25 @@ class _SignupScreenState extends State<SignupScreen> {
   late StorageService _storageService;
   late DatabaseService _databaseService;
   String? password, name;
-  //String? name = UserManager().email;
-  String? email = "ambrose2@gmail.com";
+  UserManager userManager = UserManager();
+  String? email = UserManager().email;
   File? selectedImage;
-  String? selectedGender; // Variable to store selected gender
+  String? pfpURL;
+  //String? selectedGender; // Variable to store selected gender
   bool isLoading = false;
+  final TextEditingController _fullnameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _passwordConfirmController =
+  TextEditingController();
+  final ValueNotifier<int?> selectedGender = ValueNotifier<int?>(null);
+  final TextEditingController _addressController = TextEditingController();
+  final String _baseUrl =
+      'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Authentication/save-info';
+
+  //UserManager userManager = UserManager();
+  bool _showPassword = false;
+  bool _showConfirmPassword = false;
 
   @override
   void initState() {
@@ -51,6 +67,109 @@ class _SignupScreenState extends State<SignupScreen> {
     _storageService = _getIt.get<StorageService>();
     _databaseService = _getIt.get<DatabaseService>();
     //_alertService = _getIt.get<AlertService>();
+  }
+
+  Future<void> _signup() async {
+    final String? email = userManager.email;
+    final String fullname = _fullnameController.text;
+    final String phone = _phoneController.text;
+    final String password = _passwordController.text;
+    final String confirmPassword = _passwordConfirmController.text;
+    final String address = _addressController.text;
+    final int gender = selectedGender.value ?? 3;
+    //final String? fcmtoken = TokenManager().fcmToken;
+    final String? fcmtoken = "String";
+    //String? pfpURL;
+
+    // if (selectedImage != null) {
+    //   bool result = await _authService.signup(email!, password!);
+    //   if(result) {
+    //     pfpURL = await _storageService.uploadUserPfp(
+    //       file: selectedImage!,
+    //       uid: _authService.user!.uid,
+    //     );
+    //   }
+    //
+    // }else{
+    //   pfpURL = null;
+    // }
+
+
+
+    if (confirmPassword != password) {
+      Get.snackbar(
+        'Error',
+        'Confirm password does not match',
+        snackPosition: SnackPosition.TOP,
+        //backgroundColor: Colors.white,
+        colorText: Colors.red,
+      );
+      return; // Dừng hàm nếu không trùng
+    }
+    if (fullname.isEmpty ||
+        phone.isEmpty ||
+        address.isEmpty ||
+        password.isEmpty ||
+        confirmPassword.isEmpty) {
+      Get.snackbar(
+        'Error',
+        'Please input all fields',
+        snackPosition: SnackPosition.TOP,
+        colorText: Colors.red,
+      );
+      return; // Dừng hàm nếu có bất kỳ trường nào trống
+    }
+
+    final Map<String, dynamic> data = {
+      'email': email,
+      'fullname': fullname,
+      'phoneNumber': phone,
+      'password': password,
+      'address': address,
+      'gender': gender,
+      'fcmToken': fcmtoken,
+      'image': pfpURL,
+    };
+
+    print("Đây là data aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa: $data");
+    print(fullname);
+    print(phone);
+    print(address);
+    print(password);
+    print(gender);
+    print(fcmtoken);
+    print(pfpURL);
+
+    final Uri url = Uri.parse(_baseUrl);
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(data),
+      );
+
+      print('Response Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
+      String? fcmToken = TokenManager().fcmToken;
+      if (response.statusCode == 200) {
+        String body = "Save information successfully. Please login !!";
+        String title = "Create Successfully.";
+        // await PushNotificationService.sendNotificationToSelectedDrived(
+        //     fcmToken,
+        //     context,
+        //     title,
+        //     body
+        // );
+        Get.to(() => const LoginScreen());
+      } else {
+        // Xử lý khi API thất bại
+        Get.snackbar('Error', 'Failed to sign up: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Xử lý lỗi kết nối
+      Get.snackbar('Error', 'Failed to connect to the server: $e');
+    }
   }
 
   @override
@@ -89,6 +208,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     /// Fullname
                     TextFormField(
                       expands: false,
+                      controller: _fullnameController,
                       decoration: const InputDecoration(
                         labelText: 'Full Name',
                         prefixIcon: Icon(Iconsax.user),
@@ -106,6 +226,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     /// Phone number
                     TextFormField(
                       expands: false,
+                      controller: _phoneController,
                       decoration: const InputDecoration(
                         labelText: TTexts.phoneNo,
                         prefixIcon: Icon(Iconsax.call),
@@ -116,10 +237,21 @@ class _SignupScreenState extends State<SignupScreen> {
                     /// Password
                     TextFormField(
                       expands: false,
-                      decoration: const InputDecoration(
+                      controller: _passwordController,
+                      obscureText: !_showPassword,
+                      decoration: InputDecoration(
                         labelText: TTexts.password,
-                        prefixIcon: Icon(Iconsax.password_check),
-                        suffixIcon: Icon(Iconsax.eye_slash),
+                        prefixIcon: const Icon(Iconsax.password_check),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _showPassword ? Iconsax.eye : Iconsax.eye_slash,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _showPassword = !_showPassword;
+                            });
+                          },
+                        ),
                       ),
                       onSaved: (value) {
                         setState(
@@ -134,10 +266,23 @@ class _SignupScreenState extends State<SignupScreen> {
                     /// Confirm Password
                     TextFormField(
                       expands: false,
-                      decoration: const InputDecoration(
+                      controller: _passwordConfirmController,
+                      obscureText: !_showConfirmPassword,
+                      decoration: InputDecoration(
                         labelText: 'Confirm Password',
-                        prefixIcon: Icon(Iconsax.password_check),
-                        suffixIcon: Icon(Iconsax.eye_slash),
+                        prefixIcon: const Icon(Iconsax.password_check),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _showConfirmPassword
+                                ? Iconsax.eye
+                                : Iconsax.eye_slash,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _showConfirmPassword = !_showConfirmPassword;
+                            });
+                          },
+                        ),
                       ),
                     ),
                     const SizedBox(height: TSizes.spaceBtwInputFields),
@@ -145,6 +290,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     /// Address
                     TextFormField(
                       expands: false,
+                      controller: _addressController,
                       decoration: const InputDecoration(
                           labelText: TTexts.address,
                           prefixIcon: Icon(Iconsax.location)),
@@ -152,24 +298,55 @@ class _SignupScreenState extends State<SignupScreen> {
                     const SizedBox(height: TSizes.spaceBtwInputFields),
 
                     /// Gender Dropdown
-                    DropdownButtonFormField<String>(
-                      decoration: const InputDecoration(
-                        labelText: 'Gender',
-                        prefixIcon: Icon(Iconsax.user_tag),
-                      ),
-                      dropdownColor: Colors.white,
-                      value: selectedGender,
-                      items: <String>['Female', 'Male', 'Other']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
+                    ValueListenableBuilder<int?>(
+                      valueListenable: selectedGender,
+                      builder: (context, value, child) {
+                        // Ánh xạ giá trị int thành chuỗi tương ứng
+                        String? genderString;
+                        switch (value) {
+                          case 0:
+                            genderString = 'Male';
+                            break;
+                          case 1:
+                            genderString = 'Female';
+                            break;
+                          case 2:
+                            genderString = 'Other';
+                            break;
+                          default:
+                            genderString = null;
+                        }
+
+                        return DropdownButtonFormField<String>(
+                          value: genderString, // Hiển thị chuỗi (Male, Female, Other)
+                          onChanged: (String? newValue) {
+                            // Cập nhật giá trị thành int tương ứng
+                            switch (newValue) {
+                              case 'Male':
+                                selectedGender.value = 0; // Lưu thành 0 cho Male
+                                break;
+                              case 'Female':
+                                selectedGender.value = 1; // Lưu thành 1 cho Female
+                                break;
+                              case 'Other':
+                                selectedGender.value = 2; // Lưu thành 2 cho Other
+                                break;
+                              default:
+                                selectedGender.value = null;
+                            }
+                          },
+                          items: <String>['Male', 'Female', 'Other']
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          decoration: const InputDecoration(
+                            labelText: 'Gender',
+                            prefixIcon: Icon(Iconsax.user),
+                          ),
                         );
-                      }).toList(),
-                      onChanged: (newValue) {
-                        setState(() {
-                          selectedGender = newValue;
-                        });
                       },
                     ),
                     const SizedBox(height: TSizes.spaceBtwInputFields),
@@ -239,7 +416,7 @@ class _SignupScreenState extends State<SignupScreen> {
                               print("7777777777777777777777777777777777777777777777777777");
                               print(selectedImage);
                               print(_authService.user!.uid);
-                              String? pfpURL;
+                              //String? pfpURL;
                               try{
                                  pfpURL = await _storageService.uploadUserPfp(
                                   file: selectedImage!,
@@ -273,7 +450,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 //   icon: Icons.check,
                                 // );
                                 //_navigationService.goBack();
-                                _navigationService.pushReplacementNamed("/login");
+                                //_navigationService.pushReplacementNamed("/login");
                               //Get.to(() => const SignupScreen());
                               //} else {
                               //  throw Exception("Unable to upload user profile picture");
@@ -293,6 +470,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         setState(() {
                           isLoading = false;
                         });
+                        _signup();
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: 15),

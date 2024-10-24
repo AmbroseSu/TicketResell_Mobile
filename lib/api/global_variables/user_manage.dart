@@ -3,7 +3,7 @@ class UserManager {
 
   int? _id;
   String? _email;
-  String? _role;
+  int? _role;
   String? _token;
 
   factory UserManager() {
@@ -27,9 +27,9 @@ class UserManager {
   }
 
   // Getter and Setter for Role
-  String? get role => _role;
+  int? get role => _role;
 
-  set role(String? role) {
+  set role(int? role) {
     _role = role;
   }
 
