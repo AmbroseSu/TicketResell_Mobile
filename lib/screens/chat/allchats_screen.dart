@@ -2,10 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 //import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:get/get.dart';
 import 'package:flutter/widgets.dart';
 import 'package:ticket_resell/models/chat.dart';
 import 'package:ticket_resell/models/message.dart';
 import 'package:ticket_resell/models/user_profile.dart';
+import 'package:ticket_resell/screens/request_ticket/all_ticket.dart';
 import 'package:ticket_resell/services/auth_service.dart';
 import 'package:ticket_resell/services/database_service.dart';
 import 'package:ticket_resell/services/navigation_service.dart';
@@ -92,7 +94,40 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
           title: const Text("Messages"),
           actions: [],
         ),
-        body: _buildUI(),
+        //body: _buildUI(),
+        body: Stack(
+          children: [
+            _buildUI(),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Get.to(() => AllTicketScreen());
+                    // Xử lý sự kiện khi nhấn nút View Request
+                    // Ví dụ: Điều hướng đến màn hình yêu cầu
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue, // Màu nền của nút
+                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 9), // Kích thước nút nằm ngang
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20), // Đặt border radius cho nút bo tròn
+                    ),
+                  ),
+                  child: const Text(
+                    "View Request",
+                    style: TextStyle(
+                      color: Colors.white, // Màu chữ trắng
+                      fontWeight: FontWeight.bold, // In đậm chữ
+                      fontSize: 17, // Kích thước chữ lớn hơn nếu cần
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

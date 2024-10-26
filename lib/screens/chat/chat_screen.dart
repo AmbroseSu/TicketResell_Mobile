@@ -28,134 +28,11 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     backgroundColor: Colors.white,
-  //     body: SafeArea(
-  //       child: Column(
-  //         mainAxisSize: MainAxisSize.max,
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           Container(
-  //             padding: EdgeInsets.all(8),
-  //             height: 85,
-  //             color: Colors.white,
-  //             child: Row(
-  //               mainAxisAlignment: MainAxisAlignment.start,
-  //               children: [
-  //                 BackButton(),
-  //                 SizedBox(width: 5),
-  //                 CircleAvatar(
-  //                   backgroundImage: AssetImage("assets/users/Jones Noa.jpg"),
-  //                   maxRadius: 28,
-  //                 ),
-  //                 SizedBox(width: 20,),
-  //                 Column(
-  //                   mainAxisAlignment: MainAxisAlignment.center,
-  //                   crossAxisAlignment: CrossAxisAlignment.start,
-  //                   children: [
-  //                     Text("Jones Noa",
-  //                     style: TextStyle(
-  //                       fontSize: 19,
-  //                       fontWeight: FontWeight.bold
-  //                     ),),
-  //                     SizedBox(height: 8),
-  //                     Text("Ative 5 hours ago",
-  //                       style: TextStyle(
-  //                           fontWeight: FontWeight.w500,
-  //                         color: Colors.grey.shade500
-  //                       ),),
-  //                   ],
-  //                 ),
-  //                 Spacer(),
-  //                 IconButton(onPressed: (){}, icon: Icon(Icons.more_vert))
-  //               ],
-  //             ),
-  //           ),
-  //           Expanded(child: Container(
-  //             color: Colors.grey.shade200,
-  //             child: ListView(
-  //               padding: EdgeInsets.all(15),
-  //               scrollDirection: Axis.vertical,
-  //               shrinkWrap: true,
-  //               children: [
-  //                 Align(
-  //                   alignment: Alignment.center,
-  //                   child: Text(
-  //                     "Today",
-  //                     style: TextStyle(
-  //                       fontWeight: FontWeight.w500,
-  //                       color: Colors.grey
-  //                     ),
-  //                   ),
-  //                 ),
-  //                 SizedBox(height: 20),
-  //                 ChatMessageItem(isMeChatting: false, messageBody: "Hi, Jones Noa, How are you?"),
-  //                 ChatMessageItem(isMeChatting: true, messageBody: "I am fines"),
-  //                 ChatMessageItem(isMeChatting: false, messageBody: "Congratulations for 10+ Followers on Frodo"),
-  //                 ChatMessageItem(isMeChatting: true, messageBody: "Oh thank you very much. I am working hard on it, so i can drive this ship in days"),
-  //                 ChatMessageItem(isMeChatting: false, messageBody: "Great, I hope you can do more than that"),
-  //                 ChatMessageItem(isMeChatting: true, messageBody: "Thanks"),
-  //
-  //               ],
-  //             ),
-  //           ))
-  //         ],
-  //       ),
-  //     ),
-  //     bottomNavigationBar: Container(
-  //       height: 70,
-  //       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-  //       decoration: BoxDecoration(
-  //         color: Colors.white,
-  //         borderRadius: BorderRadius.circular(13),
-  //       ),
-  //       child: Container(
-  //         child: Row(
-  //           children: [
-  //             Expanded(child: TextField(
-  //               decoration: InputDecoration(
-  //                 border: InputBorder.none,
-  //                 hintText: "Type something...",
-  //                 hintStyle: TextStyle(
-  //                   fontSize: 16,
-  //                   fontWeight: FontWeight.w500,
-  //                   color: Colors.blueAccent
-  //                 ),
-  //               ),
-  //               maxLines: 10,
-  //               minLines: 1,
-  //             ),
-  //             ),
-  //             SizedBox(width: 20),
-  //             InkWell(
-  //               onTap: () {},
-  //               hoverColor: Colors.white,
-  //               child: Container(
-  //                 width: 50,
-  //                 height: 50,
-  //                 decoration: BoxDecoration(
-  //                   color: Colors.blueAccent,
-  //                   borderRadius: BorderRadius.circular(13)
-  //                 ),
-  //                 alignment: Alignment.center,
-  //                 child: Icon(
-  //                   Icons.send_rounded,
-  //                   color: Colors.white,
-  //                   size: 25,
-  //                 ),
-  //               ),
-  //             )
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
   final GetIt _getIt = GetIt.instance;
+
+  final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _quantityController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
 
   late AuthService _authService;
   late DatabaseService _databaseService;
@@ -189,6 +66,31 @@ class _ChatScreenState extends State<ChatScreen> {
         title: Text(
           widget.chatUser.name!,
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 10.0), // Khoảng cách bên phải
+            child: Container(
+              decoration: BoxDecoration(
+                //color: Colors.lightBlueAccent, // Màu nền xanh nhạt
+                borderRadius: BorderRadius.circular(6.0),
+              ),
+              child: TextButton.icon(
+                icon: Icon(Icons.add, color: Colors.white), // Màu sắc của biểu tượng
+                label: Text(
+                  "Request",
+                  style: TextStyle(color: Colors.white), // Màu sắc của văn bản
+                ),
+                onPressed: () {
+                  _showRequestForm();
+                },
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0), // Padding bên trong nút
+                  backgroundColor: Colors.lightBlueAccent, // Màu nền xanh nhạt
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
       body: _buildUI(),
     );
@@ -219,6 +121,130 @@ class _ChatScreenState extends State<ChatScreen> {
           currentUser: currentUser!,
           onSend: _sendMessage,
           messages: messages,
+        );
+      },
+    );
+  }
+
+  void _showRequestForm() {
+    showModalBottomSheet(
+      isScrollControlled: true, // Allows the sheet to resize for the keyboard
+      context: context,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 16.0,
+            right: 16.0,
+            top: 16.0,
+            bottom: MediaQuery.of(context).viewInsets.bottom +
+                20.0, // Add space for keyboard
+          ),
+          child: SingleChildScrollView(
+            // Allows the bottom sheet to scroll
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: _priceController,
+                  decoration: InputDecoration(
+                    labelText: 'Price/Ticket',
+                    prefixIcon: Icon(Icons.attach_money),
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+                TextField(
+                  controller: _quantityController,
+                  decoration: InputDecoration(
+                    labelText: 'Quantity',
+                    prefixIcon: Icon(Icons.numbers),
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+                TextField(
+                  controller: _addressController,
+                  decoration: InputDecoration(
+                    labelText: 'Address',
+                    prefixIcon: Icon(Icons.location_on),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFFC2E9FB),
+                    foregroundColor: Colors.black,
+                  ),
+                  onPressed: () {
+                    final price = _priceController.text;
+                    final quantity = _quantityController.text;
+                    final address = _addressController.text;
+
+                    // Kiểm tra xem các trường có rỗng không
+                    if (price.isEmpty || quantity.isEmpty || address.isEmpty) {
+                      // Hiển thị hộp thoại nếu có trường rỗng
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Thông báo'),
+                            content: Text('Bạn phải nhập đủ thông tin!'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // Đóng hộp thoại
+                                },
+                                child: Text('OK'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                      return; // Kết thúc hàm nếu có trường rỗng
+                    }
+
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Request Information'),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text('Price: $price'),
+                              Text('Quantity: $quantity'),
+                              Text('Address: $address'),
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(); // Close dialog
+                                Navigator.of(context)
+                                    .pop(); // Close bottom sheet
+                                ChatMessage requestMessage = ChatMessage(
+                                  user: currentUser!,
+                                  text:
+                                      'Price: $price\nQuantity: $quantity\nAddress: $address',
+                                  createdAt: DateTime.now(),
+                                );
+                                _sendMessage(requestMessage);
+                              },
+                              child: Text('OK'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  child: Text(
+                    'Send Request',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800, // In đậm chữ
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
         );
       },
     );
