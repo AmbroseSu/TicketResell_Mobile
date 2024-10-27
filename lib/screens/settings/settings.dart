@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:ticket_resell/screens/create_post/create_ticket.dart';
+import 'package:ticket_resell/screens/product_detail/all_ticket.dart';
 import '../../styles&text&sizes/sizes.dart';
 import '../../styles&text&sizes/text_strings.dart';
 import '../../widgets/appbar.dart';
@@ -58,6 +59,11 @@ class SettingsScreen extends StatelessWidget {
 
                   // TSettingsMenuTile(icon: Iconsax.message, title: 'Chat Room', subTitle: 'All messages on this way', onTap: () => Get.to(() =>  AllChatsScreen()),),
                   TSettingsMenuTile(icon: Iconsax.message, title: 'Chat Room', subTitle: 'All messages on this way', onTap: () => Get.to(() =>  AllChatsScreen()),),
+                  TSettingsMenuTile(
+                      icon: Iconsax.folder,
+                      title: 'All Tickets',
+                      subTitle: 'List all tickets in TicketResell',
+                      onTap: () => Get.to(() => const AllTicket())),
                   TSettingsMenuTile(icon: Iconsax.safe_home, title: 'My Addresses', subTitle: 'Set shopping delivery address', onTap: () => Get.to(() => const UserAddressScreen()),),
                   TSettingsMenuTile(icon: Iconsax.shopping_cart, title: 'Payment Platform', subTitle: 'Add, remove products and move to checkout', onTap: () => Get.to(() => const CartScreen())),
                   TSettingsMenuTile(icon: Iconsax.heart, title: 'Favorite Tickets', subTitle: 'List of your favorite tours', onTap: () => Get.to(() => const FavoriteScreen())),

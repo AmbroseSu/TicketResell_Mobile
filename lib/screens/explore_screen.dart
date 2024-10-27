@@ -143,19 +143,6 @@ class _ExploreScreenState extends State<ExploreScreen>
             ))
           ],
         ),
-        // bottomNavigationBar: BottomNavigationBar(
-        //   backgroundColor: Colors.white,
-        //   fixedColor: Color(0xFF55B97D),
-        //   currentIndex: 0,
-        //   unselectedItemColor: Colors.black38,
-        //   items: [
-        //     BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: ''),
-        //     BottomNavigationBarItem(icon: Icon(Icons.search), label: ''),
-        //     BottomNavigationBarItem(icon: Icon(Icons.favorite), label: ''),
-        //     BottomNavigationBarItem(icon: Icon(Icons.person), label: ''),
-        //   ],
-        // ),
-
       ),
     );
   }
@@ -208,7 +195,7 @@ class _ExploreScreenState extends State<ExploreScreen>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Recommended",
+                "All Tickets",
                 style: GoogleFonts.montserrat(
                   fontWeight: FontWeight.w600,
                   fontSize: 18,
