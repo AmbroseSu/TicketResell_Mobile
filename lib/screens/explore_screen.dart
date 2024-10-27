@@ -230,11 +230,11 @@ class _ExploreScreenState extends State<ExploreScreen>
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                RecommendCard(title: "Con Cam", duration: "1h20", deal: "Hot Deal", image: TImages.concam, onTap: () {Get.to(() => const PlaceScreen());},),
-                SizedBox(width: 16),
-                RecommendCard(title: "Transformer", duration: "1h30", deal: "New Deal", image: TImages.transformer, onTap: () {Get.to(() => const PlaceScreen());}),
-                SizedBox(width: 16),
-                RecommendCard(title: "Báo Thủ", duration: "1h22", deal: "Hot Deal", image: TImages.bao_thu, onTap: () {Get.to(() => const PlaceScreen());})
+                //RecommendCard(title: "Con Cam", duration: "1h20", deal: "Hot Deal", image: TImages.concam, onTap: () {Get.to(() => const PlaceScreen(ticket: ));},),
+                //SizedBox(width: 16),
+                //RecommendCard(title: "Transformer", duration: "1h30", deal: "New Deal", image: TImages.transformer, onTap: () {Get.to(() => const PlaceScreen(ticket: ticket));}),
+                //SizedBox(width: 16),
+                //RecommendCard(title: "Báo Thủ", duration: "1h22", deal: "Hot Deal", image: TImages.bao_thu, onTap: () {Get.to(() => const PlaceScreen(ticket: ticket));})
               ],
             ),
           ),

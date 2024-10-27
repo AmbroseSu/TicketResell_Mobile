@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:ticket_resell/api/response/ticket.dart';
 import 'package:ticket_resell/styles&text&sizes/shadows.dart';
 import 'package:ticket_resell/styles&text&sizes/sizes.dart';
 import '../screens/product_detail/place_screen.dart';
@@ -13,16 +14,18 @@ import '../widgets/t_rounded_image.dart';
 import 'colors.dart';
 import 'image_strings.dart';
 
-
 class TProductCardVertical extends StatelessWidget {
-  const TProductCardVertical({super.key});
+  final Ticket ticket;
+
+  const TProductCardVertical({Key? key, required this.ticket})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final dark = THelperFunctions.isDarkMode(context);
 
     return GestureDetector(
-      onTap: () => Get.to(() => const PlaceScreen()),
+      onTap: () => Get.to(() => PlaceScreen(ticket: ticket)),
       child: Container(
         width: 180,
         padding: const EdgeInsets.all(1),
@@ -38,10 +41,10 @@ class TProductCardVertical extends StatelessWidget {
               backgroundColor: dark ? TColors.dark : TColors.light,
               child: Stack(
                 children: [
-                  const AspectRatio(
+                  AspectRatio(
                     aspectRatio: 4 / 4,
                     child: TRoundedImage(
-                      imageUrl: TImages.exhuma,
+                      imageUrl: TImages.exhuma, // Sử dụng một hình ảnh tạm thời
                       applyImageRadius: true,
                       fit: BoxFit.cover,
                     ),
@@ -53,7 +56,7 @@ class TProductCardVertical extends StatelessWidget {
                       backgroundColor: TColors.secondary.withOpacity(0.8),
                       padding: const EdgeInsets.symmetric(
                           horizontal: TSizes.sm, vertical: TSizes.xs),
-                      child: Text('25%',
+                      child: Text('${ticket.quantity} left',
                           style: Theme.of(context)
                               .textTheme
                               .labelLarge!
@@ -63,7 +66,8 @@ class TProductCardVertical extends StatelessWidget {
                   const Positioned(
                     top: 0,
                     right: 0,
-                    child: TCircularIcon(icon: Iconsax.heart5, color: Colors.red),
+                    child:
+                        TCircularIcon(icon: Iconsax.heart5, color: Colors.red),
                   ),
                 ],
               ),
@@ -74,11 +78,11 @@ class TProductCardVertical extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const TProductTitleText(title: 'Exhuma', smallSize: true),
+                  TProductTitleText(title: ticket.ticketName, smallSize: true),
                   const SizedBox(height: TSizes.spaceBtwItems / 2),
                   Row(
                     children: [
-                      Text('Movie',
+                      Text(ticket.categoryName,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                           style: Theme.of(context).textTheme.labelMedium),
@@ -94,9 +98,9 @@ class TProductCardVertical extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: TSizes.sm),
-                  child: TProductPriceText(price: '50'),
+                Padding(
+                  padding: const EdgeInsets.only(left: TSizes.sm),
+                  child: TProductPriceText(price: '${ticket.price}'),
                 ),
                 Container(
                   decoration: const BoxDecoration(
@@ -109,7 +113,8 @@ class TProductCardVertical extends StatelessWidget {
                   child: const SizedBox(
                     width: TSizes.iconLg * 1.2,
                     height: TSizes.iconLg * 1.2,
-                    child: Center(child: Icon(Iconsax.add, color: TColors.white)),
+                    child:
+                        Center(child: Icon(Iconsax.add, color: TColors.white)),
                   ),
                 )
               ],

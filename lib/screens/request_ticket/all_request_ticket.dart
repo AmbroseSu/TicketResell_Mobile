@@ -84,7 +84,7 @@ class _AllRequestTicketScreenState extends State<AllRequestTicketScreen> {
       //Get.to(() => AllRequestTicketScreen());
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => AllRequestTicketScreen()), // Thay YourCurrentPage bằng tên trang hiện tại của bạn
+        MaterialPageRoute(builder: (context) => AllRequestTicketScreen()),
       );
     });
 

@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:ticket_resell/api/response/ticket.dart';
 import 'package:ticket_resell/models/user_profile.dart';
 import 'package:ticket_resell/screens/chat/chat_screen.dart';
 import 'package:ticket_resell/screens/product_detail/product_reviews.dart';
@@ -13,7 +14,9 @@ import '../../widgets/section_heading.dart';
 import '../checkout/checkout.dart';
 
 class PlaceScreen extends StatelessWidget {
-  const PlaceScreen({super.key});
+  final Ticket ticket;
+
+  const PlaceScreen({Key? key, required this.ticket}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +105,7 @@ class PlaceScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        "Conan Movie",
+                        ticket.ticketName,
                         style: GoogleFonts.getFont(
                           "Montserrat",
                           fontWeight: FontWeight.w600,
@@ -159,7 +162,7 @@ class PlaceScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 15),
                 Text(
-                  "Trong khi đến Hakodate tham gia một giải kiếm đạo, Conan và Heiji đụng độ siêu trộm Kaito Kid - khi hắn đang nhắm tới một thanh kiếm Nhật được cất giấu trong nhà kho của một gia đình tài phiệt. Thi thể một tay buôn vũ khí khét tiếng được phát hiện với vết chém hình chữ thập, và trùng hợp thay, kho báu mà gã truy lùng dường như cũng có liên quan mật thiết đến thanh kiếm cổ mà Kid đang nhắm tới. ",
+                  ticket.postDescription,
                   style: GoogleFonts.getFont(
                     "Roboto Condensed",
                     fontWeight: FontWeight.w500,
