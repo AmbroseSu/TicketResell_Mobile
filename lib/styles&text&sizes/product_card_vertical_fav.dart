@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:ticket_resell/api/response/ticket.dart';
 import 'package:ticket_resell/styles&text&sizes/shadows.dart';
 import 'package:ticket_resell/styles&text&sizes/sizes.dart';
-import '../api/response/ticket.dart';
 import '../screens/product_detail/place_screen.dart';
 import '../widgets/helper_functions.dart';
 import '../widgets/product_price_text.dart';
@@ -14,11 +14,11 @@ import '../widgets/t_rounded_image.dart';
 import 'colors.dart';
 import 'image_strings.dart';
 
-
-class TProductCardVertical extends StatelessWidget {
+class TProductCardVerticalFav extends StatelessWidget {
   final Ticket ticket;
 
-  const TProductCardVertical({super.key, required this.ticket});
+  const TProductCardVerticalFav({Key? key, required this.ticket})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +41,10 @@ class TProductCardVertical extends StatelessWidget {
               backgroundColor: dark ? TColors.dark : TColors.light,
               child: Stack(
                 children: [
-                   AspectRatio(
+                  AspectRatio(
                     aspectRatio: 4 / 4,
                     child: TRoundedImage(
-                      imageUrl: TImages.exhuma,
+                      imageUrl: TImages.exhuma, // Sử dụng một hình ảnh tạm thời
                       applyImageRadius: true,
                       fit: BoxFit.cover,
                     ),
@@ -62,6 +62,12 @@ class TProductCardVertical extends StatelessWidget {
                               .labelLarge!
                               .apply(color: TColors.black)),
                     ),
+                  ),
+                  const Positioned(
+                    top: 0,
+                    right: 0,
+                    child:
+                        TCircularIcon(icon: Iconsax.heart5, color: Colors.red),
                   ),
                 ],
               ),
@@ -92,8 +98,8 @@ class TProductCardVertical extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                 Padding(
-                  padding: EdgeInsets.only(left: TSizes.sm),
+                Padding(
+                  padding: const EdgeInsets.only(left: TSizes.sm),
                   child: TProductPriceText(price: '${ticket.price}'),
                 ),
                 Container(
@@ -107,7 +113,8 @@ class TProductCardVertical extends StatelessWidget {
                   child: const SizedBox(
                     width: TSizes.iconLg * 1.2,
                     height: TSizes.iconLg * 1.2,
-                    child: Center(child: Icon(Iconsax.add, color: TColors.white)),
+                    child:
+                        Center(child: Icon(Iconsax.add, color: TColors.white)),
                   ),
                 )
               ],

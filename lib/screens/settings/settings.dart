@@ -12,9 +12,9 @@ import '../../widgets/settings_menu_tile.dart';
 import '../../widgets/user_profile_tile.dart';
 import '../address/address.dart';
 import '../cart/cart.dart';
-import '../chat/allchats_screen.dart';
 import '../login/login.dart';
 import '../order/order.dart';
+import '../product_detail/all_ticket.dart';
 import '../product_detail/favorite.dart';
 import '../profile/profile.dart';
 
@@ -59,9 +59,14 @@ class SettingsScreen extends StatelessWidget {
 
                   // TSettingsMenuTile(icon: Iconsax.message, title: 'Chat Room', subTitle: 'All messages on this way', onTap: () => Get.to(() =>  AllChatsScreen()),),
                   //TSettingsMenuTile(icon: Iconsax.message, title: 'Chat Room', subTitle: 'All messages on this way', onTap: () => Get.to(() =>  AllChatsScreen()),),
+                  TSettingsMenuTile(
+                      icon: Iconsax.folder,
+                      title: 'All Tickets',
+                      subTitle: 'List all tickets in TicketResell',
+                      onTap: () => Get.to(() => const AllTicket())),
+                  TSettingsMenuTile(icon: Iconsax.heart, title: 'Favorite Tickets', subTitle: 'List of your favorite tours', onTap: () => Get.to(() => const FavoriteScreen())),
                   TSettingsMenuTile(icon: Iconsax.safe_home, title: 'My Addresses', subTitle: 'Set shopping delivery address', onTap: () => Get.to(() => const UserAddressScreen()),),
                   TSettingsMenuTile(icon: Iconsax.shopping_cart, title: 'Payment Platform', subTitle: 'Add, remove products and move to checkout', onTap: () => Get.to(() => const CartScreen())),
-                  TSettingsMenuTile(icon: Iconsax.heart, title: 'Favorite Tickets', subTitle: 'List of your favorite tours', onTap: () => Get.to(() => const FavoriteScreen())),
                   TSettingsMenuTile(icon: Iconsax.bag_tick, title: 'My Booking', subTitle: 'In-progress and Completed Orders', onTap: () => Get.to(() => const OrderScreen())),
                   TSettingsMenuTile(icon: Iconsax.document_upload, title: 'Create Post', subTitle: 'Upload Data to your Cloud Firebase', onTap: () => Get.to(() => const CreateTicket()),),
 
