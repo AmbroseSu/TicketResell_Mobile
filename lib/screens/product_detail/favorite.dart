@@ -7,7 +7,7 @@
 // import 'package:http/http.dart' as http;
 // import 'package:iconsax/iconsax.dart';
 // import 'package:ticket_resell/api/response/ticket.dart';
-// import '../../styles&text&sizes/product_card_vertical.dart';
+// import '../../styles&text&sizes/product_card_vertical_fav.dart';
 // import '../../styles&text&sizes/sizes.dart';
 // import '../../widgets/appbar.dart';
 // import '../../widgets/grid_layout.dart';
@@ -86,7 +86,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:iconsax/iconsax.dart';
 import 'package:ticket_resell/api/response/ticket.dart';
-import '../../styles&text&sizes/product_card_vertical.dart';
+import '../../styles&text&sizes/product_card_vertical_fav.dart';
 import '../../styles&text&sizes/sizes.dart';
 import '../../widgets/appbar.dart';
 import '../../widgets/grid_layout.dart';
@@ -149,7 +149,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
             children: [
               TGridLayout(
                 itemCount: tickets.length, // Đặt itemCount bằng độ dài của tickets
-                itemBuilder: (_, index) => TProductCardVertical(
+                itemBuilder: (_, index) => TProductCardVerticalFav(
                   ticket: tickets[index],
                 ),
               ),
