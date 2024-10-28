@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/models/chat.dart';
 import 'package:ticket_resell/models/message.dart';
 import 'package:ticket_resell/models/user_profile.dart';
@@ -33,7 +34,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
-
+  UserManager userManager = UserManager();
   late AuthService _authService;
   late DatabaseService _databaseService;
   late MediaService _mediaService;
@@ -49,14 +50,18 @@ class _ChatScreenState extends State<ChatScreen> {
     _mediaService = _getIt.get<MediaService>();
     _storageService = _getIt.get<StorageService>();
     currentUser = ChatUser(
-      id: _authService.user!.uid,
-      firstName: _authService.user!.displayName,
+      //id: _authService.user!.uid,
+      id: userManager.email!,
+      //firstName: _authService.user!.displayName,
+      firstName: userManager.fullname,
     );
     otherUser = ChatUser(
       id: widget.chatUser.uid!,
       firstName: widget.chatUser.name,
       profileImage: widget.chatUser.pfpURL,
     );
+
+    _checkAndCreateChat();
   }
 
   @override
@@ -248,6 +253,17 @@ class _ChatScreenState extends State<ChatScreen> {
         );
       },
     );
+  }
+  Future<void> _checkAndCreateChat() async {
+    // Lấy chat giữa hai người
+    bool chat = await _databaseService.checkChatExists(currentUser!.id, otherUser!.id);
+
+    if (!chat) {
+      // Nếu chat không tồn tại, tạo chat mớ
+      // Lưu chat mới vào cơ sở dữ liệu
+      await _databaseService.createNewChat(userManager.email!,
+        otherUser!.id,);
+    }
   }
 
   Future<void> _sendMessage(ChatMessage chatMessage) async {

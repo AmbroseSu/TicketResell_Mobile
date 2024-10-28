@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:get/get.dart';
 import 'package:flutter/widgets.dart';
+import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/models/chat.dart';
 import 'package:ticket_resell/models/message.dart';
 import 'package:ticket_resell/models/user_profile.dart';
@@ -52,7 +53,7 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
   ];
 
   final GetIt _getIt = GetIt.instance;
-
+  UserManager userManager = UserManager();
   late AuthService _authService;
   late NavigationService _navigationService;
   //late AlertService _alertService;
@@ -146,7 +147,7 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
 
   Widget _chatsList() {
     return StreamBuilder(
-      stream: _databaseService.getUserProfiles(), // Lấy danh sách người dùng
+      stream: _databaseService.getUserProfiles(userManager.email!), // Lấy danh sách người dùng
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return const Center(
@@ -163,13 +164,15 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
               UserProfile otherUser = users[index].data();
 
               print("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
-              print(_authService.user!.uid);
+              //print(_authService.user!.uid);
+              print(userManager.email);
               print(otherUser.uid!);
 
               // Sử dụng FutureBuilder để lấy dữ liệu chat giữa currentUser và otherUser
               return FutureBuilder<DocumentSnapshot<Chat>>(
                 future: _databaseService.getChatData(
-                  _authService.user!.uid, // currentUser ID
+                  //_authService.user!.uid, // currentUser ID
+                  userManager.email!,
                   otherUser.uid!,         // otherUser ID
                 ).first, // Lấy bản ghi đầu tiên từ Stream
                 builder: (context, chatSnapshot) {
@@ -206,14 +209,16 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
                       userProfile: otherUser,
                       onTap: () async {
                         final chatExists = await _databaseService.checkChatExists(
-                          _authService.user!.uid,
+                          // _authService.user!.uid,
+                          userManager.email!,
                           otherUser.uid!,
                         );
 
                         if (chatExists) {
                           // Lấy tất cả tin nhắn từ chat hiện tại
                           final chatData = await _databaseService.getChatData(
-                            _authService.user!.uid,
+                            // _authService.user!.uid,
+                            userManager.email!,
                             otherUser.uid!,
                           ).first;
 
@@ -225,7 +230,8 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
                               if (message.senderID != _authService.user!.uid && !message.isRead) {
                                 message.isRead = true;
                                 await _databaseService.updateMessageReadStatus(
-                                  _authService.user!.uid,
+                                  // _authService.user!.uid,
+                                  userManager.email!,
                                   otherUser.uid!,
                                   message,
                                 );
@@ -235,7 +241,8 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
                         } else {
                           // Tạo cuộc trò chuyện mới nếu chưa tồn tại
                           await _databaseService.createNewChat(
-                            _authService.user!.uid,
+                            //_authService.user!.uid,
+                            userManager.email!,
                             otherUser.uid!,
                           );
                         }

@@ -242,24 +242,24 @@ class _TLoginFormState extends State<TLoginForm> {
             /// Sign In Button
             GestureDetector(
               onTap: () async {
-                print("99999999999999999999999999999999999999999");
-                if (_loginFormKey.currentState?.validate() ?? false) {
-                  _loginFormKey.currentState?.save();
-                  bool result = await _authService.login(email!, password!);
-                  print("00000000000000000000000000000000000000000000");
-                  print(result);
-                  print(result);
-                  if (result) {
-                    print("1111111111111111111111111111111111111111111111111111111");
-                    //_navigationService.pushReplacementNamed("/navigation_menu");
-                  } else {
-                    print("6666666666666666666666666666666666666666666666666666666666666666");
-                    // _alertService.showToast(
-                    //   text: "Failed to login, Please try again!",
-                    //   icon: Icons.error,
-                    // );
-                  }
-                }
+                // print("99999999999999999999999999999999999999999");
+                // if (_loginFormKey.currentState?.validate() ?? false) {
+                //   _loginFormKey.currentState?.save();
+                //   bool result = await _authService.login(email!, password!);
+                //   print("00000000000000000000000000000000000000000000");
+                //   print(result);
+                //   print(result);
+                //   if (result) {
+                //     print("1111111111111111111111111111111111111111111111111111111");
+                //     //_navigationService.pushReplacementNamed("/navigation_menu");
+                //   } else {
+                //     print("6666666666666666666666666666666666666666666666666666666666666666");
+                //     // _alertService.showToast(
+                //     //   text: "Failed to login, Please try again!",
+                //     //   icon: Icons.error,
+                //     // );
+                //   }
+                // }
                 _signIn(context);
               },
               child: Container(

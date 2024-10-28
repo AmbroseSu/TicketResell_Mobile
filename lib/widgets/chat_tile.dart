@@ -83,6 +83,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/models/chat.dart';
 import 'package:ticket_resell/models/message.dart';
 import 'package:ticket_resell/models/user_profile.dart';
@@ -108,6 +109,7 @@ class ChatTile extends StatefulWidget {
 class _ChatTileState extends State<ChatTile> {
   final GetIt _getIt = GetIt.instance;
 
+  UserManager userManager = UserManager();
   late AuthService _authService;
   late DatabaseService _databaseService;
   ChatUser? currentUser, otherUser;
@@ -119,8 +121,10 @@ class _ChatTileState extends State<ChatTile> {
     _authService = _getIt.get<AuthService>();
     _databaseService = _getIt.get<DatabaseService>();
     currentUser = ChatUser(
-      id: _authService.user!.uid,
-      firstName: _authService.user!.displayName,
+      //id: _authService.user!.uid,
+      id: userManager.email!,
+      //firstName: _authService.user!.displayName,
+      firstName: userManager.fullname,
     );
     otherUser = ChatUser(
       id: widget.userProfile.uid!,

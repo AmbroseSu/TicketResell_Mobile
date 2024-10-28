@@ -5,6 +5,7 @@ class UserManager {
   String? _email;
   int? _role;
   String? _token;
+  String? _fullname;
 
   factory UserManager() {
     return _instance;
@@ -37,5 +38,11 @@ class UserManager {
 
   set token(String? token){
     _token = token;
+  }
+
+  String? get fullname => _fullname;
+
+  set fullname(String? fullname){
+    _fullname = fullname;
   }
 }

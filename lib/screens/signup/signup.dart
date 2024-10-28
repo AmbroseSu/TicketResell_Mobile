@@ -37,7 +37,7 @@ class _SignupScreenState extends State<SignupScreen> {
   late NavigationService _navigationService;
   late StorageService _storageService;
   late DatabaseService _databaseService;
-  String? password, name;
+  //String? password, name;
   UserManager userManager = UserManager();
   String? email = UserManager().email;
   File? selectedImage;
@@ -81,18 +81,21 @@ class _SignupScreenState extends State<SignupScreen> {
     final String? fcmtoken = "String";
     //String? pfpURL;
 
-    // if (selectedImage != null) {
-    //   bool result = await _authService.signup(email!, password!);
-    //   if(result) {
-    //     pfpURL = await _storageService.uploadUserPfp(
-    //       file: selectedImage!,
-    //       uid: _authService.user!.uid,
-    //     );
-    //   }
-    //
-    // }else{
-    //   pfpURL = null;
-    // }
+    if (selectedImage != null) {
+      //bool result = await _authService.signup(email!, password!);
+      //if(result) {
+      //if(userManager.email != null){
+        pfpURL = await _storageService.uploadUserPfp(
+          file: selectedImage!,
+          uid: userManager.email!,
+        );
+      //}
+
+      //}
+
+    }else{
+      pfpURL = null;
+    }
 
 
 
@@ -153,6 +156,7 @@ class _SignupScreenState extends State<SignupScreen> {
       print('Response Body: ${response.body}');
       String? fcmToken = TokenManager().fcmToken;
       if (response.statusCode == 200) {
+        var responseData = jsonDecode(response.body);
         String body = "Save information successfully. Please login !!";
         String title = "Create Successfully.";
         // await PushNotificationService.sendNotificationToSelectedDrived(
@@ -161,6 +165,84 @@ class _SignupScreenState extends State<SignupScreen> {
         //     title,
         //     body
         // );
+
+        userManager.fullname = responseData['content']['fullname'];
+
+
+        try {
+          if ((_registerFormKey.currentState?.validate() ?? false) &&
+              selectedImage != null) {
+            _registerFormKey.currentState?.save();
+            //print("000000000000000000000000000000000000000000000000000000000000000000");
+            //print(email);
+            //print(password);
+            //bool result = await _authService.signup(email!, password!);
+            //print("9999999999999999999999999999999999999999999999999999999999999");
+            //print(result);
+            //if (result) {
+
+            var email = responseData['content']['email'];
+            var fullname = responseData['content']['fullname'];
+            print(email);
+              print("7777777777777777777777777777777777777777777777777777");
+              print(selectedImage);
+              print(email);
+              //String? pfpURL;
+              // try{
+              //   pfpURL = await _storageService.uploadUserPfp(
+              //     file: selectedImage!,
+              //     uid: email,
+              //   );
+              // }catch(e){
+              //   print("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+              // }
+
+
+
+              if (pfpURL != null) {
+                print(email);
+                //print(name);
+                print("1111111111111111111111111111111111111111111111111111111111111111");
+
+                try{
+                  await _databaseService.createUserProfile(
+                    userProfile: UserProfile(
+                        uid: email,
+                        name: fullname,
+                        pfpURL: pfpURL),
+                  );
+                }catch(e){
+                  print("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee00000000000000");
+                }
+
+
+                // _alertService.showToast(
+                //   text: "User registered successfully!",
+                //   icon: Icons.check,
+                // );
+                //_navigationService.goBack();
+                //_navigationService.pushReplacementNamed("/login");
+                //Get.to(() => const SignupScreen());
+                //} else {
+                //  throw Exception("Unable to upload user profile picture");
+              }
+            // } else {
+            //   throw Exception("Unable to register user");
+            // }
+          }
+        } catch (e) {
+          print(e);
+          print("66666666666666666666666666666666666666666666666666666666666666");
+          // _alertService.showToast(
+          //   text: "Failed to register, Please try again!",
+          //   icon: Icons.error,
+          // );
+        }
+
+
+
+
+
         Get.to(() => const LoginScreen());
       } else {
         // Xử lý khi API thất bại
@@ -213,13 +295,13 @@ class _SignupScreenState extends State<SignupScreen> {
                         labelText: 'Full Name',
                         prefixIcon: Icon(Iconsax.user),
                       ),
-                      onSaved: (value) {
-                        setState(
-                              () {
-                            name = value;
-                          },
-                        );
-                      },
+                      // onSaved: (value) {
+                      //   setState(
+                      //         () {
+                      //       name = value;
+                      //     },
+                      //   );
+                      // },
                     ),
                     const SizedBox(height: TSizes.spaceBtwInputFields),
 
@@ -253,13 +335,13 @@ class _SignupScreenState extends State<SignupScreen> {
                           },
                         ),
                       ),
-                      onSaved: (value) {
-                        setState(
-                              () {
-                            password = value;
-                          },
-                        );
-                      },
+                      // onSaved: (value) {
+                      //   setState(
+                      //         () {
+                      //       password = value;
+                      //     },
+                      //   );
+                      // },
                     ),
                     const SizedBox(height: TSizes.spaceBtwInputFields),
 
@@ -402,71 +484,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         setState(() {
                           isLoading = true;
                         });
-                        try {
-                          if ((_registerFormKey.currentState?.validate() ?? false) &&
-                              selectedImage != null) {
-                            _registerFormKey.currentState?.save();
-                            print("000000000000000000000000000000000000000000000000000000000000000000");
-                            print(email);
-                            print(password);
-                            bool result = await _authService.signup(email!, password!);
-                            print("9999999999999999999999999999999999999999999999999999999999999");
-                            print(result);
-                            if (result) {
-                              print("7777777777777777777777777777777777777777777777777777");
-                              print(selectedImage);
-                              print(_authService.user!.uid);
-                              //String? pfpURL;
-                              try{
-                                 pfpURL = await _storageService.uploadUserPfp(
-                                  file: selectedImage!,
-                                  uid: _authService.user!.uid,
-                                );
-                              }catch(e){
-                                print("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
-                              }
 
-
-
-                              if (pfpURL != null) {
-                              print(_authService.user!.uid);
-                              print(name);
-                              print("1111111111111111111111111111111111111111111111111111111111111111");
-
-                              try{
-                                await _databaseService.createUserProfile(
-                                  userProfile: UserProfile(
-                                      uid: _authService.user!.uid,
-                                      name: name,
-                                      pfpURL: pfpURL),
-                                );
-                              }catch(e){
-                                print("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee00000000000000");
-                              }
-
-
-                                // _alertService.showToast(
-                                //   text: "User registered successfully!",
-                                //   icon: Icons.check,
-                                // );
-                                //_navigationService.goBack();
-                                //_navigationService.pushReplacementNamed("/login");
-                              //Get.to(() => const SignupScreen());
-                              //} else {
-                              //  throw Exception("Unable to upload user profile picture");
-                              }
-                            } else {
-                              throw Exception("Unable to register user");
-                            }
-                          }
-                        } catch (e) {
-                          print(e);
-                          print("66666666666666666666666666666666666666666666666666666666666666");
-                          // _alertService.showToast(
-                          //   text: "Failed to register, Please try again!",
-                          //   icon: Icons.error,
-                          // );
-                        }
                         setState(() {
                           isLoading = false;
                         });

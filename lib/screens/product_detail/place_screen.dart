@@ -1,22 +1,66 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/api/response/ticket.dart';
 import 'package:ticket_resell/models/user_profile.dart';
 import 'package:ticket_resell/screens/chat/chat_screen.dart';
 import 'package:ticket_resell/screens/product_detail/product_reviews.dart';
+import 'package:ticket_resell/services/database_service.dart';
 import '../../styles&text&sizes/image_strings.dart';
 import '../../styles&text&sizes/sizes.dart';
 import '../../widgets/gallery_slider.dart';
 import '../../widgets/section_heading.dart';
 import '../checkout/checkout.dart';
 
-class PlaceScreen extends StatelessWidget {
+class PlaceScreen extends StatefulWidget {
   final Ticket ticket;
 
   const PlaceScreen({Key? key, required this.ticket}) : super(key: key);
+
+  @override
+  _PlaceScreenState createState() => _PlaceScreenState();
+}
+
+
+class _PlaceScreenState extends State<PlaceScreen> {
+
+  final GetIt _getIt = GetIt.instance;
+  UserProfile? otherUser;
+  late DatabaseService _databaseService;
+
+  @override
+  void initState() {
+    super.initState();
+    _databaseService = _getIt.get<DatabaseService>();
+    fetchOtherUserProfile();
+  }
+
+  Future<void> fetchOtherUserProfile() async {
+    final userStream = _databaseService.getUserProfile(widget.ticket.email);
+
+    final userSnapshot = await userStream.first;
+
+    if (userSnapshot.docs.isNotEmpty) {
+      setState(() {
+        otherUser = userSnapshot.docs.first.data();
+        print("000000000000000000000000000000000000000000000000000000000000000000");
+        print(widget.ticket.email);
+        print(otherUser!.uid);// Assigning the first user profile to otherUser
+        print(otherUser!.name);// Assigning the first user profile to otherUser
+        print(otherUser!.pfpURL);// Assigning the first user profile to otherUser
+      });
+    } else {
+      print("111111111111111111111111111111111111111111111111111111111111111111111111111");
+      // Handle the case where the user is not found
+      print("User not found");
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +149,7 @@ class PlaceScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        ticket.ticketName,
+                        widget.ticket.ticketName,
                         style: GoogleFonts.getFont(
                           "Montserrat",
                           fontWeight: FontWeight.w600,
@@ -113,15 +157,29 @@ class PlaceScreen extends StatelessWidget {
                           color: Color(0xFF232323),
                         ),
                       ),
-                      Text(
-                        "Deal Price",
-                        style: GoogleFonts.getFont(
-                          "Roboto Condensed",
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          color: Colors.blueAccent,
+                      GestureDetector(
+                        onTap: () {
+                          // Điều hướng đến ChatScreen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ChatScreen(
+                                chatUser: otherUser!,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          "Deal Price",
+                          style: GoogleFonts.getFont(
+                            "Roboto Condensed",
+                            fontWeight: FontWeight.w700,
+                            fontSize: 16,
+                            color: Colors.blueAccent,
+                          ),
                         ),
                       ),
+
                     ],
                   ),
                 ),
@@ -162,7 +220,7 @@ class PlaceScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 15),
                 Text(
-                  ticket.postDescription,
+                  widget.ticket.postDescription,
                   style: GoogleFonts.getFont(
                     "Roboto Condensed",
                     fontWeight: FontWeight.w500,

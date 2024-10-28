@@ -41,11 +41,18 @@ class DatabaseService {
     await _usersCollection?.doc(userProfile.uid).set(userProfile);
   }
 
-  Stream<QuerySnapshot<UserProfile>> getUserProfiles() {
+  Stream<QuerySnapshot<UserProfile>> getUserProfiles(String uid) {
     return _usersCollection
-        ?.where("uid", isNotEqualTo: _authService.user!.uid)
+        ?.where("uid", isNotEqualTo: uid)
         .snapshots() as Stream<QuerySnapshot<UserProfile>>;
   }
+
+  Stream<QuerySnapshot<UserProfile>> getUserProfile(String uid) {
+    return _usersCollection
+        ?.where("uid", isEqualTo: uid)
+        .snapshots() as Stream<QuerySnapshot<UserProfile>>;
+  }
+
 
   Future<bool> checkChatExists(String uid1, String uid2) async {
     String chatID = generateChatID(uid1: uid1, uid2: uid2);
