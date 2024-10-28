@@ -5,10 +5,11 @@ import 'package:get_it/get_it.dart';
 import 'package:get/get.dart';
 import 'package:flutter/widgets.dart';
 import 'package:ticket_resell/api/global_variables/user_manage.dart';
+import 'package:ticket_resell/api/response/ticket.dart';
 import 'package:ticket_resell/models/chat.dart';
 import 'package:ticket_resell/models/message.dart';
 import 'package:ticket_resell/models/user_profile.dart';
-import 'package:ticket_resell/screens/request_ticket/all_ticket.dart';
+import 'package:ticket_resell/screens/request_ticket/all_ticket_seller.dart';
 import 'package:ticket_resell/services/auth_service.dart';
 import 'package:ticket_resell/services/database_service.dart';
 import 'package:ticket_resell/services/navigation_service.dart';
@@ -105,7 +106,7 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
                 padding: const EdgeInsets.all(15.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    Get.to(() => AllTicketScreen());
+                    Get.to(() => AllTicketSellerScreen());
                     // Xử lý sự kiện khi nhấn nút View Request
                     // Ví dụ: Điều hướng đến màn hình yêu cầu
                   },
@@ -247,11 +248,14 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
                           );
                         }
 
+                        Ticket emptyTicket = Ticket(id: 0, ticketName: "", price: 0, quantity: 0, expirationDate: "", venue: "", status: 0, categoryName: "", postId: 0, postTitle: "", postDescription: "", createdDate: "", postStatus: false, userId: 0, email: "");
+
                         // Điều hướng đến màn hình chat
                         _navigationService.push(
                           MaterialPageRoute(
                             builder: (context) {
                               return ChatScreen(
+                                ticket: emptyTicket,
                                 chatUser: otherUser,
                               );
                             },

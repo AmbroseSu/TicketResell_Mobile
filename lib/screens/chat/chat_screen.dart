@@ -1,10 +1,13 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_it/get_it.dart';
 import 'package:ticket_resell/api/global_variables/user_manage.dart';
+import 'package:ticket_resell/api/response/ticket.dart';
 import 'package:ticket_resell/models/chat.dart';
 import 'package:ticket_resell/models/message.dart';
 import 'package:ticket_resell/models/user_profile.dart';
@@ -13,15 +16,18 @@ import 'package:ticket_resell/services/database_service.dart';
 import 'package:ticket_resell/services/media_service.dart';
 import 'package:ticket_resell/services/storage_service.dart';
 import 'package:ticket_resell/utils.dart';
+import 'package:http/http.dart' as http;
 
 import 'chat_message_item.dart';
 
 class ChatScreen extends StatefulWidget {
   final UserProfile chatUser;
+  final Ticket ticket;
 
   const ChatScreen({
     super.key,
     required this.chatUser,
+    required this.ticket,
   });
 
   @override
@@ -80,7 +86,8 @@ class _ChatScreenState extends State<ChatScreen> {
                 borderRadius: BorderRadius.circular(6.0),
               ),
               child: TextButton.icon(
-                icon: Icon(Icons.add, color: Colors.white), // Màu sắc của biểu tượng
+                icon: Icon(Icons.add, color: Colors.white),
+                // Màu sắc của biểu tượng
                 label: Text(
                   "Request",
                   style: TextStyle(color: Colors.white), // Màu sắc của văn bản
@@ -89,7 +96,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   _showRequestForm();
                 },
                 style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0), // Padding bên trong nút
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0, vertical: 0.0), // Padding bên trong nút
                   backgroundColor: Colors.lightBlueAccent, // Màu nền xanh nhạt
                 ),
               ),
@@ -179,12 +187,26 @@ class _ChatScreenState extends State<ChatScreen> {
                     foregroundColor: Colors.black,
                   ),
                   onPressed: () {
-                    final price = _priceController.text;
-                    final quantity = _quantityController.text;
+                    final price = double.tryParse(_priceController.text) ?? 0.0;
+                    final quantity =
+                        int.tryParse(_quantityController.text) ?? 0;
                     final address = _addressController.text;
 
+                    // Kiểm tra nếu price hoặc quantity là 0 (có thể là giá trị không hợp lệ)
+                    if (price <= 0 || quantity <= 0 || address.isEmpty) {
+                      // Hiển thị thông báo lỗi hoặc xử lý tương ứng
+                      Fluttertoast.showToast(
+                        msg: "Please enter valid values.",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.TOP,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0,
+                      );
+                    }
+
                     // Kiểm tra xem các trường có rỗng không
-                    if (price.isEmpty || quantity.isEmpty || address.isEmpty) {
+                    if (/*price || quantity.isEmpty || */ address.isEmpty) {
                       // Hiển thị hộp thoại nếu có trường rỗng
                       showDialog(
                         context: context,
@@ -222,9 +244,24 @@ class _ChatScreenState extends State<ChatScreen> {
                           actions: [
                             TextButton(
                               onPressed: () {
+                                Navigator.of(context)
+                                    .pop(); // Close dialog without sending
+                              },
+                              child: Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () async {
                                 Navigator.of(context).pop(); // Close dialog
                                 Navigator.of(context)
                                     .pop(); // Close bottom sheet
+
+                                await createTicketRequest(
+                                    price: price,
+                                    quantity: quantity,
+                                    address: address,
+                                    userId: userManager.id!,
+                                    ticketId: 1);
+
                                 ChatMessage requestMessage = ChatMessage(
                                   user: currentUser!,
                                   text:
@@ -254,15 +291,63 @@ class _ChatScreenState extends State<ChatScreen> {
       },
     );
   }
+
+  Future<void> createTicketRequest({
+    required double price,
+    required int quantity,
+    required String address,
+    required int userId,
+    required int ticketId,
+  }) async {
+    final url = Uri.parse(
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/TicketRequest/create-ticket-request');
+
+    final body = json.encode({
+      'price': price,
+      'quantity': quantity,
+      'address': address,
+      'userId': userId,
+      'ticketId': ticketId,
+    });
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+
+    try {
+      final response = await http.post(
+        url,
+        headers: headers,
+        body: body,
+      );
+
+      if (response.statusCode == 200) {
+        // Yêu cầu thành công
+        print('Ticket request created successfully.');
+        // Bạn có thể thêm logic xử lý khi thành công ở đây
+      } else {
+        // Xử lý lỗi nếu có
+        print('Failed to create ticket request: ${response.body}');
+      }
+    } catch (error) {
+      // Xử lý lỗi kết nối hoặc các lỗi khác
+      print('Error: $error');
+    }
+  }
+
   Future<void> _checkAndCreateChat() async {
     // Lấy chat giữa hai người
-    bool chat = await _databaseService.checkChatExists(currentUser!.id, otherUser!.id);
+    bool chat =
+        await _databaseService.checkChatExists(currentUser!.id, otherUser!.id);
 
     if (!chat) {
       // Nếu chat không tồn tại, tạo chat mớ
       // Lưu chat mới vào cơ sở dữ liệu
-      await _databaseService.createNewChat(userManager.email!,
-        otherUser!.id,);
+      await _databaseService.createNewChat(
+        userManager.email!,
+        otherUser!.id,
+      );
     }
   }
 

@@ -49,12 +49,13 @@ class SettingsScreen extends StatelessWidget {
 
             /// -- Body
             Padding(
-              padding: const EdgeInsets.all(TSizes.defaultSpace),
+              padding: const EdgeInsets.only(left: TSizes.defaultSpace, right: TSizes.defaultSpace, top: TSizes.defaultSpace * 0.5),
               child: Column(
                 children: [
                   /// -- Account Settings
+                  //const SizedBox(height: TSizes.spaceBtwSections *),
                   const TSectionHeading(title: 'Account Settings', showActionButton: false),
-                  const SizedBox(height: TSizes.spaceBtwItems),
+                  const SizedBox(height: TSizes.spaceBtwItems * 0.2),
 
                   // TSettingsMenuTile(icon: Iconsax.message, title: 'Chat Room', subTitle: 'All messages on this way', onTap: () => Get.to(() =>  AllChatsScreen()),),
                   //TSettingsMenuTile(icon: Iconsax.message, title: 'Chat Room', subTitle: 'All messages on this way', onTap: () => Get.to(() =>  AllChatsScreen()),),
@@ -68,9 +69,9 @@ class SettingsScreen extends StatelessWidget {
                   // const TSettingsMenuTile(icon: Iconsax.notification, title: 'Notifications', subTitle: 'Set any kind of notifications message'),
 
                   /// -- App Settings
-                  const SizedBox(height: TSizes.spaceBtwSections),
+                  const SizedBox(height: TSizes.spaceBtwSections * 0.2),
                   const TSectionHeading(title: 'App Settings', showActionButton: false),
-                  const SizedBox(height: TSizes.spaceBtwItems),
+                  const SizedBox(height: TSizes.spaceBtwItems * 0.5),
                   // const TSettingsMenuTile(icon: Iconsax.document_upload, title: 'Load Data', subTitle: 'Upload Data to your Cloud Firebase'),
                   TSettingsMenuTile(
                     icon: Iconsax.location,

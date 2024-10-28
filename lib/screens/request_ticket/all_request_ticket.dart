@@ -1,79 +1,117 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:ticket_resell/screens/request_ticket/all_ticket.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:ticket_resell/api/response/ticket_request.dart';
+import 'package:ticket_resell/screens/request_ticket/all_ticket_seller.dart';
 
 class AllRequestTicketScreen extends StatefulWidget {
-  const AllRequestTicketScreen({super.key});
+  final int ticketId;
+  const AllRequestTicketScreen({super.key, required this.ticketId});
 
   @override
   _AllRequestTicketScreenState createState() => _AllRequestTicketScreenState();
 }
 
 class _AllRequestTicketScreenState extends State<AllRequestTicketScreen> {
-  final List<Map<String, dynamic>> requests = [
-    {
-      'senderName': 'John Doe',
-      'price': 120.0,
-      'quantity': 2,
-      'requestDate': '2024-10-12',
-      'status': 'Pending', // Trạng thái ban đầu
-    },
-    {
-      'senderName': 'Jane Smith',
-      'price': 75.0,
-      'quantity': 1,
-      'requestDate': '2024-10-15',
-      'status': 'Reject', // Trạng thái ban đầu
-    },
-    {
-      'senderName': 'Alice Johnson',
-      'price': 200.0,
-      'quantity': 3,
-      'requestDate': '2024-10-08',
-      'status': 'Confirmed', // Trạng thái ban đầu
-    },
-    {
-      'senderName': 'Bob Brown',
-      'price': 50.0,
-      'quantity': 5,
-      'requestDate': '2024-10-20',
-      'status': 'Pending', // Trạng thái ban đầu
-    },
-    {
-      'senderName': 'Ambrose',
-      'price': 80.0,
-      'quantity': 6,
-      'requestDate': '2024-10-20',
-      'status': 'Confirmed', // Trạng thái ban đầu
-    },
-    {
-      'senderName': 'NamLee',
-      'price': 80.0,
-      'quantity': 6,
-      'requestDate': '2024-10-20',
-      'status': 'Rejected', // Trạng thái ban đầu
-    },
-    {
-      'senderName': 'Tan Loc',
-      'price': 90.0,
-      'quantity': 6,
-      'requestDate': '2024-10-20',
-      'status': 'Pending', // Trạng thái ban đầu
-    },
-    {
-      'senderName': 'Wiramin',
-      'price': 20.0,
-      'quantity': 6,
-      'requestDate': '2024-10-20',
-      'status': 'Pending', // Trạng thái ban đầu
-    },
-  ];
+  // final List<Map<String, dynamic>> requests = [
+  //   {
+  //     'senderName': 'John Doe',
+  //     'price': 120.0,
+  //     'quantity': 2,
+  //     'requestDate': '2024-10-12',
+  //     'status': 'Pending', // Trạng thái ban đầu
+  //   },
+  //   {
+  //     'senderName': 'Jane Smith',
+  //     'price': 75.0,
+  //     'quantity': 1,
+  //     'requestDate': '2024-10-15',
+  //     'status': 'Reject', // Trạng thái ban đầu
+  //   },
+  //   {
+  //     'senderName': 'Alice Johnson',
+  //     'price': 200.0,
+  //     'quantity': 3,
+  //     'requestDate': '2024-10-08',
+  //     'status': 'Confirmed', // Trạng thái ban đầu
+  //   },
+  //   {
+  //     'senderName': 'Bob Brown',
+  //     'price': 50.0,
+  //     'quantity': 5,
+  //     'requestDate': '2024-10-20',
+  //     'status': 'Pending', // Trạng thái ban đầu
+  //   },
+  //   {
+  //     'senderName': 'Ambrose',
+  //     'price': 80.0,
+  //     'quantity': 6,
+  //     'requestDate': '2024-10-20',
+  //     'status': 'Confirmed', // Trạng thái ban đầu
+  //   },
+  //   {
+  //     'senderName': 'NamLee',
+  //     'price': 80.0,
+  //     'quantity': 6,
+  //     'requestDate': '2024-10-20',
+  //     'status': 'Rejected', // Trạng thái ban đầu
+  //   },
+  //   {
+  //     'senderName': 'Tan Loc',
+  //     'price': 90.0,
+  //     'quantity': 6,
+  //     'requestDate': '2024-10-20',
+  //     'status': 'Pending', // Trạng thái ban đầu
+  //   },
+  //   {
+  //     'senderName': 'Wiramin',
+  //     'price': 20.0,
+  //     'quantity': 6,
+  //     'requestDate': '2024-10-20',
+  //     'status': 'Pending', // Trạng thái ban đầu
+  //   },
+  // ];
 
-  void _updateRequestStatus(int index) {
-    setState(() {
+  List<TicketRequest> requests = [];
+
+  @override
+  void initState() {
+    super.initState();
+    print(")))))))))))))))))))))))))))))))))0000000000000000000");
+    print(widget.ticketId);
+    fetchTickets();
+  }
+
+
+  Future<void> fetchTickets() async {
+    final response = await http.get(Uri.parse(
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/TicketRequest/get-ticket-request?ticketId=${widget.ticketId}&page=1&limit=1000'));
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      setState(() {
+        requests = (data['content'] as List)
+            .map((json) => TicketRequest.fromJson(json))
+            .toList();
+      });
+    } else {
+      // Xử lý lỗi ở đây (hiển thị thông báo lỗi hoặc xử lý khác)
+      print('Failed to load tickets');
+    }
+  }
+
+
+
+
+
+  Future<void> _updateRequestStatus(int index) async{
+    setState(() async {
       // Cập nhật trạng thái của yêu cầu đã xác nhận
-      requests[index]['status'] = 'Confirmed';
+      //requests[index]['status'] = 'Confirmed';
 
       // Cập nhật trạng thái của các yêu cầu khác thành Rejected
       // for (int i = 0; i < requests.length; i++) {
@@ -82,46 +120,74 @@ class _AllRequestTicketScreenState extends State<AllRequestTicketScreen> {
       //   }
       // }
       //Get.to(() => AllRequestTicketScreen());
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => AllRequestTicketScreen()),
+
+      final ticketRequestId = requests[index].id;
+      final url = Uri.parse(
+          'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/TicketRequest/confirm-ticket-request?ticketRequestId=$ticketRequestId');
+      final headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      };
+      final response = await http.post(
+        url,
+        headers: headers,
       );
+
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(
+          msg: "Yêu cầu của ${requests[index].userFullname} đã được chấp nhận.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.TOP,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => AllRequestTicketScreen(ticketId: widget.ticketId,)),
+        );
+      }
     });
 
-    // Hiển thị thông báo xác nhận
-    Fluttertoast.showToast(
-      msg: "Yêu cầu của ${requests[index]['senderName']} đã được chấp nhận.",
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.TOP,
-      backgroundColor: Colors.green,
-      textColor: Colors.white,
-      fontSize: 16.0,
-    );
+
+
   }
 
   @override
   Widget build(BuildContext context) {
     // Sắp xếp danh sách requests
+    // Sắp xếp danh sách requests
     requests.sort((a, b) {
-      // Sắp xếp theo thứ tự: Pending > Confirmed > Rejected
-      int getStatusPriority(String status) {
-        if (status == 'Pending') return 0;
-        if (status == 'Confirmed') return 1;
-        if (status == 'Rejected') return 2;
+      // Hàm xác định mức độ ưu tiên của các trạng thái
+      int getStatusPriority(int status) {
+        if (status == 0) return 0; // Pending
+        if (status == 1) return 1; // Confirmed
+        if (status == 2) return 2; // Rejected
         return 3; // Trường hợp không xác định
       }
 
-      // So sánh thứ tự ưu tiên
-      int statusComparison = getStatusPriority(a['status']).compareTo(getStatusPriority(b['status']));
+      // So sánh thứ tự ưu tiên của trạng thái
+      int statusComparison = getStatusPriority(a.status).compareTo(getStatusPriority(b.status));
       if (statusComparison != 0) return statusComparison;
 
-      // Nếu cả hai đều là Pending, sắp xếp theo giá giảm dần
-      if (a['status'] == 'Pending' && b['status'] == 'Pending') {
-        return b['price'].compareTo(a['price']);
+      // Nếu cả hai đều là Pending (status == 0), sắp xếp theo giá giảm dần
+      if (a.status == 0 && b.status == 0) {
+        return b.price.compareTo(a.price); // Giá cao hơn lên trên
       }
 
-      return 0; // Giữ nguyên thứ tự nếu trạng thái giống nhau và không phải Pending
+      // Nếu cả hai đều là Confirmed (status == 1), sắp xếp theo ngày gần nhất (giảm dần)
+      if (a.status == 1 && b.status == 1) {
+        DateTime dateA = a.ticketRequestDate;
+        DateTime dateB = b.ticketRequestDate;
+        return dateB.compareTo(dateA); // Ngày gần nhất lên trên (giảm dần)
+      }
+
+      return 0; // Giữ nguyên thứ tự nếu trạng thái giống nhau và không phải Pending hoặc Confirmed
     });
+
+
+
 
 
 
@@ -141,11 +207,12 @@ class _AllRequestTicketScreenState extends State<AllRequestTicketScreen> {
         itemCount: requests.length,
         itemBuilder: (context, index) {
           final request = requests[index];
-          final senderName = request['senderName'];
-          final price = request['price'];
-          final quantity = request['quantity'];
-          final requestDate = request['requestDate'];
-          final status = request['status'];
+          final senderName = request.userFullname;
+          final price = request.price;
+          final quantity = request.quantity;
+          final requestDate = request.ticketRequestDate;
+          final formattedDate = DateFormat('dd/MM/yyyy').format(request.ticketRequestDate);
+          final status = request.status;
 
           return Card(
             margin: const EdgeInsets.only(bottom: 10.0),
@@ -182,20 +249,20 @@ class _AllRequestTicketScreenState extends State<AllRequestTicketScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text("Quantity: $quantity"),
-                          Text("Request Date: $requestDate"),
+                          Text("Request Date: $formattedDate"),
                         ],
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: status == 'Pending'
+                          backgroundColor: status == 0
                               ? Colors.blueAccent
-                              : (status == 'Confirmed' ? Colors.green : Colors.red),
+                              : (status == 1 ? Colors.green : Colors.red),
                           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 5),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
                         ),
-                        onPressed: status == 'Pending'
+                        onPressed: status == 0 // Check if status is Pending (0)
                             ? () {
                           showDialog(
                             context: context,
@@ -230,7 +297,7 @@ class _AllRequestTicketScreenState extends State<AllRequestTicketScreen> {
                         }
                             : () {},
                         child: Text(
-                          status == 'Pending' ? "Accept" : (status == 'Confirmed' ? "Confirm" : "Reject"),
+                          status == 0 ? "Accept" : (status == 1 ? "Confirmed" : "Rejected"),
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -238,6 +305,8 @@ class _AllRequestTicketScreenState extends State<AllRequestTicketScreen> {
                           ),
                         ),
                       ),
+
+
                     ],
                   ),
                 ],

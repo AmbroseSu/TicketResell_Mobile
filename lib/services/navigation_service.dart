@@ -5,7 +5,7 @@ import 'package:ticket_resell/navigation_menu.dart';
 import 'package:ticket_resell/screens/chat/allchats_screen.dart';
 import 'package:ticket_resell/screens/explore_screen.dart';
 import 'package:ticket_resell/screens/login/login.dart';
-import 'package:ticket_resell/screens/request_ticket/all_ticket.dart';
+import 'package:ticket_resell/screens/request_ticket/all_ticket_seller.dart';
 
 class NavigationService {
 
@@ -15,7 +15,7 @@ class NavigationService {
     "/login": (context) => LoginScreen(),
     "/allchat": (context) => AllChatsScreen(),
     "/navigation_menu": (context) => NavigationMenu(),
-    "/all_ticket": (context) => AllTicketScreen(),
+    "/all_ticket": (context) => AllTicketSellerScreen(),
   };
 
   GlobalKey<NavigatorState>? get navigatorKey {

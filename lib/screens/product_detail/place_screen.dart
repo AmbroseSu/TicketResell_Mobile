@@ -26,8 +26,14 @@ class PlaceScreen extends StatefulWidget {
   _PlaceScreenState createState() => _PlaceScreenState();
 }
 
-
 class _PlaceScreenState extends State<PlaceScreen> {
+  final List<String> imageUrls = [
+    'https://i.pinimg.com/736x/97/cf/7e/97cf7e8590acb5361a34ff7d4ee8f8e2.jpg',
+    'https://i.pinimg.com/736x/91/bf/74/91bf74698893832860c8e0246193371c.jpg',
+    'https://i.pinimg.com/564x/44/39/a8/4439a886cd0531c666108771348e6b49.jpg',
+  ];
+
+  int _currentIndex = 0;
 
   final GetIt _getIt = GetIt.instance;
   UserProfile? otherUser;
@@ -48,19 +54,21 @@ class _PlaceScreenState extends State<PlaceScreen> {
     if (userSnapshot.docs.isNotEmpty) {
       setState(() {
         otherUser = userSnapshot.docs.first.data();
-        print("000000000000000000000000000000000000000000000000000000000000000000");
+        print(
+            "000000000000000000000000000000000000000000000000000000000000000000");
         print(widget.ticket.email);
-        print(otherUser!.uid);// Assigning the first user profile to otherUser
-        print(otherUser!.name);// Assigning the first user profile to otherUser
-        print(otherUser!.pfpURL);// Assigning the first user profile to otherUser
+        print(otherUser!.uid); // Assigning the first user profile to otherUser
+        print(otherUser!.name); // Assigning the first user profile to otherUser
+        print(
+            otherUser!.pfpURL); // Assigning the first user profile to otherUser
       });
     } else {
-      print("111111111111111111111111111111111111111111111111111111111111111111111111111");
+      print(
+          "111111111111111111111111111111111111111111111111111111111111111111111111111");
       // Handle the case where the user is not found
       print("User not found");
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -79,52 +87,41 @@ class _PlaceScreenState extends State<PlaceScreen> {
                   children: [
                     Container(
                       width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height /2,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          image: DecorationImage(
-                            image: AssetImage(TImages.conan),
-                            fit: BoxFit.cover,
-                          )),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.pop(context);
-                            },
-                            child: Container(
-                              margin: EdgeInsets.all(15),
-                              padding: EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 2,
-                                    spreadRadius: 4,
-                                  ),
-                                ],
-                              ),
-                              child: Icon(
-                                Icons.arrow_back,
-                                color: Color(0xFFB8B8B8),
-                                size: 20,
+                      height: MediaQuery.of(context).size.height / 2,
+                      child: PageView.builder(
+                        itemCount: imageUrls.length,
+                        onPageChanged: (index) {
+                          setState(() {
+                            _currentIndex = index; // Cập nhật chỉ số trang
+                          });
+                        },
+                        itemBuilder: (context, index) {
+                          return Container(
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              image: DecorationImage(
+                                image: NetworkImage(imageUrls[index]),
+                                fit: BoxFit.cover,
                               ),
                             ),
-                          )
-                        ],
+                          );
+                        },
                       ),
                     ),
+                    // Nút quay lại
                     Positioned(
-                        bottom: -20,
-                        right: 20,
+                      top: 15,
+                      left: 15,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
                         child: Container(
-                          padding: EdgeInsets.all(8),
+                          padding: EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            shape: BoxShape.circle,
+                            borderRadius: BorderRadius.circular(10),
                             boxShadow: [
                               BoxShadow(
                                 color: Colors.black12,
@@ -134,11 +131,58 @@ class _PlaceScreenState extends State<PlaceScreen> {
                             ],
                           ),
                           child: Icon(
-                            Icons.favorite,
-                            size: 30,
-                            color: Colors.redAccent,
+                            Icons.arrow_back,
+                            color: Color(0xFFB8B8B8),
+                            size: 20,
                           ),
-                        )),
+                        ),
+                      ),
+                    ),
+                    // Nút yêu thích
+                    Positioned(
+                      bottom: -20,
+                      right: 20,
+                      child: Container(
+                        padding: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 2,
+                              spreadRadius: 4,
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.favorite,
+                          size: 30,
+                          color: Colors.redAccent,
+                        ),
+                      ),
+                    ),
+                    // Chỉ báo ảnh
+                    Positioned(
+                      bottom: 20, // Đặt chỉ báo ở vị trí dưới cùng
+                      left: MediaQuery.of(context).size.width / 2 - 30, // Đặt giữa
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(imageUrls.length, (index) {
+                          return Container(
+                            margin: EdgeInsets.symmetric(horizontal: 4),
+                            width: 8,
+                            height: 8,
+                            decoration: BoxDecoration(
+                              color: _currentIndex == index
+                                  ? Colors.blue // Màu của chấm hiện tại
+                                  : Colors.grey, // Màu của chấm không hiện tại
+                              shape: BoxShape.circle,
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
                   ],
                 ),
                 SizedBox(height: 20),
@@ -164,6 +208,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => ChatScreen(
+                                ticket: widget.ticket,
                                 chatUser: otherUser!,
                               ),
                             ),
@@ -179,7 +224,6 @@ class _PlaceScreenState extends State<PlaceScreen> {
                           ),
                         ),
                       ),
-
                     ],
                   ),
                 ),
@@ -279,7 +323,13 @@ class _PlaceScreenState extends State<PlaceScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(TSizes.defaultSpace),
-                  child: TGallerySlider(banners: [TImages.conan_1, TImages.conan_2, TImages.conan_3],),
+                  child: TGallerySlider(
+                    banners: [
+                      TImages.conan_1,
+                      TImages.conan_2,
+                      TImages.conan_3
+                    ],
+                  ),
                 ),
                 // SizedBox(height: 25),
 
@@ -311,8 +361,12 @@ class _PlaceScreenState extends State<PlaceScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const TSectionHeading(title: 'Reviews (345)', showActionButton: false),
-                    IconButton(onPressed: () => Get.to(() => const ProductReviewsScreen()), icon: const Icon(Iconsax.arrow_right_3))
+                    const TSectionHeading(
+                        title: 'Reviews (345)', showActionButton: false),
+                    IconButton(
+                        onPressed: () =>
+                            Get.to(() => const ProductReviewsScreen()),
+                        icon: const Icon(Iconsax.arrow_right_3))
                   ],
                 ),
               ],
@@ -343,7 +397,6 @@ class _PlaceScreenState extends State<PlaceScreen> {
                           color: Color(0xFF232323),
                         ),
                       ),
-
                     ),
                     Text(
                       "\$199",
@@ -358,7 +411,11 @@ class _PlaceScreenState extends State<PlaceScreen> {
                 ),
               ),
               GestureDetector(
-                onTap: () => Get.to(() => ChatScreen(chatUser: UserProfile.new(uid: "uid", name: "name", pfpURL: "pfpURL"),)),
+                onTap: () => Get.to(() => ChatScreen(
+                  ticket: widget.ticket,
+                      chatUser: UserProfile.new(
+                          uid: "uid", name: "name", pfpURL: "pfpURL"),
+                    )),
                 child: Container(
                   height: 60,
                   width: MediaQuery.of(context).size.width / 2,
