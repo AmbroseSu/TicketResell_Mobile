@@ -38,6 +38,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
   final GetIt _getIt = GetIt.instance;
   UserProfile? otherUser;
   late DatabaseService _databaseService;
+  Ticket emptyTicket = Ticket(id: 0, ticketName: "", price: 0, quantity: 0, expirationDate: "", venue: "", status: 0, categoryName: "", postId: 0, postTitle: "", postDescription: "", createdDate: "", postStatus: false, userId: 0, email: "");
 
   @override
   void initState() {
@@ -208,6 +209,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => ChatScreen(
+                                deal: true,
                                 ticket: widget.ticket,
                                 chatUser: otherUser!,
                               ),
@@ -412,9 +414,9 @@ class _PlaceScreenState extends State<PlaceScreen> {
               ),
               GestureDetector(
                 onTap: () => Get.to(() => ChatScreen(
+                  deal: false,
                   ticket: widget.ticket,
-                      chatUser: UserProfile.new(
-                          uid: "uid", name: "name", pfpURL: "pfpURL"),
+                      chatUser: otherUser!,
                     )),
                 child: Container(
                   height: 60,

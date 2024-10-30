@@ -7,9 +7,11 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:ticket_resell/api/response/ticket_request.dart';
 import 'package:ticket_resell/screens/request_ticket/all_ticket_seller.dart';
+import 'package:ticket_resell/screens/request_ticket/ticket_request_detail.dart';
 
 class AllRequestTicketScreen extends StatefulWidget {
   final int ticketId;
+
   const AllRequestTicketScreen({super.key, required this.ticketId});
 
   @override
@@ -17,65 +19,6 @@ class AllRequestTicketScreen extends StatefulWidget {
 }
 
 class _AllRequestTicketScreenState extends State<AllRequestTicketScreen> {
-  // final List<Map<String, dynamic>> requests = [
-  //   {
-  //     'senderName': 'John Doe',
-  //     'price': 120.0,
-  //     'quantity': 2,
-  //     'requestDate': '2024-10-12',
-  //     'status': 'Pending', // Trạng thái ban đầu
-  //   },
-  //   {
-  //     'senderName': 'Jane Smith',
-  //     'price': 75.0,
-  //     'quantity': 1,
-  //     'requestDate': '2024-10-15',
-  //     'status': 'Reject', // Trạng thái ban đầu
-  //   },
-  //   {
-  //     'senderName': 'Alice Johnson',
-  //     'price': 200.0,
-  //     'quantity': 3,
-  //     'requestDate': '2024-10-08',
-  //     'status': 'Confirmed', // Trạng thái ban đầu
-  //   },
-  //   {
-  //     'senderName': 'Bob Brown',
-  //     'price': 50.0,
-  //     'quantity': 5,
-  //     'requestDate': '2024-10-20',
-  //     'status': 'Pending', // Trạng thái ban đầu
-  //   },
-  //   {
-  //     'senderName': 'Ambrose',
-  //     'price': 80.0,
-  //     'quantity': 6,
-  //     'requestDate': '2024-10-20',
-  //     'status': 'Confirmed', // Trạng thái ban đầu
-  //   },
-  //   {
-  //     'senderName': 'NamLee',
-  //     'price': 80.0,
-  //     'quantity': 6,
-  //     'requestDate': '2024-10-20',
-  //     'status': 'Rejected', // Trạng thái ban đầu
-  //   },
-  //   {
-  //     'senderName': 'Tan Loc',
-  //     'price': 90.0,
-  //     'quantity': 6,
-  //     'requestDate': '2024-10-20',
-  //     'status': 'Pending', // Trạng thái ban đầu
-  //   },
-  //   {
-  //     'senderName': 'Wiramin',
-  //     'price': 20.0,
-  //     'quantity': 6,
-  //     'requestDate': '2024-10-20',
-  //     'status': 'Pending', // Trạng thái ban đầu
-  //   },
-  // ];
-
   List<TicketRequest> requests = [];
 
   @override
@@ -85,7 +28,6 @@ class _AllRequestTicketScreenState extends State<AllRequestTicketScreen> {
     print(widget.ticketId);
     fetchTickets();
   }
-
 
   Future<void> fetchTickets() async {
     final response = await http.get(Uri.parse(
@@ -104,11 +46,7 @@ class _AllRequestTicketScreenState extends State<AllRequestTicketScreen> {
     }
   }
 
-
-
-
-
-  Future<void> _updateRequestStatus(int index) async{
+  Future<void> _updateRequestStatus(int index) async {
     setState(() async {
       // Cập nhật trạng thái của yêu cầu đã xác nhận
       //requests[index]['status'] = 'Confirmed';
@@ -145,13 +83,12 @@ class _AllRequestTicketScreenState extends State<AllRequestTicketScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => AllRequestTicketScreen(ticketId: widget.ticketId,)),
+              builder: (context) => AllRequestTicketScreen(
+                    ticketId: widget.ticketId,
+                  )),
         );
       }
     });
-
-
-
   }
 
   @override
@@ -168,7 +105,8 @@ class _AllRequestTicketScreenState extends State<AllRequestTicketScreen> {
       }
 
       // So sánh thứ tự ưu tiên của trạng thái
-      int statusComparison = getStatusPriority(a.status).compareTo(getStatusPriority(b.status));
+      int statusComparison =
+          getStatusPriority(a.status).compareTo(getStatusPriority(b.status));
       if (statusComparison != 0) return statusComparison;
 
       // Nếu cả hai đều là Pending (status == 0), sắp xếp theo giá giảm dần
@@ -185,11 +123,6 @@ class _AllRequestTicketScreenState extends State<AllRequestTicketScreen> {
 
       return 0; // Giữ nguyên thứ tự nếu trạng thái giống nhau và không phải Pending hoặc Confirmed
     });
-
-
-
-
-
 
     return Scaffold(
       appBar: AppBar(
@@ -211,105 +144,85 @@ class _AllRequestTicketScreenState extends State<AllRequestTicketScreen> {
           final price = request.price;
           final quantity = request.quantity;
           final requestDate = request.ticketRequestDate;
-          final formattedDate = DateFormat('dd/MM/yyyy').format(request.ticketRequestDate);
+          final formattedDate =
+              DateFormat('dd/MM/yyyy').format(request.ticketRequestDate);
           final status = request.status;
 
-          return Card(
-            margin: const EdgeInsets.only(bottom: 10.0),
-            elevation: 3,
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        senderName,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0,
-                        ),
-                      ),
-                      Text(
-                        "\$${price.toStringAsFixed(2)} / Ticket",
-                        style: const TextStyle(
-                          fontSize: 18.0,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Quantity: $quantity"),
-                          Text("Request Date: $formattedDate"),
-                        ],
-                      ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: status == 0
-                              ? Colors.blueAccent
-                              : (status == 1 ? Colors.green : Colors.red),
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 5),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                        ),
-                        onPressed: status == 0 // Check if status is Pending (0)
-                            ? () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text("Xác nhận"),
-                                content: const Text("Bạn có chắc chắn muốn chấp nhận yêu cầu này không?"),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text("Cancel"),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                      _updateRequestStatus(index);
-                                    },
-                                    child: const Text(
-                                      "Accept",
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        }
-                            : () {},
-                        child: Text(
-                          status == 0 ? "Accept" : (status == 1 ? "Confirmed" : "Rejected"),
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      TicketRequestDetailScreen(ticketRequest: request),
+                ),
+              );
+            },
+            child: Card(
+              margin: const EdgeInsets.only(bottom: 10.0),
+              elevation: 3,
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          senderName,
                           style: const TextStyle(
-                            color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 17,
+                            fontSize: 20.0,
                           ),
                         ),
-                      ),
-
-
-                    ],
-                  ),
-                ],
+                        Text(
+                          "\$${price.toStringAsFixed(2)} / Ticket",
+                          style: const TextStyle(
+                            fontSize: 18.0,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Quantity: $quantity"),
+                            Text("Request Date: $formattedDate"),
+                          ],
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: status == 0
+                                ? Colors.blueAccent
+                                : (status == 1 ? Colors.green : Colors.red),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 5),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          onPressed: () {},
+                          child: Text(
+                            status == 0
+                                ? "Accept"
+                                : (status == 1 ? "Confirmed" : "Rejected"),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 17,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           );

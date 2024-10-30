@@ -1,58 +1,33 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-//import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_it/get_it.dart';
-import 'package:get/get.dart';
-import 'package:flutter/widgets.dart';
+import 'package:http/http.dart' as http;
 import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/api/response/ticket.dart';
+import 'package:ticket_resell/api/response/ticket_request.dart';
 import 'package:ticket_resell/models/chat.dart';
 import 'package:ticket_resell/models/message.dart';
 import 'package:ticket_resell/models/user_profile.dart';
-import 'package:ticket_resell/screens/request_ticket/all_ticket_seller.dart';
+import 'package:ticket_resell/screens/chat/chat_screen.dart';
+import 'package:ticket_resell/screens/request_ticket/all_request_ticket.dart';
 import 'package:ticket_resell/services/auth_service.dart';
 import 'package:ticket_resell/services/database_service.dart';
 import 'package:ticket_resell/services/navigation_service.dart';
 import 'package:ticket_resell/widgets/chat_tile.dart';
 
-import 'chat_screen.dart';
+class TicketRequestDetailScreen extends StatefulWidget {
+  final TicketRequest ticketRequest;
 
-class AllChatsScreen extends StatefulWidget {
-  const AllChatsScreen({super.key});
+  const TicketRequestDetailScreen({super.key, required this.ticketRequest});
 
   @override
-  State<AllChatsScreen> createState() => _AllChatsScreenState();
+  _TicketRequestDetailScreen createState() => _TicketRequestDetailScreen();
 }
 
-class _AllChatsScreenState extends State<AllChatsScreen> {
-  // Mark these lists as final to make them immutable.
-  List images = [
-    "assets/users/Christine.jpg",
-    "assets/users/Davis.jpg",
-    "assets/users/Johnson.jpg",
-    "assets/users/Jones Noa.jpg",
-    "assets/users/Parker Bee.jpg",
-    "assets/users/Smith.jpg",
-  ];
-
-  List names = [
-    "Christine",
-    "Davis",
-    "Johnson",
-    "Jones Noa",
-    "Parker Bee",
-    "Smith",
-  ];
-
-  List msgTiming = [
-    "Mon",
-    "12:30",
-    "Sun",
-    "05:41",
-    "22:12",
-    "Wed", // Matching the number of messages
-  ];
-
+class _TicketRequestDetailScreen extends State<TicketRequestDetailScreen> {
+  //final TicketRequest ticketRequest;
   final GetIt _getIt = GetIt.instance;
   UserManager userManager = UserManager();
   late AuthService _authService;
@@ -69,65 +44,92 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
     _databaseService = _getIt.get<DatabaseService>();
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     appBar: AppBar(
-  //       automaticallyImplyLeading: false,
-  //       title: const Text(
-  //         "Messages",
-  //       ),
-  //       actions: [
-  //       ],
-  //     ),
-  //     body: _buildUI(),
-  //   );
-  // }
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        // Trả về false để vô hiệu hóa nút back của điện thoại
-        return false;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false, // Bỏ nút back trong AppBar
-          title: const Text("Messages"),
-          actions: [],
-        ),
-        //body: _buildUI(),
-        body: Stack(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Request Details'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildUI(),
-            Align(
-              alignment: Alignment.bottomRight,
+            Divider(thickness: 2, color: Colors.grey[300]),
+
+            SizedBox(height: 16.0),
+            _buildDetailRow("Buyer:", widget.ticketRequest.userFullname),
+            _buildDetailRow("Price:", "\$${widget.ticketRequest.price.toStringAsFixed(2)}"),
+            _buildDetailRow("Quantity:", widget.ticketRequest.quantity.toString()),
+            //_buildDetailRow("Status:", widget.ticketRequest.status),
+
+            // Add other ticket request fields here if needed
+            SizedBox(height: 20.0),
+            Container(
+              width: double.infinity, // Make the button stretch to the width of the container
               child: Padding(
-                padding: const EdgeInsets.all(15.0),
+                padding: const EdgeInsets.only(bottom: 16.0), // Add bottom padding
                 child: ElevatedButton(
-                  onPressed: () {
-                    Get.to(() => AllTicketSellerScreen());
-                    // Xử lý sự kiện khi nhấn nút View Request
-                    // Ví dụ: Điều hướng đến màn hình yêu cầu
-                  },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue, // Màu nền của nút
-                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 9), // Kích thước nút nằm ngang
+                    backgroundColor: widget.ticketRequest.status == 0
+                        ? Colors.blueAccent
+                        : (widget.ticketRequest.status == 1 ? Colors.green : Colors.red),
+                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12), // Increased vertical padding
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20), // Đặt border radius cho nút bo tròn
+                      borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  child: const Text(
-                    "View Request",
-                    style: TextStyle(
-                      color: Colors.white, // Màu chữ trắng
-                      fontWeight: FontWeight.bold, // In đậm chữ
-                      fontSize: 17, // Kích thước chữ lớn hơn nếu cần
+                  onPressed: widget.ticketRequest.status == 0 // Check if status is Pending (0)
+                      ? () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text("Xác nhận"),
+                          content: const Text(
+                              "Bạn có chắc chắn muốn chấp nhận yêu cầu này không?"),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text("Cancel"),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                _updateRequestStatus(widget.ticketRequest.id);
+                              },
+                              child: const Text(
+                                "Accept",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
+                      : () {},
+                  child: Text(
+                    widget.ticketRequest.status == 0
+                        ? "Accept"
+                        : (widget.ticketRequest.status == 1 ? "Confirmed" : "Rejected"),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18, // Increased font size
                     ),
                   ),
                 ),
               ),
-            ),
+            )
+,
+            // Call _buildUI below the text widgets
+            Expanded(child: _buildUI()),
           ],
         ),
       ),
@@ -138,7 +140,7 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: 15.0,
+          horizontal: 0.0,
           vertical: 0.0,
         ),
         child: _chatsList(),
@@ -146,9 +148,92 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
     );
   }
 
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Container(
+        padding: const EdgeInsets.all(12.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: Offset(0, 2), // Changes position of shadow
+            ),
+          ],
+          border: Border.all(color: Colors.grey[300]!, width: 1),
+        ),
+        child: Center( // Center the entire content
+          child: Text(
+            "$label $value", // Combine label and value
+            style: TextStyle(
+              color: Colors.black87,
+              fontSize: 16,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+
+
+
+
+
+  Future<void> _updateRequestStatus(int ticketRequestId) async {
+    setState(() async {
+      // Cập nhật trạng thái của yêu cầu đã xác nhận
+      //requests[index]['status'] = 'Confirmed';
+
+      // Cập nhật trạng thái của các yêu cầu khác thành Rejected
+      // for (int i = 0; i < requests.length; i++) {
+      //   if (i != index) {
+      //     requests[i]['status'] = 'Rejected';
+      //   }
+      // }
+      //Get.to(() => AllRequestTicketScreen());
+
+      //final ticketRequestId = requests[index].id;
+      final url = Uri.parse(
+          'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/TicketRequest/confirm-ticket-request?ticketRequestId=$ticketRequestId');
+      final headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      };
+      final response = await http.post(
+        url,
+        headers: headers,
+      );
+
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(
+          msg: "Yêu cầu của ${widget.ticketRequest.userFullname} đã được chấp nhận.",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.TOP,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => AllRequestTicketScreen(
+                ticketId: widget.ticketRequest.ticketId,
+              )),
+        );
+      }
+    });
+  }
+
+
+
   Widget _chatsList() {
     return StreamBuilder(
-      stream: _databaseService.getUserProfiles(userManager.email!), // Lấy danh sách người dùng
+      stream: _databaseService.getUserProfile(widget.ticketRequest.userEmail), // Lấy danh sách người dùng
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return const Center(
@@ -160,6 +245,7 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
           final users = snapshot.data!.docs;
 
           return ListView.builder(
+            padding: EdgeInsets.zero,
             itemCount: users.length,
             itemBuilder: (context, index) {
               UserProfile otherUser = users[index].data();
@@ -279,59 +365,6 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
     );
   }
 
-  // Widget _chatsList() {
-  //   return StreamBuilder(
-  //     stream: _databaseService.getUserProfiles(),
-  //     builder: (context, snapshot) {
-  //       if (snapshot.hasError) {
-  //         return const Center(
-  //           child: Text("Unable to load data."),
-  //         );
-  //       }
-  //       print(snapshot.data);
-  //       if (snapshot.hasData && snapshot.data != null) {
-  //         final users = snapshot.data!.docs;
-  //         return ListView.builder(
-  //           itemCount: users.length,
-  //           itemBuilder: (context, index) {
-  //             UserProfile user = users[index].data();
-  //             return Padding(
-  //               padding: const EdgeInsets.symmetric(
-  //                 vertical: 10.0,
-  //               ),
-  //               child: ChatTile(
-  //                 userProfile: user,
-  //                 onTap: () async {
-  //                   final chatExists = await _databaseService.checkChatExists(
-  //                     _authService.user!.uid,
-  //                     user.uid!,
-  //                   );
-  //                   if (!chatExists) {
-  //                     await _databaseService.createNewChat(
-  //                       _authService.user!.uid,
-  //                       user.uid!,
-  //                     );
-  //                   }
-  //                   _navigationService.push(
-  //                     MaterialPageRoute(
-  //                       builder: (context) {
-  //                         return ChatScreen(
-  //                           chatUser: user,
-  //                         );
-  //                       },
-  //                     ),
-  //                   );
-  //                 }, messages: [],
-  //               ),
-  //             );
-  //           },
-  //         );
-  //       }
-  //       return const Center(
-  //         child: CircularProgressIndicator(),
-  //       );
-  //     },
-  //   );
-  // }
+
 
 }

@@ -8,6 +8,7 @@ import 'package:ticket_resell/screens/create_post/create_ticket.dart';
 import 'package:ticket_resell/screens/explore_screen.dart';
 import 'package:ticket_resell/screens/order/order.dart';
 import 'package:ticket_resell/screens/product_detail/favorite.dart';
+import 'package:ticket_resell/screens/request_ticket/all_ticket_seller.dart';
 import 'package:ticket_resell/screens/settings/settings.dart';
 import 'package:ticket_resell/styles&text&sizes/colors.dart';
 import 'package:ticket_resell/widgets/helper_functions.dart';
@@ -34,7 +35,7 @@ class NavigationMenu extends StatelessWidget {
               : TColors.black.withOpacity(0.1),
           destinations: const [
             NavigationDestination(icon: Icon(Iconsax.home), label: 'Home'),
-            NavigationDestination(icon: Icon(Iconsax.message), label: 'Chats'),
+            NavigationDestination(icon: Icon(Iconsax.direct), label: 'Request'),
             NavigationDestination(icon: Icon(Iconsax.add), label: 'Create'),
             NavigationDestination(icon: Icon(Iconsax.heart), label: 'Favorites'),
             NavigationDestination(icon: Icon(Iconsax.user), label: 'Profile'),
@@ -52,7 +53,7 @@ class NavigationController extends GetxController {
   // Update this to match the number of destinations
   final screens = [
     const ExploreScreen(),
-     AllChatsScreen(),
+    const AllTicketSellerScreen(),
     const CreateTicket(),
     const FavoriteScreen(),
     const SettingsScreen(),

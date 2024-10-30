@@ -9,6 +9,7 @@ class TicketRequest {
   final int status;
   final bool isDeleted;
   final String userFullname;
+  final String userEmail;
   final int userId;
   final int ticketId;
 
@@ -21,6 +22,7 @@ class TicketRequest {
     required this.status,
     required this.isDeleted,
     required this.userFullname,
+    required this.userEmail,
     required this.userId,
     required this.ticketId,
   });
@@ -36,6 +38,7 @@ class TicketRequest {
       status: json['status'],
       isDeleted: json['isDeleted'],
       userFullname: json['userFullname'],
+      userEmail: json['userEmail'],
       userId: json['userId'],
       ticketId: json['ticketId'],
     );

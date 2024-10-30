@@ -66,11 +66,14 @@ class _TLoginFormState extends State<TLoginForm> {
         var responseData = jsonDecode(response.body);
         var userDTO = responseData['content']['userDTO'];
         var token = responseData['content']['token'];
-
-        userManager.id = userDTO['userId'];
+        print(userDTO);
+        userManager.id = userDTO['id'];
         userManager.email = userDTO['email'];
         userManager.role = userDTO['role'];
         userManager.token = token;
+        
+        print("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+        print(userManager.id);
         String? fcmToken = TokenManager().fcmToken;
 
         // Send notification using PushNotificationService

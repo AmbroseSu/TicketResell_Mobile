@@ -22,12 +22,14 @@ import 'chat_message_item.dart';
 
 class ChatScreen extends StatefulWidget {
   final UserProfile chatUser;
+  final bool deal;
   final Ticket ticket;
 
   const ChatScreen({
     super.key,
     required this.chatUser,
     required this.ticket,
+    required this.deal,
   });
 
   @override
@@ -67,7 +69,22 @@ class _ChatScreenState extends State<ChatScreen> {
       profileImage: widget.chatUser.pfpURL,
     );
 
+    print("))0000-00000000000000000000000000000000000000000000000000000");
+    print(widget.deal);
+    print(widget.ticket.id);
+
     _checkAndCreateChat();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (widget.deal == false && widget.ticket.id != 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _buildUI();
+        _showRequestFormForBook();
+      });
+    }
   }
 
   @override
@@ -79,26 +96,32 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 10.0), // Khoảng cách bên phải
-            child: Container(
-              decoration: BoxDecoration(
-                //color: Colors.lightBlueAccent, // Màu nền xanh nhạt
-                borderRadius: BorderRadius.circular(6.0),
-              ),
-              child: TextButton.icon(
-                icon: Icon(Icons.add, color: Colors.white),
-                // Màu sắc của biểu tượng
-                label: Text(
-                  "Request",
-                  style: TextStyle(color: Colors.white), // Màu sắc của văn bản
+            padding: const EdgeInsets.only(right: 10.0),
+            child: Visibility(
+              visible: !(widget.deal == false && widget.ticket.id == 0),
+              child: Container(
+                decoration: BoxDecoration(
+                  //color: Colors.lightBlueAccent, // Màu nền xanh nhạt
+                  borderRadius: BorderRadius.circular(6.0),
                 ),
-                onPressed: () {
-                  _showRequestForm();
-                },
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 8.0, vertical: 0.0), // Padding bên trong nút
-                  backgroundColor: Colors.lightBlueAccent, // Màu nền xanh nhạt
+                child: TextButton.icon(
+                  icon: Icon(Icons.add, color: Colors.white),
+                  // Màu sắc của biểu tượng
+                  label: Text(
+                    "Request",
+                    style:
+                        TextStyle(color: Colors.white), // Màu sắc của văn bản
+                  ),
+                  onPressed: () {
+                    _showRequestForm();
+                  },
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0, vertical: 0.0),
+                    // Padding bên trong nút
+                    backgroundColor:
+                        Colors.lightBlueAccent, // Màu nền xanh nhạt
+                  ),
                 ),
               ),
             ),
@@ -254,18 +277,175 @@ class _ChatScreenState extends State<ChatScreen> {
                                 Navigator.of(context).pop(); // Close dialog
                                 Navigator.of(context)
                                     .pop(); // Close bottom sheet
+                                print(
+                                    ")))))))))))000000000000000000000000000000000000000000000000000000000");
+                                print(userManager.id);
 
                                 await createTicketRequest(
                                     price: price,
                                     quantity: quantity,
                                     address: address,
                                     userId: userManager.id!,
-                                    ticketId: 1);
+                                    ticketId: widget.ticket.id);
 
                                 ChatMessage requestMessage = ChatMessage(
                                   user: currentUser!,
                                   text:
-                                      'Price: $price\nQuantity: $quantity\nAddress: $address',
+                                      'Ticket: ${widget.ticket.ticketName}\nPrice: $price\nQuantity: $quantity\nAddress: $address',
+                                  createdAt: DateTime.now(),
+                                );
+                                _sendMessage(requestMessage);
+                              },
+                              child: Text('OK'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  child: Text(
+                    'Send Request',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800, // In đậm chữ
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showRequestFormForBook() {
+    showModalBottomSheet(
+      isScrollControlled: true, // Allows the sheet to resize for the keyboard
+      context: context,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 16.0,
+            right: 16.0,
+            top: 16.0,
+            bottom: MediaQuery.of(context).viewInsets.bottom +
+                20.0, // Add space for keyboard
+          ),
+          child: SingleChildScrollView(
+            // Allows the bottom sheet to scroll
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: _priceController..text = '${widget.ticket.price}',
+                  decoration: InputDecoration(
+                    labelText: 'Price/Ticket',
+                    prefixIcon: Icon(Icons.attach_money),
+                  ),
+                  keyboardType: TextInputType.number,
+                  readOnly: true,
+                ),
+                TextField(
+                  controller: _quantityController,
+                  decoration: InputDecoration(
+                    labelText: 'Quantity',
+                    prefixIcon: Icon(Icons.numbers),
+                  ),
+                  keyboardType: TextInputType.number,
+                ),
+                TextField(
+                  controller: _addressController,
+                  decoration: InputDecoration(
+                    labelText: 'Address',
+                    prefixIcon: Icon(Icons.location_on),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFFC2E9FB),
+                    foregroundColor: Colors.black,
+                  ),
+                  onPressed: () {
+                    final price = double.tryParse(_priceController.text) ?? 0.0;
+                    final quantity =
+                        int.tryParse(_quantityController.text) ?? 0;
+                    final address = _addressController.text;
+
+                    // Kiểm tra nếu price hoặc quantity là 0 (có thể là giá trị không hợp lệ)
+                    if (price <= 0 || quantity <= 0 || address.isEmpty) {
+                      // Hiển thị thông báo lỗi hoặc xử lý tương ứng
+                      Fluttertoast.showToast(
+                        msg: "Please enter valid values.",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.TOP,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0,
+                      );
+                    }
+
+                    // Kiểm tra xem các trường có rỗng không
+                    if (/*price || quantity.isEmpty || */ address.isEmpty) {
+                      // Hiển thị hộp thoại nếu có trường rỗng
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('Thông báo'),
+                            content: Text('Bạn phải nhập đủ thông tin!'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // Đóng hộp thoại
+                                },
+                                child: Text('OK'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                      return; // Kết thúc hàm nếu có trường rỗng
+                    }
+
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Request Information'),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text('Price: $price'),
+                              Text('Quantity: $quantity'),
+                              Text('Address: $address'),
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .pop(); // Close dialog without sending
+                              },
+                              child: Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                Navigator.of(context).pop(); // Close dialog
+                                Navigator.of(context)
+                                    .pop(); // Close bottom sheet
+
+                                await createTicketRequest(
+                                    price: price,
+                                    quantity: quantity,
+                                    address: address,
+                                    userId: userManager.id!,
+                                    ticketId: widget.ticket.id);
+
+                                ChatMessage requestMessage = ChatMessage(
+                                  user: currentUser!,
+                                  text:
+                                      'Ticket: ${widget.ticket.ticketName}\nPrice: $price\nQuantity: $quantity\nAddress: $address',
                                   createdAt: DateTime.now(),
                                 );
                                 _sendMessage(requestMessage);

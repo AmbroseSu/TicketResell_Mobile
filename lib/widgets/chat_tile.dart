@@ -237,7 +237,7 @@ class _ChatTileState extends State<ChatTile> {
                     ),
                     if (unreadCount > 0)
                       Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
+                        padding: const EdgeInsets.only(left: 0.0),
                         child: CircleAvatar(
                           radius: 10,
                           backgroundColor: Colors.red,
