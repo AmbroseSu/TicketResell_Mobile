@@ -185,7 +185,7 @@ class _TicketRequestDetailScreen extends State<TicketRequestDetailScreen> {
 
 
   Future<void> _updateRequestStatus(int ticketRequestId) async {
-    setState(() async {
+
       // Cập nhật trạng thái của yêu cầu đã xác nhận
       //requests[index]['status'] = 'Confirmed';
 
@@ -226,7 +226,7 @@ class _TicketRequestDetailScreen extends State<TicketRequestDetailScreen> {
               )),
         );
       }
-    });
+    ;
   }
 
 
@@ -334,7 +334,7 @@ class _TicketRequestDetailScreen extends State<TicketRequestDetailScreen> {
                           );
                         }
 
-                        Ticket emptyTicket = Ticket(id: 0, ticketName: "", price: 0, quantity: 0, expirationDate: "", venue: "", status: 0, categoryName: "", postId: 0, postTitle: "", postDescription: "", createdDate: "", postStatus: false, userId: 0, email: "");
+                        Ticket emptyTicket = Ticket(id: 0, ticketName: "", price: 0, quantity: 0, expirationDate: "", venue: "", status: 0, categoryName: "", postId: 0, postTitle: "", postDescription: "", createdDate: "", postStatus: false, userId: 0, email: "", imageUrls: []);
 
                         // Điều hướng đến màn hình chat
                         _navigationService.push(

@@ -72,8 +72,13 @@ class _AllTicketSellerScreenState extends State<AllTicketSellerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+        onWillPop: () async {
+      return false; // Ngăn thao tác back
+    },
+     child:Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text("All Tickets"),
         centerTitle: true,
       ),
@@ -140,6 +145,7 @@ class _AllTicketSellerScreenState extends State<AllTicketSellerScreen> {
           );
         },
       ),
+     ),
     );
   }
 }

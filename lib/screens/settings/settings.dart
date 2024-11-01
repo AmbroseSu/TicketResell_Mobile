@@ -35,26 +35,31 @@ class SettingsScreen extends StatelessWidget {
                 children: [
                   /// AppBar
                   const TAppBar(
-                    title: Text('Account', style: TextStyle(color: Colors.white, fontSize: 35)),
+                    title: Text('Account',
+                        style: TextStyle(color: Colors.white, fontSize: 35)),
                   ),
                   const SizedBox(height: TSizes.spaceBtwSections),
 
                   /// User Profile Card
-                  TUserProfileTile(onPressed: () => Get.to(() => const ProfileScreen())),
+                  TUserProfileTile(
+                      onPressed: () => Get.to(() => const ProfileScreen())),
                   const SizedBox(height: TSizes.spaceBtwSections),
                 ],
               ),
             ),
 
-
             /// -- Body
             Padding(
-              padding: const EdgeInsets.only(left: TSizes.defaultSpace, right: TSizes.defaultSpace, top: TSizes.defaultSpace * 0.5),
+              padding: const EdgeInsets.only(
+                  left: TSizes.defaultSpace,
+                  right: TSizes.defaultSpace,
+                  top: TSizes.defaultSpace * 0.5),
               child: Column(
                 children: [
                   /// -- Account Settings
                   //const SizedBox(height: TSizes.spaceBtwSections *),
-                  const TSectionHeading(title: 'Account Settings', showActionButton: false),
+                  const TSectionHeading(
+                      title: 'Account Settings', showActionButton: false),
                   const SizedBox(height: TSizes.spaceBtwItems * 0.2),
 
                   // TSettingsMenuTile(icon: Iconsax.message, title: 'Chat Room', subTitle: 'All messages on this way', onTap: () => Get.to(() =>  AllChatsScreen()),),
@@ -64,18 +69,41 @@ class SettingsScreen extends StatelessWidget {
                       title: 'All Tickets',
                       subTitle: 'List all tickets in TicketResell',
                       onTap: () => Get.to(() => const AllTicket())),
-                  TSettingsMenuTile(icon: Iconsax.heart, title: 'Favorite Tickets', subTitle: 'List of your favorite tours', onTap: () => Get.to(() => const FavoriteScreen())),
-                  TSettingsMenuTile(icon: Iconsax.safe_home, title: 'My Addresses', subTitle: 'Set shopping delivery address', onTap: () => Get.to(() => const UserAddressScreen()),),
-                  TSettingsMenuTile(icon: Iconsax.shopping_cart, title: 'Payment Platform', subTitle: 'Add, remove products and move to checkout', onTap: () => Get.to(() => const CartScreen())),
-                  TSettingsMenuTile(icon: Iconsax.bag_tick, title: 'My Booking', subTitle: 'In-progress and Completed Orders', onTap: () => Get.to(() => const OrderScreen())),
-                  TSettingsMenuTile(icon: Iconsax.document_upload, title: 'Create Post', subTitle: 'Upload Data to your Cloud Firebase', onTap: () => Get.to(() => const CreateTicket()),),
+                  TSettingsMenuTile(
+                      icon: Iconsax.heart,
+                      title: 'Favorite Tickets',
+                      subTitle: 'List of your favorite tours',
+                      onTap: () => Get.to(() => const FavoriteScreen())),
+                  TSettingsMenuTile(
+                    icon: Iconsax.safe_home,
+                    title: 'My Addresses',
+                    subTitle: 'Set shopping delivery address',
+                    onTap: () => Get.to(() => const UserAddressScreen()),
+                  ),
+                  TSettingsMenuTile(
+                      icon: Iconsax.shopping_cart,
+                      title: 'Payment Platform',
+                      subTitle: 'Add, remove products and move to checkout',
+                      onTap: () => Get.to(() => const CartScreen())),
+                  TSettingsMenuTile(
+                      icon: Iconsax.bag_tick,
+                      title: 'My Booking',
+                      subTitle: 'In-progress and Completed Orders',
+                      onTap: () => Get.to(() => const OrderScreen())),
+                  TSettingsMenuTile(
+                    icon: Iconsax.document_upload,
+                    title: 'Create Post',
+                    subTitle: 'Upload Data to your Cloud Firebase',
+                    onTap: () => Get.to(() => const CreateTicket()),
+                  ),
 
                   // const TSettingsMenuTile(icon: Iconsax.discount_shape, title: 'Recommend Tours', subTitle: 'List of all the recommend tours'),
                   // const TSettingsMenuTile(icon: Iconsax.notification, title: 'Notifications', subTitle: 'Set any kind of notifications message'),
 
                   /// -- App Settings
                   const SizedBox(height: TSizes.spaceBtwSections * 0.2),
-                  const TSectionHeading(title: 'App Settings', showActionButton: false),
+                  const TSectionHeading(
+                      title: 'App Settings', showActionButton: false),
                   const SizedBox(height: TSizes.spaceBtwItems * 0.5),
                   // const TSettingsMenuTile(icon: Iconsax.document_upload, title: 'Load Data', subTitle: 'Upload Data to your Cloud Firebase'),
                   TSettingsMenuTile(

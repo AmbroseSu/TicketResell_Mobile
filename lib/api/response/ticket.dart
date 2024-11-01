@@ -14,6 +14,7 @@ class Ticket {
   final bool postStatus;
   final int userId;
   final String email;
+  final List<String> imageUrls;
 
   Ticket({
     required this.id,
@@ -31,24 +32,30 @@ class Ticket {
     required this.postStatus,
     required this.userId,
     required this.email,
+    required this.imageUrls,
   });
 
   factory Ticket.fromJson(Map<String, dynamic> json) {
+    List<String> imageUrls = (json['imageTicketDTOs'] as List)
+        .map((image) => image['imageUrl'] as String)
+        .toList();
     return Ticket(
-        id: json['id'],
-        ticketName: json['ticketName'],
-        price: json['price'],
-        quantity: json['quantity'],
-        expirationDate: json['expirationDate'],
-        venue: json['venue'],
-        status: json['status'],
-        categoryName: json['categoryName'],
-        postId: json['postId'],
-        postTitle: json['postTitle'],
-        postDescription: json['postDescription'],
-        createdDate: json['createdDate'],
-        postStatus: json['postStatus'],
-        userId: json['userId'],
-        email: json['email']);
+      id: json['id'],
+      ticketName: json['ticketName'],
+      price: json['price'],
+      quantity: json['quantity'],
+      expirationDate: json['expirationDate'],
+      venue: json['venue'],
+      status: json['status'],
+      categoryName: json['categoryName'],
+      postId: json['postId'],
+      postTitle: json['postTitle'],
+      postDescription: json['postDescription'],
+      createdDate: json['createdDate'],
+      postStatus: json['postStatus'],
+      userId: json['userId'],
+      email: json['email'],
+      imageUrls: imageUrls,
+    );
   }
 }

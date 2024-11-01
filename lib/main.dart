@@ -3,17 +3,20 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:ticket_resell/api/firebase_api.dart';
+import 'package:ticket_resell/firebase_options.dart';
 import 'package:ticket_resell/screens/splash_screen.dart';
 import 'package:ticket_resell/services/auth_service.dart';
 import 'package:ticket_resell/services/navigation_service.dart';
 import 'package:ticket_resell/utils.dart';
 
-final navigatorKey = GlobalKey<NavigatorState>();
+final navigatorkey = GlobalKey<NavigatorState>();
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await setup();
   // Ensure Flutter bindings are initialized before Firebase is called
-  WidgetsFlutterBinding.ensureInitialized();
+
 
   if(kIsWeb){
     await Firebase.initializeApp(
@@ -40,6 +43,8 @@ void main() async {
 
 Future<void> setup() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseApi().initNotification();
   await setupFirebase();
   await registerServices();
 }
@@ -57,13 +62,14 @@ class MyApp extends StatelessWidget {
     _authService = _getIt.get<AuthService>();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Travel App",
       home: SplashScreen(),
-      navigatorKey: _navigationService.navigatorKey,
+      navigatorKey: navigatorkey,
       routes: _navigationService.routes,
     );
   }

@@ -43,10 +43,12 @@ class TProductCardVerticalFav extends StatelessWidget {
                 children: [
                   AspectRatio(
                     aspectRatio: 4 / 4,
-                    child: TRoundedImage(
-                      imageUrl: TImages.exhuma, // Sử dụng một hình ảnh tạm thời
-                      applyImageRadius: true,
-                      fit: BoxFit.cover,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10), // Adjust as needed for rounded corners
+                      child: Image.network(
+                        ticket.imageUrls[0],
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                   Positioned(
@@ -56,7 +58,7 @@ class TProductCardVerticalFav extends StatelessWidget {
                       backgroundColor: TColors.secondary.withOpacity(0.8),
                       padding: const EdgeInsets.symmetric(
                           horizontal: TSizes.sm, vertical: TSizes.xs),
-                      child: Text('${ticket.quantity} left',
+                      child: Text('${ticket.quantity} ticket',
                           style: Theme.of(context)
                               .textTheme
                               .labelLarge!

@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:ticket_resell/api/global_variables/fcm_token_manage.dart';
 import 'package:ticket_resell/api/global_variables/user_manage.dart';
+import 'package:ticket_resell/api/push_notification_service.dart';
 import 'package:ticket_resell/consts.dart';
 import 'package:ticket_resell/models/user_profile.dart';
 import 'package:ticket_resell/services/auth_service.dart';
@@ -77,8 +78,8 @@ class _SignupScreenState extends State<SignupScreen> {
     final String confirmPassword = _passwordConfirmController.text;
     final String address = _addressController.text;
     final int gender = selectedGender.value ?? 3;
-    //final String? fcmtoken = TokenManager().fcmToken;
-    final String? fcmtoken = "String";
+    final String? fcmtoken = TokenManager().fcmToken;
+    //final String? fcmtoken = "String";
     //String? pfpURL;
 
     if (selectedImage != null) {
@@ -159,12 +160,12 @@ class _SignupScreenState extends State<SignupScreen> {
         var responseData = jsonDecode(response.body);
         String body = "Save information successfully. Please login !!";
         String title = "Create Successfully.";
-        // await PushNotificationService.sendNotificationToSelectedDrived(
-        //     fcmToken,
-        //     context,
-        //     title,
-        //     body
-        // );
+        await PushNotificationService.sendNotificationToSelectedDrived(
+            fcmToken,
+            context,
+            title,
+            body
+        );
 
         userManager.fullname = responseData['content']['fullname'];
 

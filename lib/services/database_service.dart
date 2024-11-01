@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_it/get_it.dart';
 import 'package:ticket_resell/models/chat.dart';
 import 'package:ticket_resell/models/message.dart';
+import 'package:ticket_resell/models/notification.dart';
 import 'package:ticket_resell/models/user_profile.dart';
 import 'package:ticket_resell/services/auth_service.dart';
 import 'package:ticket_resell/utils.dart';
@@ -15,6 +16,7 @@ class DatabaseService {
 
   CollectionReference? _usersCollection;
   CollectionReference? _chatsCollection;
+  CollectionReference? _notificationsCollection;
 
   DatabaseService() {
     _authService = _getIt.get<AuthService>();
@@ -35,6 +37,13 @@ class DatabaseService {
                   snapshots.data()!,
                 ),
             toFirestore: (chat, _) => chat.toJson());
+    _notificationsCollection =
+        _firebaseFirestore.collection('notifications').withConverter<NotificationModel>(
+            fromFirestore: (snapshots, _) => NotificationModel.fromJson(
+              snapshots.data()!,
+              snapshots.id,
+            ),
+            toFirestore: (notification, _) => notification.toJson());
   }
 
   Future<void> createUserProfile({required UserProfile userProfile}) async {
@@ -124,5 +133,33 @@ class DatabaseService {
       print("Failed to update message read status: $e");
     }
   }
+
+  Future<void> addNotification(NotificationModel notification) async {
+    await _notificationsCollection?.add(notification);
+  }
+
+  Stream<List<NotificationModel>> getNotifications(String receiverId) {
+    return _notificationsCollection
+        ?.where('receiverId', isEqualTo: receiverId)
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+        .map((doc) {
+      final data = doc.data();
+      if (data is Map<String, dynamic>) {
+        return NotificationModel.fromJson(data, doc.id);
+      } else {
+        throw Exception("Document data is not of type Map<String, dynamic>");
+      }
+    }).toList()) as Stream<List<NotificationModel>>;
+  }
+
+  Future<void> markNotificationAsRead(String notificationId) async {
+    await _notificationsCollection?.doc(notificationId).update({
+      'isRead': true,
+    });
+  }
+
+
 
 }

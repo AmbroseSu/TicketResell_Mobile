@@ -7,9 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_it/get_it.dart';
 import 'package:ticket_resell/api/global_variables/user_manage.dart';
+import 'package:ticket_resell/api/push_notification_service.dart';
 import 'package:ticket_resell/api/response/ticket.dart';
+import 'package:ticket_resell/api/response/ticket_request.dart';
 import 'package:ticket_resell/models/chat.dart';
 import 'package:ticket_resell/models/message.dart';
+import 'package:ticket_resell/models/notification.dart';
 import 'package:ticket_resell/models/user_profile.dart';
 import 'package:ticket_resell/services/auth_service.dart';
 import 'package:ticket_resell/services/database_service.dart';
@@ -47,6 +50,8 @@ class _ChatScreenState extends State<ChatScreen> {
   late DatabaseService _databaseService;
   late MediaService _mediaService;
   late StorageService _storageService;
+
+  String? otherFcmToken;
 
   ChatUser? currentUser, otherUser;
 
@@ -481,7 +486,6 @@ class _ChatScreenState extends State<ChatScreen> {
   }) async {
     final url = Uri.parse(
         'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/TicketRequest/create-ticket-request');
-
     final body = json.encode({
       'price': price,
       'quantity': quantity,
@@ -505,6 +509,10 @@ class _ChatScreenState extends State<ChatScreen> {
       if (response.statusCode == 200) {
         // Yêu cầu thành công
         print('Ticket request created successfully.');
+        final responseData = json.decode(response.body);
+        int ticketReId = responseData['content']['id'];
+        getUserByEmail(widget.ticket.email, ticketReId);
+
         // Bạn có thể thêm logic xử lý khi thành công ở đây
       } else {
         // Xử lý lỗi nếu có
@@ -513,6 +521,58 @@ class _ChatScreenState extends State<ChatScreen> {
     } catch (error) {
       // Xử lý lỗi kết nối hoặc các lỗi khác
       print('Error: $error');
+    }
+  }
+
+  Future<void> getUserByEmail(String email, int ticketRequestId) async {
+    final url = 'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/User/get-user-by-email?email=$email';
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+    //final body = jsonEncode({'email': email});
+
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: headers,
+        //body: body,
+      );
+
+      print('Status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        otherFcmToken = responseData['content']['fcmToken'];
+        NotificationModel? notificationModel = NotificationModel(id: "", senderId: userManager.email!, receiverId: widget.ticket.email, title: "Request for ticket ${widget.ticket.ticketName}", body: "You have a request from ${userManager.email}", timestamp: Timestamp.fromDate(DateTime.now()),ticketRequestId: ticketRequestId);
+        _databaseService.addNotification(notificationModel);
+        print(")000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+        print(notificationModel.id);
+        print(notificationModel.senderId);
+        print(notificationModel.title);
+        print(notificationModel.body);
+        print(notificationModel.receiverId);
+        print(notificationModel.ticketRequestId);
+
+
+        await PushNotificationService.sendNotificationToSelectedDrivedForRequest(otherFcmToken,context,notificationModel);
+
+        // await PushNotificationService.sendNotificationToSelectedDrived(
+        //     otherFcmToken,
+        //     context,
+        //     "title",
+        //     "body"
+        // );
+        // Chuyển đến OtpVerificationScreen với id và role
+        //Get.to(() => OtpVerificationScreen());
+      } else {
+        print('Failed to check email');
+        //Get.snackbar('Error', 'Failed to check email: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Error: $error');
+      //Get.snackbar('Error', 'An error occurred: $error');
     }
   }
 

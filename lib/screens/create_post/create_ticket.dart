@@ -41,22 +41,30 @@ class _CreateTicketState extends State<CreateTicket> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        iconTheme: const IconThemeData(color: Colors.black),
-        elevation: 0,
-      ),
+      // appBar: AppBar(
+      //   automaticallyImplyLeading: false,
+      //   backgroundColor: Colors.white,
+      //   iconTheme: const IconThemeData(color: Colors.black),
+      //   elevation: 0,
+      // ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(TSizes.defaultSpace),
+          padding: const EdgeInsets.only(
+            left: TSizes.defaultSpace,
+            right: TSizes.defaultSpace,
+            top: TSizes.defaultSpace * 2.5,
+            bottom: TSizes.defaultSpace * 0,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// Title
-              Text(
-                'Create New Post',
-                style: Theme.of(context).textTheme.headlineLarge,
+              Align(
+                alignment: Alignment.center, // Căn giữa tiêu đề
+                child: Text(
+                  'Create New Post',
+                  style: Theme.of(context).textTheme.headlineLarge,
+                ),
               ),
               const SizedBox(height: TSizes.spaceBtwSections),
 

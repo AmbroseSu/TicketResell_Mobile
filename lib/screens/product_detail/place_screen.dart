@@ -27,23 +27,29 @@ class PlaceScreen extends StatefulWidget {
 }
 
 class _PlaceScreenState extends State<PlaceScreen> {
-  final List<String> imageUrls = [
-    'https://i.pinimg.com/736x/97/cf/7e/97cf7e8590acb5361a34ff7d4ee8f8e2.jpg',
-    'https://i.pinimg.com/736x/91/bf/74/91bf74698893832860c8e0246193371c.jpg',
-    'https://i.pinimg.com/564x/44/39/a8/4439a886cd0531c666108771348e6b49.jpg',
-  ];
+  // final List<String> imageUrls = [
+  //   'https://i.pinimg.com/736x/97/cf/7e/97cf7e8590acb5361a34ff7d4ee8f8e2.jpg',
+  //   'https://i.pinimg.com/736x/91/bf/74/91bf74698893832860c8e0246193371c.jpg',
+  //   'https://i.pinimg.com/564x/44/39/a8/4439a886cd0531c666108771348e6b49.jpg',
+  // ];
 
   int _currentIndex = 0;
 
   final GetIt _getIt = GetIt.instance;
   UserProfile? otherUser;
   late DatabaseService _databaseService;
-  Ticket emptyTicket = Ticket(id: 0, ticketName: "", price: 0, quantity: 0, expirationDate: "", venue: "", status: 0, categoryName: "", postId: 0, postTitle: "", postDescription: "", createdDate: "", postStatus: false, userId: 0, email: "");
+  Ticket emptyTicket = Ticket(id: 0, ticketName: "", price: 0, quantity: 0, expirationDate: "", venue: "", status: 0, categoryName: "", postId: 0, postTitle: "", postDescription: "", createdDate: "", postStatus: false, userId: 0, email: "", imageUrls: []);
+  late List<String> imageUrls;
+
 
   @override
   void initState() {
     super.initState();
     _databaseService = _getIt.get<DatabaseService>();
+    print('))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))');
+    print(widget.ticket.imageUrls);
+    imageUrls = widget.ticket.imageUrls;
+    print(imageUrls[0]);
     fetchOtherUserProfile();
   }
 

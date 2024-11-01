@@ -248,7 +248,7 @@ class _AllChatsScreenState extends State<AllChatsScreen> {
                           );
                         }
 
-                        Ticket emptyTicket = Ticket(id: 0, ticketName: "", price: 0, quantity: 0, expirationDate: "", venue: "", status: 0, categoryName: "", postId: 0, postTitle: "", postDescription: "", createdDate: "", postStatus: false, userId: 0, email: "");
+                        Ticket emptyTicket = Ticket(id: 0, ticketName: "", price: 0, quantity: 0, expirationDate: "", venue: "", status: 0, categoryName: "", postId: 0, postTitle: "", postDescription: "", createdDate: "", postStatus: false, userId: 0, email: "", imageUrls: []);
 
                         // Điều hướng đến màn hình chat
                         _navigationService.push(
