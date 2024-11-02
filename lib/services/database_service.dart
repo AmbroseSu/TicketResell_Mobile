@@ -138,21 +138,16 @@ class DatabaseService {
     await _notificationsCollection?.add(notification);
   }
 
-  Stream<List<NotificationModel>> getNotifications(String receiverId) {
-    return _notificationsCollection
-        ?.where('receiverId', isEqualTo: receiverId)
+
+  Stream<QuerySnapshot<NotificationModel>> getNotifications(String receiverId) {
+    return _notificationsCollection!
+        .where('receiverId', isEqualTo: receiverId)
         .orderBy('timestamp', descending: true)
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-        .map((doc) {
-      final data = doc.data();
-      if (data is Map<String, dynamic>) {
-        return NotificationModel.fromJson(data, doc.id);
-      } else {
-        throw Exception("Document data is not of type Map<String, dynamic>");
-      }
-    }).toList()) as Stream<List<NotificationModel>>;
+        .snapshots() as Stream<QuerySnapshot<NotificationModel>>;
   }
+
+
+
 
   Future<void> markNotificationAsRead(String notificationId) async {
     await _notificationsCollection?.doc(notificationId).update({

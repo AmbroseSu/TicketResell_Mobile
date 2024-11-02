@@ -10,6 +10,8 @@ import 'package:ticket_resell/services/auth_service.dart';
 import 'package:ticket_resell/services/navigation_service.dart';
 import 'package:ticket_resell/utils.dart';
 
+import 'notification/notification_controller.dart';
+
 final navigatorkey = GlobalKey<NavigatorState>();
 
 void main() async {
@@ -38,6 +40,7 @@ void main() async {
   // Initialize Firebase with the specified platform options
   // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
+  Get.put(NotificationController());
   runApp(MyApp());
 }
 

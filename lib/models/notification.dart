@@ -29,7 +29,9 @@ class NotificationModel {
       receiverId: json['receiverId'],
       title: json['title'],
       body: json['body'],
-      ticketRequestId: json['ticketRequestId'],  // Lấy giá trị từ JSON
+      ticketRequestId: json['ticketRequestId'] is int
+    ? json['ticketRequestId']
+        : int.tryParse(json['ticketRequestId']?.toString() ?? ''),  // Lấy giá trị từ JSON
       timestamp: json['timestamp'],
       isRead: json['isRead'] ?? false,
     );
@@ -42,37 +44,10 @@ class NotificationModel {
       'receiverId': receiverId,
       'title': title,
       'body': body,
-      'ticketRequestId': ticketRequestId,  // Thêm vào JSON
+      'ticketRequestId': ticketRequestId,
       'timestamp': timestamp,
       'isRead': isRead,
     };
   }
 }
 
-class NotificationService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  // Thêm thông báo mới
-  Future<void> addNotification(NotificationModel notification) async {
-    await _firestore.collection('notifications').add(notification.toJson());
-  }
-
-  // Lấy danh sách thông báo cho người dùng
-  Stream<List<NotificationModel>> getNotifications(String receiverId) {
-    return _firestore
-        .collection('notifications')
-        .where('receiverId', isEqualTo: receiverId)
-        .orderBy('timestamp', descending: true)
-        .snapshots()
-        .map((snapshot) => snapshot.docs
-        .map((doc) => NotificationModel.fromJson(doc.data(), doc.id))
-        .toList());
-  }
-
-  // Đánh dấu thông báo là đã đọc
-  Future<void> markNotificationAsRead(String notificationId) async {
-    await _firestore.collection('notifications').doc(notificationId).update({
-      'isRead': true,
-    });
-  }
-}
