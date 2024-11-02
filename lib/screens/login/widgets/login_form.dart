@@ -46,14 +46,15 @@ class _TLoginFormState extends State<TLoginForm> {
       SignInRequest request = SignInRequest(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
+        fcmToken: TokenManager().fcmToken!,
       );
 
-      print('00000000000000000000000000000'+request.email + request.password);
-
+      print('00000000000000000000000000000' + request.email + request.password);
 
       // Gửi yêu cầu POST đến API
       var response = await http.post(
-        Uri.parse('https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Authentication/sign-in'),
+        Uri.parse(
+            'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Authentication/sign-in'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode(request.toJson()),
       );
@@ -71,8 +72,9 @@ class _TLoginFormState extends State<TLoginForm> {
         userManager.email = userDTO['email'];
         userManager.role = userDTO['role'];
         userManager.token = token;
-        
-        print("iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
+
+        print(
+            "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
         print(userManager.id);
         String? fcmToken = TokenManager().fcmToken;
 
