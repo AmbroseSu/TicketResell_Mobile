@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ticket_resell/screens/product_detail/place_screen.dart';
+import 'package:ticket_resell/screens/request_ticket/all_ticket_request_buy.dart';
 import 'package:http/http.dart' as http;
 import '../styles&text&sizes/image_strings.dart';
 import '../styles&text&sizes/sizes.dart';
@@ -96,35 +98,37 @@ class _ExploreScreenState extends State<ExploreScreen>
                           "Explore",
                           style: GoogleFonts.montserrat(
                             fontWeight: FontWeight.w400,
-                            fontSize: 16,
+                            fontSize: 18,
                           ),
                         ),
                         Text(
                           "Ticket Resell",
                           style: GoogleFonts.montserrat(
                             fontWeight: FontWeight.bold,
-                            fontSize: 28,
+                            fontSize: 30,
                           ),
                         ),
                       ],
                     ),
-                    Row(
-                      children: [
-                        Icon(
-                          CupertinoIcons.location_solid,
-                          color: Colors.blueAccent,
-                          size: 20,
+                    Padding(
+                      padding: EdgeInsets.only(top: 21, right: 14),
+                      child: IconButton(
+                        icon: Icon(
+                          CupertinoIcons.shopping_cart, // Biểu tượng giỏ hàng
+                          color: Colors.black87,
+                          size: 30,
                         ),
-                        SizedBox(width: 6),
-                        Text(
-                          "District 9, \nHo Chi Minh",
-                          style: GoogleFonts.montserrat(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 12,
-                            color: Color(0xFF606060),
-                          ),
-                        ),
-                      ],
+                        onPressed: () {
+                          // Xử lý sự kiện khi nhấn vào giỏ hàng
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  AllTicketRequestBuyScreen(),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),

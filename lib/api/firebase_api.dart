@@ -1,123 +1,15 @@
-// import 'dart:convert';
-//
-// import 'package:firebase_messaging/firebase_messaging.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-// import 'package:path/path.dart';
-// import 'package:ticket_resell/api/response/ticket_request.dart';
-// import '../../main.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:ticket_resell/screens/request_ticket/ticket_request_detail.dart';
-// import 'global_variables/fcm_token_manage.dart';
-//
-//
-// class FirebaseApi{
-//   final _firebaseMessageing = FirebaseMessaging.instance;
-//   final _localNotifications = FlutterLocalNotificationsPlugin();
-//
-//   Future<void> initNotification() async {
-//     await _firebaseMessageing.requestPermission();
-//
-//     const AndroidInitializationSettings initializationSettingsAndroid =
-//     AndroidInitializationSettings('@mipmap/ic_launcher');
-//     const InitializationSettings initializationSettings =
-//     InitializationSettings(android: initializationSettingsAndroid);
-//     await _localNotifications.initialize(initializationSettings);
-//
-//     final fCMToken = await _firebaseMessageing.getToken();
-//     TokenManager().fcmToken = fCMToken;
-//     print('Token: $fCMToken');
-//
-//     initPushNotification();
-//
-//   }
-//
-//   void handleMessage(RemoteMessage? message){
-//     if (message == null){
-//       return;
-//     }
-//     print(")0=====================================");
-//     print(message);
-//     navigatorkey.currentState?.pushNamed(
-//       '/navigation_menu',
-//       arguments: message,
-//     );
-//   }
-//
-//   // Future initPushNotification() async{
-//   //   FirebaseMessaging.instance.getInitialMessage().then(handleMessage);
-//   //
-//   //   FirebaseMessaging.onMessageOpenedApp.listen(handleMessage);
-//   // }
-//
-//   Future<void> initPushNotification() async {
-//     FirebaseMessaging.instance.getInitialMessage().then(handleMessage);
-//
-//     FirebaseMessaging.onMessageOpenedApp.listen(handleMessage);
-//
-//     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-//       if (message.notification != null) {
-//         showLocalNotification(message);
-//       }
-//     });
-//   }
-//
-//   // void showLocalNotification(RemoteMessage message) {
-//   //   const AndroidNotificationDetails androidPlatformChannelSpecifics =
-//   //   AndroidNotificationDetails(
-//   //     'your_channel_id',
-//   //     'your_channel_name',
-//   //     channelDescription: 'your_channel_description',
-//   //     importance: Importance.max,
-//   //     priority: Priority.high,
-//   //     ticker: 'ticker',
-//   //   );
-//   //   const NotificationDetails platformChannelSpecifics =
-//   //   NotificationDetails(android: androidPlatformChannelSpecifics);
-//   //
-//   //   _localNotifications.show(
-//   //     0,
-//   //     message.notification!.title,
-//   //     message.notification!.body,
-//   //     platformChannelSpecifics,
-//   //     payload: 'item x',
-//   //   );
-//   // }
-//
-//   void showLocalNotification(RemoteMessage message) {
-//     if (message.notification == null) return;
-//
-//     const AndroidNotificationDetails androidPlatformChannelSpecifics =
-//     AndroidNotificationDetails(
-//       'your_channel_id',
-//       'your_channel_name',
-//       channelDescription: 'your_channel_description',
-//       importance: Importance.max,
-//       priority: Priority.high,
-//       ticker: 'ticker',
-//     );
-//     const NotificationDetails platformChannelSpecifics =
-//     NotificationDetails(android: androidPlatformChannelSpecifics);
-//
-//     _localNotifications.show(
-//       0,
-//       message.notification!.title ?? 'No Title',
-//       message.notification!.body ?? 'No Body',
-//       platformChannelSpecifics,
-//       payload: 'item x',
-//     );
-//   }
-//
-//
-// }
-
-
 import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get_it/get_it.dart';
+import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/api/response/ticket_request.dart';
+import 'package:ticket_resell/notification/notification_controller.dart';
+import 'package:ticket_resell/notification/notification_read.dart';
+import 'package:ticket_resell/notification/notification_screen.dart';
 import 'package:ticket_resell/screens/request_ticket/ticket_request_detail.dart';
+import 'package:ticket_resell/services/database_service.dart';
 import '../../main.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
@@ -126,55 +18,8 @@ import 'global_variables/fcm_token_manage.dart';
 class FirebaseApi {
   final _firebaseMessaging = FirebaseMessaging.instance;
   final _localNotifications = FlutterLocalNotificationsPlugin();
-
+  UserManager userManager = UserManager();
   late bool shouldCheckRequest;
-
-  // Future<void> initNotification() async {
-  //   // Request notification permissions
-  //   NotificationSettings settings = await _firebaseMessaging.requestPermission();
-  //
-  //   // Print permission status
-  //   if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-  //     print('User granted permission');
-  //   } else {
-  //     print('User denied permission');
-  //   }
-  //
-  //   // Initialize local notifications
-  //   const AndroidInitializationSettings initializationSettingsAndroid =
-  //   AndroidInitializationSettings('@mipmap/ic_launcher');
-  //   final InitializationSettings initializationSettings =
-  //   InitializationSettings(android: initializationSettingsAndroid);
-  //
-  //   await _localNotifications.initialize(
-  //     initializationSettings,
-  //     onDidReceiveNotificationResponse: (NotificationResponse response) {
-  //       // Handle notification tap
-  //       shouldCheckRequest = true;
-  //       print(response.payload);
-  //       if (response.payload != null) {
-  //
-  //         print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
-  //         print(shouldCheckRequest);
-  //         final payload = jsonDecode(response.payload!);
-  //         handleMessage(RemoteMessage(
-  //           notification: RemoteNotification(
-  //             title: payload['notification']['title'],
-  //             body: payload['notification']['body'],
-  //           ),
-  //           data: Map<String, dynamic>.from(payload['data']),
-  //         ));
-  //       }
-  //     },
-  //   );
-  //
-  //   // Retrieve FCM token
-  //   final fCMToken = await _firebaseMessaging.getToken();
-  //   TokenManager().fcmToken = fCMToken;
-  //   print('Token: $fCMToken');
-  //
-  //   initPushNotification();
-  // }
 
 
   Future<void> initNotification() async {
@@ -231,6 +76,7 @@ class FirebaseApi {
     final title = message.notification?.title ?? 'Default Title';
     final body = message.notification?.body ?? 'Default Body';
     final ticketRequestId = message.data['ticketRequestId'] ?? 'Default Ticket Request ID';
+    final notificationId = message.data['notificationId'] ?? 'Default Notification ID';
 
     print("Navigating with message: Title: $title, Body: $body");
     print(ticketRequestId);
@@ -248,7 +94,7 @@ class FirebaseApi {
     if (shouldCheckRequest) {
       int requestTicketId = int.parse(ticketRequestId);
       shouldCheckRequest = false;
-      checkTicketRequest(requestTicketId);
+      checkTicketRequest(requestTicketId, notificationId);
 
     }else{
       print("66666666666666666666666666666666666666222222222222222222222222222222222222222222");
@@ -293,7 +139,7 @@ class FirebaseApi {
   }
 
 
-  Future<void> checkTicketRequest(int ticketRequestId) async {
+  Future<void> checkTicketRequest(int ticketRequestId, String notificationId) async {
     final url = 'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/TicketRequest/get-ticket-request-by-id?ticketRequestId=$ticketRequestId';
     final headers = {
       'Content-Type': 'application/json',
@@ -322,6 +168,10 @@ class FirebaseApi {
 
         print("090909090909090909------------------------------------------------------");
         print(ticketRequest);
+        NotificationRead notificationRead = NotificationRead();
+        print(notificationId);
+        await notificationRead.markAsRead(notificationId);
+        NotificationScreen();
         Get.to(() => TicketRequestDetailScreen(ticketRequest: ticketRequest,));
       } else {
         print('Failed to ');
@@ -343,6 +193,7 @@ class FirebaseApi {
       },
       'data': message.data,
     })}");
+    NotificationScreen();
 
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
     AndroidNotificationDetails(

@@ -37,6 +37,19 @@ class NotificationModel {
     );
   }
 
+  NotificationModel copyWith({String? id}) {
+    return NotificationModel(
+      id: id ?? this.id, // Sử dụng id mới nếu có, ngược lại dùng id hiện tại
+      senderId: senderId,
+      receiverId: receiverId,
+      title: title,
+      body: body,
+      ticketRequestId: ticketRequestId,
+      timestamp: timestamp,
+      isRead: isRead,
+    );
+  }
+
   // Phương thức để chuyển đổi đối tượng Dart thành JSON
   Map<String, dynamic> toJson() {
     return {
