@@ -74,7 +74,7 @@ class TProductCardVertical extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TProductTitleText(title: ticket.ticketName, smallSize: true),
+                  TProductTitleText(title: ticket.postTitle, smallSize: true),
                   const SizedBox(height: TSizes.spaceBtwItems / 2),
                   Row(
                     children: [
