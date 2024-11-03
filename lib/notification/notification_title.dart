@@ -127,6 +127,8 @@ class _NotificationTileState extends State<NotificationTile> {
         ),
         trailing: Icon(Icons.chevron_right, color: Colors.grey[600]),
         onTap: () {
+          print("----------==========================--------------------");
+          print(widget.notification.id);
           _databaseService.markNotificationAsRead(widget.notification.id);
           getTicketRequest(widget.notification.ticketRequestId!);
           //Get.to(() => const TicketRequestDetailScreen(ticketRequest: ticketRequest));

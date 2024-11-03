@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,22 +13,23 @@ import 'package:ticket_resell/models/chat.dart';
 import 'package:ticket_resell/models/message.dart';
 import 'package:ticket_resell/models/user_profile.dart';
 import 'package:ticket_resell/screens/chat/chat_screen.dart';
+import 'package:ticket_resell/screens/product_detail/place_screen.dart';
 import 'package:ticket_resell/screens/request_ticket/all_request_ticket.dart';
 import 'package:ticket_resell/services/auth_service.dart';
 import 'package:ticket_resell/services/database_service.dart';
 import 'package:ticket_resell/services/navigation_service.dart';
 import 'package:ticket_resell/widgets/chat_tile.dart';
 
-class TicketRequestDetailScreen extends StatefulWidget {
+class TicketRequestForBuyerDetailScreen extends StatefulWidget {
   final TicketRequest ticketRequest;
 
-  const TicketRequestDetailScreen({super.key, required this.ticketRequest});
+  const TicketRequestForBuyerDetailScreen({super.key, required this.ticketRequest});
 
   @override
-  _TicketRequestDetailScreen createState() => _TicketRequestDetailScreen();
+  _TicketRequestForBuyerDetailScreen createState() => _TicketRequestForBuyerDetailScreen();
 }
 
-class _TicketRequestDetailScreen extends State<TicketRequestDetailScreen> {
+class _TicketRequestForBuyerDetailScreen extends State<TicketRequestForBuyerDetailScreen> {
   //final TicketRequest ticketRequest;
   final GetIt _getIt = GetIt.instance;
   UserManager userManager = UserManager();
@@ -35,6 +38,9 @@ class _TicketRequestDetailScreen extends State<TicketRequestDetailScreen> {
   //late AlertService _alertService;
   late DatabaseService _databaseService;
 
+  Ticket? ticket;
+  bool _isLoading = true;
+
   @override
   void initState() {
     super.initState();
@@ -42,6 +48,7 @@ class _TicketRequestDetailScreen extends State<TicketRequestDetailScreen> {
     _navigationService = _getIt.get<NavigationService>();
     //_alertService = _getIt.get<AlertService>();
     _databaseService = _getIt.get<DatabaseService>();
+    fetchTickets();
   }
 
   @override
@@ -50,85 +57,83 @@ class _TicketRequestDetailScreen extends State<TicketRequestDetailScreen> {
       appBar: AppBar(
         title: Text('Request Details'),
       ),
-      body: Padding(
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator()) // Show loading indicator if data is still loading
+          : Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Divider(thickness: 2, color: Colors.grey[300]),
-
-            SizedBox(height: 16.0),
-            _buildDetailRow("Buyer:", widget.ticketRequest.userFullname),
+            const SizedBox(height: 16.0),
+            _buildDetailRow("Ticket Name:", ticket!.ticketName),
             _buildDetailRow("Price:", "\$${widget.ticketRequest.price.toStringAsFixed(2)}"),
             _buildDetailRow("Quantity:", widget.ticketRequest.quantity.toString()),
-            //_buildDetailRow("Status:", widget.ticketRequest.status),
-
-            // Add other ticket request fields here if needed
-            SizedBox(height: 20.0),
+            const SizedBox(height: 20.0),
             Container(
-              width: double.infinity, // Make the button stretch to the width of the container
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 16.0), // Add bottom padding
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: widget.ticketRequest.status == 0
-                        ? Colors.blueAccent
-                        : (widget.ticketRequest.status == 1 ? Colors.green : Colors.red),
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12), // Increased vertical padding
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  onPressed: widget.ticketRequest.status == 0 // Check if status is Pending (0)
-                      ? () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text("Xác nhận"),
-                          content: const Text(
-                              "Bạn có chắc chắn muốn chấp nhận yêu cầu này không?"),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text("Cancel"),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                                _updateRequestStatus(widget.ticketRequest.id);
-                              },
-                              child: const Text(
-                                "Accept",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
+              width: double.infinity,
+              child: Column(
+                children: [
+                  Container(
+                    width: double.infinity, // Cho nút 'Accept' rộng bằng với ô
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: widget.ticketRequest.status == 0
+                            ? Colors.blueAccent
+                            : (widget.ticketRequest.status == 1 ? Colors.green : Colors.red),
+                        padding: const EdgeInsets.symmetric(vertical: 12), // Điều chỉnh padding nếu cần
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      onPressed: () {
+                        // Thêm hành động cho nút 'Accept'
                       },
-                    );
-                  }
-                      : () {},
-                  child: Text(
-                    widget.ticketRequest.status == 0
-                        ? "Accept"
-                        : (widget.ticketRequest.status == 1 ? "Confirmed" : "Rejected"),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18, // Increased font size
+                      child: Text(
+                        widget.ticketRequest.status == 0
+                            ? "Accept"
+                            : (widget.ticketRequest.status == 1 ? "Confirmed" : "Rejected"),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  const SizedBox(height: 16.0), // Khoảng cách giữa các nút
+                  if (widget.ticketRequest.status == 1) // Chỉ hiển thị nút 'View Ticket' nếu status là 'Confirmed'
+                    Container(
+                      width: double.infinity, // Cho nút 'View Ticket' rộng bằng với ô
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blueGrey,
+                          padding: const EdgeInsets.symmetric(vertical: 12), // Điều chỉnh padding nếu cần
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        onPressed: () {
+                          // Hành động cho nút 'View Ticket'
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => PlaceScreen(ticket: ticket!),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          "View Ticket",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
-            )
-,
-            // Call _buildUI below the text widgets
+            ),
             Expanded(child: _buildUI()),
           ],
         ),
@@ -146,6 +151,29 @@ class _TicketRequestDetailScreen extends State<TicketRequestDetailScreen> {
         child: _chatsList(),
       ),
     );
+  }
+
+
+  Future<void> fetchTickets() async {
+    final ticketId = widget.ticketRequest.ticketId;
+
+    final response = await http.get(Uri.parse(
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get?ticketId=$ticketId'));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      setState(() {
+        ticket = Ticket.fromJson(data['content']);
+        _isLoading = false;
+        print("9=========================================================");
+        print(ticket);
+      });
+    } else {
+      print('Failed to load tickets');
+      setState(() {
+        _isLoading = false; // Even if fetching fails, stop loading state
+      });
+    }
   }
 
   Widget _buildDetailRow(String label, String value) {
@@ -182,58 +210,9 @@ class _TicketRequestDetailScreen extends State<TicketRequestDetailScreen> {
 
 
 
-
-
-  Future<void> _updateRequestStatus(int ticketRequestId) async {
-
-      // Cập nhật trạng thái của yêu cầu đã xác nhận
-      //requests[index]['status'] = 'Confirmed';
-
-      // Cập nhật trạng thái của các yêu cầu khác thành Rejected
-      // for (int i = 0; i < requests.length; i++) {
-      //   if (i != index) {
-      //     requests[i]['status'] = 'Rejected';
-      //   }
-      // }
-      //Get.to(() => AllRequestTicketScreen());
-
-      //final ticketRequestId = requests[index].id;
-      final url = Uri.parse(
-          'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/TicketRequest/confirm-ticket-request?ticketRequestId=$ticketRequestId');
-      final headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      };
-      final response = await http.post(
-        url,
-        headers: headers,
-      );
-
-      if (response.statusCode == 200) {
-        Fluttertoast.showToast(
-          msg: "Yêu cầu của ${widget.ticketRequest.userFullname} đã được chấp nhận.",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.TOP,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => AllRequestTicketScreen(
-                ticketId: widget.ticketRequest.ticketId,
-              )),
-        );
-      }
-    ;
-  }
-
-
-
   Widget _chatsList() {
     return StreamBuilder(
-      stream: _databaseService.getUserProfile(widget.ticketRequest.userEmail), // Lấy danh sách người dùng
+      stream: _databaseService.getUserProfile(ticket!.email), // Lấy danh sách người dùng
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return const Center(

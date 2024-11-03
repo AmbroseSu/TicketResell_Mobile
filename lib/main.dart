@@ -5,14 +5,17 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:ticket_resell/api/firebase_api.dart';
 import 'package:ticket_resell/firebase_options.dart';
+import 'package:ticket_resell/notification/notification_screen.dart';
 import 'package:ticket_resell/screens/splash_screen.dart';
 import 'package:ticket_resell/services/auth_service.dart';
+import 'package:ticket_resell/services/database_service.dart';
 import 'package:ticket_resell/services/navigation_service.dart';
 import 'package:ticket_resell/utils.dart';
 
 import 'notification/notification_controller.dart';
 
 final navigatorkey = GlobalKey<NavigatorState>();
+//final GetIt sl = GetIt.instance;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,8 +51,10 @@ Future<void> setup() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await FirebaseApi().initNotification();
+  //print("Registering DatabaseService");
   await setupFirebase();
   await registerServices();
+  await NotificationScreen();
 }
 
 
@@ -59,10 +64,12 @@ class MyApp extends StatelessWidget {
 
   late NavigationService _navigationService;
   late AuthService _authService;
+  //late DatabaseService _databaseService;
 
   MyApp({super.key}) {
     _navigationService = _getIt.get<NavigationService>();
     _authService = _getIt.get<AuthService>();
+    //_databaseService = _getIt.get<DatabaseService>();
   }
 
 
