@@ -1,17 +1,14 @@
-import 'package:carousel_slider/carousel_slider.dart';
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ticket_resell/screens/product_detail/place_screen.dart';
-
+import 'package:http/http.dart' as http;
 import '../styles&text&sizes/image_strings.dart';
 import '../styles&text&sizes/sizes.dart';
 import '../widgets/article_card.dart';
 import '../widgets/popular_item.dart';
 import '../widgets/promo_slider.dart';
-import '../widgets/recommend_item.dart';
 import '../widgets/section_heading.dart';
 
 class ExploreScreen extends StatefulWidget {
@@ -24,12 +21,47 @@ class ExploreScreen extends StatefulWidget {
 class _ExploreScreenState extends State<ExploreScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  List<Map<String, dynamic>> _categories = [];
+
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    // _tabController = TabController(length: 4, vsync: this);
+    fetchCategories();
+
+  }
+
+
+  Future<void> fetchCategories() async {
+    try {
+      final response = await http.get(
+        Uri.parse('https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/TicketCategory/categories?page=1&limit=100'),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(utf8.decode(response.bodyBytes));
+        final List categories = data['content'];
+
+        setState(() {
+          _categories = categories.map((category) => {
+            'id': category['id'],
+            'name': category['name']
+          }).toList();
+          _tabController = TabController(length: _categories.length, vsync: this);
+        });
+
+        // // Gọi API để lấy tour cho mỗi category
+        // for (var category in _categories) {
+        //   await fetchToursByCategory(category['id'].toString());
+        // }
+      } else {
+        throw Exception('Failed to load categories');
+      }
+    } catch (e) {
+      print("Error fetching categories: $e");
+    }
   }
 
   @override
@@ -48,7 +80,8 @@ class _ExploreScreenState extends State<ExploreScreen>
         },
         child: Scaffold(
           backgroundColor: Colors.white,
-          body: Column(
+          body:
+          Column(
             children: [
               SizedBox(height: 10),
               Padding(
@@ -113,19 +146,20 @@ class _ExploreScreenState extends State<ExploreScreen>
               ),
               TabBar(
                 controller: _tabController,
+                isScrollable: true,
                 indicatorColor: Colors.blueAccent,
                 labelColor: Colors.blueAccent,
                 unselectedLabelColor: Color(0xFFB8B8B8),
-                labelStyle: GoogleFonts.robotoCondensed(
-                    fontWeight: FontWeight.w700, fontSize: 16),
-                unselectedLabelStyle: GoogleFonts.robotoCondensed(
-                    fontWeight: FontWeight.w400, fontSize: 16),
-                tabs: [
-                  Tab(text: "Movies"),
-                  Tab(text: "Vouchers"),
-                  Tab(text: "Events"),
-                  Tab(text: "Live Concert"),
-                ],
+                labelStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w700, fontSize: 16),
+                unselectedLabelStyle: GoogleFonts.montserrat(fontWeight: FontWeight.w400, fontSize: 16),
+                // tabs: [
+                //   Tab(text: "Movies"),
+                //   Tab(text: "Vouchers"),
+                //   Tab(text: "Events"),
+                //   Tab(text: "Live Concert"),
+                // ],
+
+                tabs: _categories.map((category) => Tab(text: category['name'])).toList(),
               ),
               SizedBox(height: 20),
               Expanded(
