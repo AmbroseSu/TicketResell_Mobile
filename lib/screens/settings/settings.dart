@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:ticket_resell/screens/create_post/create_ticket.dart';
+import 'package:ticket_resell/screens/product_detail/all_post.dart';
 import '../../styles&text&sizes/sizes.dart';
 import '../../styles&text&sizes/text_strings.dart';
 import '../../widgets/appbar.dart';
@@ -64,6 +65,12 @@ class SettingsScreen extends StatelessWidget {
 
                   // TSettingsMenuTile(icon: Iconsax.message, title: 'Chat Room', subTitle: 'All messages on this way', onTap: () => Get.to(() =>  AllChatsScreen()),),
                   //TSettingsMenuTile(icon: Iconsax.message, title: 'Chat Room', subTitle: 'All messages on this way', onTap: () => Get.to(() =>  AllChatsScreen()),),
+                  TSettingsMenuTile(
+                      icon: Iconsax.folder_2,
+                      title: 'All Posts',
+                      subTitle: 'List all posts in TicketResell',
+                      onTap: () => Get.to(() => const AllPost())),
+
                   TSettingsMenuTile(
                       icon: Iconsax.folder,
                       title: 'All Tickets',

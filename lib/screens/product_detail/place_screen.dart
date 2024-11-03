@@ -1,11 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/api/response/ticket.dart';
 import 'package:ticket_resell/models/user_profile.dart';
 import 'package:ticket_resell/screens/chat/chat_screen.dart';
@@ -15,7 +13,7 @@ import '../../styles&text&sizes/image_strings.dart';
 import '../../styles&text&sizes/sizes.dart';
 import '../../widgets/gallery_slider.dart';
 import '../../widgets/section_heading.dart';
-import '../checkout/checkout.dart';
+
 
 class PlaceScreen extends StatefulWidget {
   final Ticket ticket;
