@@ -82,8 +82,9 @@ class _ExploreScreenState extends State<ExploreScreen>
         },
         child: Scaffold(
           backgroundColor: Colors.white,
-          body:
-          Column(
+          body:_tabController == null || _categories.isEmpty
+              ? Center(child: CircularProgressIndicator())
+              : Column(
             children: [
               SizedBox(height: 10),
               Padding(

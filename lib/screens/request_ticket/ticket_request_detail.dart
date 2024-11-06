@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,10 +7,12 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:ticket_resell/api/global_variables/user_manage.dart';
+import 'package:ticket_resell/api/push_notification_service.dart';
 import 'package:ticket_resell/api/response/ticket.dart';
 import 'package:ticket_resell/api/response/ticket_request.dart';
 import 'package:ticket_resell/models/chat.dart';
 import 'package:ticket_resell/models/message.dart';
+import 'package:ticket_resell/models/notification.dart';
 import 'package:ticket_resell/models/user_profile.dart';
 import 'package:ticket_resell/screens/chat/chat_screen.dart';
 import 'package:ticket_resell/screens/request_ticket/all_request_ticket.dart';
@@ -34,6 +38,8 @@ class _TicketRequestDetailScreen extends State<TicketRequestDetailScreen> {
   late NavigationService _navigationService;
   //late AlertService _alertService;
   late DatabaseService _databaseService;
+
+  String? otherFcmToken;
 
   @override
   void initState() {
@@ -210,6 +216,8 @@ class _TicketRequestDetailScreen extends State<TicketRequestDetailScreen> {
       );
 
       if (response.statusCode == 200) {
+        print("101010101010101011===========================================");
+        await getUserByEmail(widget.ticketRequest.userEmail, ticketRequestId);
         Fluttertoast.showToast(
           msg: "Yêu cầu của ${widget.ticketRequest.userFullname} đã được chấp nhận.",
           toastLength: Toast.LENGTH_SHORT,
@@ -229,6 +237,60 @@ class _TicketRequestDetailScreen extends State<TicketRequestDetailScreen> {
     ;
   }
 
+  Future<void> getUserByEmail(String email, int ticketRequestId) async {
+    final url = 'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/User/get-user-by-id?id=$email';
+    final headers = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+    //final body = jsonEncode({'email': email});
+
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: headers,
+        //body: body,
+      );
+
+      print('Status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        print("000000000000000000000000000000000==========================999999999999999999999");
+        final responseData = json.decode(response.body);
+        otherFcmToken = responseData['content']['fcmToken'];
+        NotificationModel? notificationModel = NotificationModel(id: "", senderId: userManager.email!, receiverId: widget.ticketRequest.userEmail, title: "Request for ticket had confirm", body: "You request had confirm from ${userManager.email}", timestamp: Timestamp.fromDate(DateTime.now()),ticketRequestId: ticketRequestId);
+        String? notificationId = await _databaseService.addNotification(notificationModel);
+        print(")000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+        NotificationModel? notificationModelUpId = notificationModel.copyWith(id: notificationId);
+        print(notificationModelUpId.id);
+        print(notificationModelUpId.senderId);
+        print(notificationModelUpId.title);
+        print(notificationModelUpId.body);
+        print(notificationModelUpId.receiverId);
+        print(notificationModelUpId.ticketRequestId);
+
+
+
+        await PushNotificationService.sendNotificationToSelectedDrivedForRequest(otherFcmToken,context,notificationModelUpId);
+
+        // await PushNotificationService.sendNotificationToSelectedDrived(
+        //     otherFcmToken,
+        //     context,
+        //     "title",
+        //     "body"
+        // );
+        // Chuyển đến OtpVerificationScreen với id và role
+        //Get.to(() => OtpVerificationScreen());
+      } else {
+        print('Failed to check email');
+        //Get.snackbar('Error', 'Failed to check email: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Error: $error');
+      //Get.snackbar('Error', 'An error occurred: $error');
+    }
+  }
 
 
   Widget _chatsList() {
@@ -334,7 +396,7 @@ class _TicketRequestDetailScreen extends State<TicketRequestDetailScreen> {
                           );
                         }
 
-                        Ticket emptyTicket = Ticket(id: 0, ticketName: "", price: 0, quantity: 0, expirationDate: "", venue: "", status: 0, categoryName: "", postId: 0, postTitle: "", postDescription: "", createdDate: "", postStatus: false, userId: 0, email: "", imageUrls: []);
+                        Ticket emptyTicket = Ticket(id: 0, ticketName: "", price: 0, quantity: 0, expirationDate: "", venue: "", status: 0, categoryName: "", postTitle: "", postDescription: "", createdDate: "", userId: 0, email: "", imageUrls: [], categoryId: 0);
 
                         // Điều hướng đến màn hình chat
                         Navigator.of(context).push(
