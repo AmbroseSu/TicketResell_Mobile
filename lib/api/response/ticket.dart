@@ -6,12 +6,11 @@ class Ticket {
   final String expirationDate;
   final String venue;
   final int status;
+  final int categoryId;
   final String categoryName;
-  final int postId;
   final String postTitle;
   final String postDescription;
   final String createdDate;
-  final bool postStatus;
   final int userId;
   final String email;
   final List<String> imageUrls;
@@ -24,12 +23,11 @@ class Ticket {
     required this.expirationDate,
     required this.venue,
     required this.status,
+    required this.categoryId,
     required this.categoryName,
-    required this.postId,
     required this.postTitle,
     required this.postDescription,
     required this.createdDate,
-    required this.postStatus,
     required this.userId,
     required this.email,
     required this.imageUrls,
@@ -47,12 +45,11 @@ class Ticket {
       expirationDate: json['expirationDate'],
       venue: json['venue'],
       status: json['status'],
+      categoryId: json['categoryId'],
       categoryName: json['categoryName'],
-      postId: json['postId'],
       postTitle: json['postTitle'],
       postDescription: json['postDescription'],
       createdDate: json['createdDate'],
-      postStatus: json['postStatus'],
       userId: json['userId'],
       email: json['email'],
       imageUrls: imageUrls,
