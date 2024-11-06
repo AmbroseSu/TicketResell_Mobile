@@ -238,7 +238,7 @@ class _TicketRequestDetailScreen extends State<TicketRequestDetailScreen> {
   }
 
   Future<void> getUserByEmail(String email, int ticketRequestId) async {
-    final url = 'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/User/get-user-by-id?id=$email';
+    final url = 'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/User/get-user-by-email?email=$email';
     final headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -259,7 +259,7 @@ class _TicketRequestDetailScreen extends State<TicketRequestDetailScreen> {
         print("000000000000000000000000000000000==========================999999999999999999999");
         final responseData = json.decode(response.body);
         otherFcmToken = responseData['content']['fcmToken'];
-        NotificationModel? notificationModel = NotificationModel(id: "", senderId: userManager.email!, receiverId: widget.ticketRequest.userEmail, title: "Request for ticket had confirm", body: "You request had confirm from ${userManager.email}", timestamp: Timestamp.fromDate(DateTime.now()),ticketRequestId: ticketRequestId);
+        NotificationModel? notificationModel = NotificationModel(id: "", senderId: userManager.email!, receiverId: widget.ticketRequest.userEmail, title: "Request for ticket had confirm", body: "You request had confirm from ${responseData['content']['fullname']}", timestamp: Timestamp.fromDate(DateTime.now()),ticketRequestId: ticketRequestId);
         String? notificationId = await _databaseService.addNotification(notificationModel);
         print(")000000000000000000000000000000000000000000000000000000000000000000000000000000000");
         NotificationModel? notificationModelUpId = notificationModel.copyWith(id: notificationId);
