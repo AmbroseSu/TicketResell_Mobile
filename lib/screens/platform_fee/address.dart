@@ -10,35 +10,30 @@ import '../../widgets/t_circular_icon.dart';
 import '../explore_screen.dart';
 import 'add_new_address.dart';
 
-class UserAddressScreen extends StatelessWidget {
-  const UserAddressScreen({super.key});
+class PlatformFeeScreen extends StatelessWidget {
+  const PlatformFeeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text('Platform Fee', style: Theme.of(context).textTheme.headlineMedium),
+        centerTitle: true,
+      ),
       backgroundColor: Colors.white,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: TColors.primary,
-        onPressed: () => Get.to(() => const AddNewAddressScreen()),
-        child: const Icon(Iconsax.add, color: TColors.white),
-      ),
-      appBar: TAppBar(
-        title:
-        Text('Addresses', style: Theme.of(context).textTheme.headlineMedium), showBackArrow: true,
-        actions: [
-          TCircularIcon(
-            icon: Iconsax.add,
-            onPressed: () => Get.to(const ExploreScreen()),
-          )
-        ],
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: TColors.primary,
+      //   onPressed: () => Get.to(() => const AddNewAddressScreen()),
+      //   child: const Icon(Iconsax.add, color: TColors.white),
+      // ),
       body: const SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(TSizes.defaultSpace),
           child: Column(
             children: [
-              TSingleAddress(selectedAddress: false),
               TSingleAddress(selectedAddress: true),
+              // TSingleAddress(selectedAddress: true),
             ],
           ),
         ),

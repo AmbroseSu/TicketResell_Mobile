@@ -1,11 +1,319 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:ticket_resell/navigation_menu.dart';
 import 'package:ticket_resell/screens/create_post/upload_file.dart';
 import '../../styles&text&sizes/sizes.dart';
 import '../../styles&text&sizes/text_strings.dart';
+import '../../widgets/appbar.dart';
+import '../../widgets/t_circular_icon.dart';
 import '../login/login.dart';
+import 'package:http/http.dart' as http;
+//
+// class CreateTicket extends StatefulWidget {
+//   const CreateTicket({super.key});
+//
+//   @override
+//   _CreateTicketState createState() => _CreateTicketState();
+// }
+//
+// class _CreateTicketState extends State<CreateTicket> {
+//   String? selectedCategory;
+//   List<String> categories = [];
+//   TextEditingController _dateController = TextEditingController(); // Controller for the Date field
+//   TextEditingController _timeController = TextEditingController(); // Controller for the Time field
+//   TimeOfDay? selectedTime;
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     _fetchCategories(); // Gọi API khi trang được tải
+//   }
+//
+//   @override
+//   void dispose() {
+//     _dateController.dispose();
+//     super.dispose();
+//   }
+//
+//   Future<void> _fetchCategories() async {
+//     final response = await http.get(
+//       Uri.parse('https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/TicketCategory/categories?page=1&limit=100'),
+//     );
+//
+//     if (response.statusCode == 200) {
+//       // Parse JSON và cập nhật danh sách categories
+//       final data = json.decode(response.body);
+//       setState(() {
+//         categories = List<String>.from(data['data'].map((category) => category['name']));
+//       });
+//     } else {
+//       // Nếu có lỗi khi gọi API
+//       throw Exception('Failed to load categories');
+//     }
+//   }
+//   Future<void> _selectDate(BuildContext context) async {
+//     // Show date picker
+//     DateTime? pickedDate = await showDatePicker(
+//       context: context,
+//       initialDate: DateTime.now(),
+//       firstDate: DateTime(2000),
+//       lastDate: DateTime(2100),
+//     );
+//     if (pickedDate != null) {
+//       setState(() {
+//         _dateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
+//       });
+//       // Once a date is picked, show time picker
+//       _selectTime(context, pickedDate);
+//     }
+//   }
+//
+//   Future<void> _selectTime(BuildContext context, DateTime pickedDate) async {
+//     // Show time picker
+//     TimeOfDay? pickedTime = await showTimePicker(
+//       context: context,
+//       initialTime: TimeOfDay(hour: pickedDate.hour, minute: pickedDate.minute),
+//     );
+//     if (pickedTime != null) {
+//       setState(() {
+//         selectedTime = pickedTime;
+//         _timeController.text = "${pickedTime.format(context)}";
+//       });
+//     }
+//   }
+//
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//       backgroundColor: Colors.white,
+//       title: Text('Create New Ticket', style: Theme.of(context).textTheme.headlineMedium),
+//       centerTitle: true,
+//         leading: IconButton(
+//           icon: Icon(Icons.arrow_back),
+//           onPressed: () {
+//             Navigator.pushReplacement(
+//               context,
+//               MaterialPageRoute(builder: (context) => NavigationMenu()),
+//             );
+//           },
+//         ),
+//     ),
+//       backgroundColor: Colors.white,
+//       body: SingleChildScrollView(
+//         child: Padding(
+//           padding: const EdgeInsets.only(
+//             left: TSizes.defaultSpace,
+//             right: TSizes.defaultSpace,
+//             top: TSizes.defaultSpace * 1,
+//             bottom: TSizes.defaultSpace * 0,
+//           ),
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               /// Form
+//               Form(
+//                 child: Column(
+//                   children: [
+//                     /// Post Title
+//                     TextFormField(
+//                       decoration: const InputDecoration(
+//                         labelText: 'Post Title',
+//                         prefixIcon: Icon(Icons.post_add),
+//                       ),
+//                     ),
+//                     const SizedBox(height: TSizes.spaceBtwInputFields),
+//
+//                     /// Description
+//                     TextFormField(
+//                       decoration: const InputDecoration(
+//                         labelText: 'Description',
+//                         prefixIcon: Icon(Icons.description),
+//                       ),
+//                     ),
+//                     const SizedBox(height: TSizes.spaceBtwInputFields),
+//
+//                     /// Ticket Name
+//                     TextFormField(
+//                       decoration: const InputDecoration(
+//                         labelText: 'Ticket Name',
+//                         prefixIcon: Icon(Iconsax.ticket),
+//                       ),
+//                     ),
+//                     const SizedBox(height: TSizes.spaceBtwInputFields),
+//
+//                     /// Price
+//                     TextFormField(
+//                       decoration: const InputDecoration(
+//                         labelText: 'Price',
+//                         prefixIcon: Icon(Iconsax.money),
+//                       ),
+//                     ),
+//                     const SizedBox(height: TSizes.spaceBtwInputFields),
+//
+//                     /// Quantity
+//                     TextFormField(
+//                       decoration: const InputDecoration(
+//                         labelText: 'Quantity',
+//                         prefixIcon: Icon(Iconsax.password_check),
+//                       ),
+//                     ),
+//                     const SizedBox(height: TSizes.spaceBtwInputFields),
+//
+//                     /// Expire Date (with Date and Time Picker)
+//                     TextFormField(
+//                       controller: _dateController,
+//                       decoration: const InputDecoration(
+//                         labelText: 'Expire Date',
+//                         prefixIcon: Icon(Iconsax.calendar),
+//                         suffixIcon: Icon(Icons.calendar_today),
+//                       ),
+//                       readOnly: true,
+//                       onTap: () => _selectDate(context), // Open date picker
+//                     ),
+//                     const SizedBox(height: TSizes.spaceBtwInputFields),
+//                     // Time (optional field to show selected time)
+//                     TextFormField(
+//                       controller: _timeController,
+//                       decoration: const InputDecoration(
+//                         labelText: 'Expire Time',
+//                         prefixIcon: Icon(Icons.access_time),
+//                       ),
+//                       readOnly: true,
+//                     ),
+//                     const SizedBox(height: TSizes.spaceBtwInputFields),
+//                     /// venue
+//                     TextFormField(
+//                       decoration: const InputDecoration(
+//                         labelText: TTexts.address,
+//                         prefixIcon: Icon(Iconsax.location),
+//                       ),
+//                     ),
+//                     const SizedBox(height: TSizes.spaceBtwInputFields),
+//
+//                     /// Category Dropdown
+//                     DropdownButtonFormField<String>(
+//                       decoration: const InputDecoration(
+//                         labelText: 'Category',
+//                         prefixIcon: Icon(Iconsax.user_tag),
+//                       ),
+//                       dropdownColor: Colors.white,
+//                       value: selectedCategory,
+//                       items: categories.isNotEmpty
+//                           ? categories.map<DropdownMenuItem<String>>((String value) {
+//                         return DropdownMenuItem<String>(
+//                           value: value,
+//                           child: Text(value),
+//                         );
+//                       }).toList()
+//                           : [
+//                         const DropdownMenuItem<String>(
+//                           value: null,
+//                           child: Text('Loading...'),
+//                         ),
+//                       ],
+//                       onChanged: (newValue) {
+//                         setState(() {
+//                           selectedCategory = newValue;
+//                         });
+//                       },
+//                     ),
+//                     const SizedBox(height: TSizes.spaceBtwInputFields),
+//
+//
+//                     /// Terms & Conditions Checkbox
+//                     Row(
+//                       children: [
+//                         SizedBox(
+//                           width: 24,
+//                           height: 24,
+//                           child: Checkbox(
+//                             value: true,
+//                             onChanged: (value) {},
+//                             checkColor: Colors.white,
+//                             activeColor: Colors.blueAccent,
+//                             side: const BorderSide(color: Colors.black),
+//                           ),
+//                         ),
+//                         const SizedBox(width: TSizes.spaceBtwItems),
+//                         Text.rich(
+//                           TextSpan(children: [
+//                             TextSpan(
+//                                 text: 'By using TicketResell, you agree to ',
+//                                 style: Theme.of(context).textTheme.bodySmall),
+//                             TextSpan(
+//                                 text: 'Terms ',
+//                                 style: Theme.of(context)
+//                                     .textTheme
+//                                     .bodyMedium!
+//                                     .apply(
+//                                     color: Colors.black,
+//                                     decorationColor: Colors.black)),
+//                             TextSpan(
+//                                 text: 'and ',
+//                                 style: Theme.of(context).textTheme.bodySmall),
+//                             TextSpan(
+//                                 text: '\nPrivacy Policy',
+//                                 style: Theme.of(context)
+//                                     .textTheme
+//                                     .bodyMedium!
+//                                     .apply(
+//                                     color: Colors.black,
+//                                     decorationColor: Colors.black)),
+//                           ]),
+//                         ),
+//                       ],
+//                     ),
+//                     const SizedBox(height: TSizes.spaceBtwSections),
+//
+//                     /// Create New Post Button
+//                     GestureDetector(
+//                       onTap: () {
+//                         Navigator.push(
+//                           context,
+//                           MaterialPageRoute(
+//                               builder: (context) => const UploadFile()),
+//                         );
+//                       },
+//                       child: Container(
+//                         padding: const EdgeInsets.symmetric(vertical: 15),
+//                         decoration: BoxDecoration(
+//                           borderRadius: BorderRadius.circular(15),
+//                           color: Colors.blueAccent,
+//                         ),
+//                         child: Center(
+//                           child: Text(
+//                             "Create",
+//                             style: GoogleFonts.getFont(
+//                               "Roboto Condensed",
+//                               fontWeight: FontWeight.w700,
+//                               color: Colors.white,
+//                               fontSize: 18,
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class CreateTicket extends StatefulWidget {
   const CreateTicket({super.key});
@@ -16,7 +324,16 @@ class CreateTicket extends StatefulWidget {
 
 class _CreateTicketState extends State<CreateTicket> {
   String? selectedCategory;
-  TextEditingController _dateController = TextEditingController(); // Controller for the Date field
+  List<String> categories = [];
+  TextEditingController _dateController = TextEditingController();
+  TextEditingController _timeController = TextEditingController();
+  TimeOfDay? selectedTime;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchCategories();  // Fetch categories when the widget is initialized
+  }
 
   @override
   void dispose() {
@@ -24,6 +341,28 @@ class _CreateTicketState extends State<CreateTicket> {
     super.dispose();
   }
 
+  // Fetch categories from the API
+  Future<void> fetchCategories() async {
+    final response = await http.get(
+      Uri.parse("https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/TicketCategory/categories?page=1&limit=1000"),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      List<String> fetchedCategories = [];
+      for (var category in data['content']) {
+        fetchedCategories.add(category['name']);
+      }
+      setState(() {
+        categories = fetchedCategories;
+      });
+    } else {
+      // Handle the error
+      throw Exception('Failed to load categories');
+    }
+  }
+
+  // Date and time picker logic
   Future<void> _selectDate(BuildContext context) async {
     DateTime? pickedDate = await showDatePicker(
       context: context,
@@ -35,43 +374,74 @@ class _CreateTicketState extends State<CreateTicket> {
       setState(() {
         _dateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
       });
+      _selectTime(context, pickedDate);
+    }
+  }
+
+  Future<void> _selectTime(BuildContext context, DateTime pickedDate) async {
+    TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(hour: pickedDate.hour, minute: pickedDate.minute),
+    );
+    if (pickedTime != null) {
+      setState(() {
+        selectedTime = pickedTime;
+        _timeController.text = "${pickedTime.format(context)}";
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   automaticallyImplyLeading: false,
-      //   backgroundColor: Colors.white,
-      //   iconTheme: const IconThemeData(color: Colors.black),
-      //   elevation: 0,
-      // ),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text('Create New Ticket', style: Theme.of(context).textTheme.headlineMedium),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => NavigationMenu()),
+            );
+          },
+        ),
+      ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(
-            left: TSizes.defaultSpace,
-            right: TSizes.defaultSpace,
-            top: TSizes.defaultSpace * 2.5,
-            bottom: TSizes.defaultSpace * 0,
+            left: 16.0,
+            right: 16.0,
+            top: 16.0,
+            bottom: 0,
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Align(
-                alignment: Alignment.center, // Căn giữa tiêu đề
-                child: Text(
-                  'Create New Post',
-                  style: Theme.of(context).textTheme.headlineLarge,
-                ),
-              ),
-              const SizedBox(height: TSizes.spaceBtwSections),
-
               /// Form
               Form(
                 child: Column(
                   children: [
+                    /// Post Title
+                    TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: 'Post Title',
+                        prefixIcon: Icon(Icons.post_add),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    /// Description
+                    TextFormField(
+                      decoration: const InputDecoration(
+                        labelText: 'Description',
+                        prefixIcon: Icon(Icons.description),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
                     /// Ticket Name
                     TextFormField(
                       decoration: const InputDecoration(
@@ -79,7 +449,7 @@ class _CreateTicketState extends State<CreateTicket> {
                         prefixIcon: Icon(Iconsax.ticket),
                       ),
                     ),
-                    const SizedBox(height: TSizes.spaceBtwInputFields),
+                    const SizedBox(height: 16),
 
                     /// Price
                     TextFormField(
@@ -88,7 +458,7 @@ class _CreateTicketState extends State<CreateTicket> {
                         prefixIcon: Icon(Iconsax.money),
                       ),
                     ),
-                    const SizedBox(height: TSizes.spaceBtwInputFields),
+                    const SizedBox(height: 16),
 
                     /// Quantity
                     TextFormField(
@@ -97,9 +467,9 @@ class _CreateTicketState extends State<CreateTicket> {
                         prefixIcon: Icon(Iconsax.password_check),
                       ),
                     ),
-                    const SizedBox(height: TSizes.spaceBtwInputFields),
+                    const SizedBox(height: 16),
 
-                    /// Expire Date (with Date Picker)
+                    /// Expire Date (with Date and Time Picker)
                     TextFormField(
                       controller: _dateController,
                       decoration: const InputDecoration(
@@ -110,16 +480,27 @@ class _CreateTicketState extends State<CreateTicket> {
                       readOnly: true,
                       onTap: () => _selectDate(context), // Open date picker
                     ),
-                    const SizedBox(height: TSizes.spaceBtwInputFields),
+                    const SizedBox(height: 16),
 
-                    /// Address
+                    // Time (optional field to show selected time)
+                    TextFormField(
+                      controller: _timeController,
+                      decoration: const InputDecoration(
+                        labelText: 'Expire Time',
+                        prefixIcon: Icon(Icons.access_time),
+                      ),
+                      readOnly: true,
+                    ),
+                    const SizedBox(height: 16),
+
+                    /// Venue
                     TextFormField(
                       decoration: const InputDecoration(
-                        labelText: TTexts.address,
+                        labelText: 'Venue',
                         prefixIcon: Icon(Iconsax.location),
                       ),
                     ),
-                    const SizedBox(height: TSizes.spaceBtwInputFields),
+                    const SizedBox(height: 16),
 
                     /// Category Dropdown
                     DropdownButtonFormField<String>(
@@ -129,8 +510,9 @@ class _CreateTicketState extends State<CreateTicket> {
                       ),
                       dropdownColor: Colors.white,
                       value: selectedCategory,
-                      items: <String>['Events', 'Live Concert', 'Movies', 'Other']
-                          .map<DropdownMenuItem<String>>((String value) {
+                      items: categories.isEmpty
+                          ? [DropdownMenuItem(child: Text("Loading..."))]  // Show loading indicator if categories are not fetched
+                          : categories.map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
@@ -142,37 +524,7 @@ class _CreateTicketState extends State<CreateTicket> {
                         });
                       },
                     ),
-                    const SizedBox(height: TSizes.spaceBtwInputFields),
-
-                    /// Post Title
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'Post Title',
-                        prefixIcon: Icon(Icons.post_add),
-                      ),
-                    ),
-                    const SizedBox(height: TSizes.spaceBtwInputFields),
-
-                    /// Description
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'Description',
-                        prefixIcon: Icon(Icons.description),
-                      ),
-                    ),
-                    const SizedBox(height: TSizes.spaceBtwInputFields),
-                    /// Create Date (with Date Picker)
-                    TextFormField(
-                      controller: _dateController,
-                      decoration: const InputDecoration(
-                        labelText: 'Create Date',
-                        prefixIcon: Icon(Iconsax.calendar),
-                        suffixIcon: Icon(Icons.calendar_today),
-                      ),
-                      readOnly: true,
-                      onTap: () => _selectDate(context), // Open date picker
-                    ),
-                    const SizedBox(height: TSizes.spaceBtwInputFields),
+                    const SizedBox(height: 16),
 
                     /// Terms & Conditions Checkbox
                     Row(
@@ -188,7 +540,7 @@ class _CreateTicketState extends State<CreateTicket> {
                             side: const BorderSide(color: Colors.black),
                           ),
                         ),
-                        const SizedBox(width: TSizes.spaceBtwItems),
+                        const SizedBox(width: 8),
                         Text.rich(
                           TextSpan(children: [
                             TextSpan(
@@ -217,7 +569,7 @@ class _CreateTicketState extends State<CreateTicket> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: TSizes.spaceBtwSections),
+                    const SizedBox(height: 16),
 
                     /// Create New Post Button
                     GestureDetector(
@@ -237,8 +589,7 @@ class _CreateTicketState extends State<CreateTicket> {
                         child: Center(
                           child: Text(
                             "Create",
-                            style: GoogleFonts.getFont(
-                              "Roboto Condensed",
+                            style: TextStyle(
                               fontWeight: FontWeight.w700,
                               color: Colors.white,
                               fontSize: 18,

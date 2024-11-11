@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:ticket_resell/screens/create_post/create_options.dart';
 import 'package:ticket_resell/screens/explore_screen.dart';
 import 'package:ticket_resell/screens/request_ticket/all_ticket_seller.dart';
 import 'package:ticket_resell/screens/create_post/create_ticket.dart';
@@ -13,7 +14,7 @@ class NavigationController extends GetxController {
   final List<Widget> screens = [
     const ExploreScreen(),
     const AllTicketSellerScreen(),
-    const CreateTicket(),
+    const CreatePage(),
     const NotificationScreen(),
     const SettingsScreen(),
   ];

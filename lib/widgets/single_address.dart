@@ -28,31 +28,33 @@ class TSingleAddress extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: TSizes.spaceBtwItems),
       child: Stack(
         children: [
-          Positioned(
-            right: 5,
-            top: 0,
-            child: Icon(
-              selectedAddress ? Iconsax.tick_circle5 : null,
-              color: selectedAddress
-                  ? dark
-                      ? TColors.light
-                      : TColors.dark
-                  : null,
-            ),
-          ),
+          // Positioned(
+          //   right: 5,
+          //   top: 0,
+          //   child:
+          //   // Icon(
+          //   //   selectedAddress  ,
+          //   //   // Iconsax.tick_circle5 : null,
+          //   //   color: selectedAddress
+          //   //       ? dark
+          //   //           ? TColors.light
+          //   //           : TColors.dark
+          //   //       : null,
+          //   // ),
+          // ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'John Doe',
+                'Silver Platform',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.titleLarge,
+                style: Theme.of(context).textTheme.headlineLarge,
               ),
               const SizedBox(height: TSizes.sm / 2),
-              const Text('(+84) 456 7890', maxLines: 1, overflow: TextOverflow.ellipsis),
+              const Text('3000 slots', style: TextStyle(fontSize: 25), maxLines: 1, overflow: TextOverflow.ellipsis),
               const SizedBox(height: TSizes.sm / 2),
-              const Text('82356 Timmy Coves, South Liana, Maine, 87665, USA', softWrap: true),
+              const Text('500000 VND', style: TextStyle(fontSize: 30), softWrap: true),
             ],
           )
         ],

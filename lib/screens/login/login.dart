@@ -9,6 +9,7 @@ import '../../styles&text&sizes/spacing_styles.dart';
 import '../../styles&text&sizes/text_strings.dart';
 import '../../widgets/login_signup/form_divider.dart';
 import '../../widgets/login_signup/social_buttons.dart';
+import '../splash_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -20,33 +21,39 @@ class LoginScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
         elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => SplashScreen()),
+            );
+          },
+        ),
       ),
-
-
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
+        child: Padding(
+          padding: TSpacingStyle.paddingWithAppBarHeight,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              /// Logo, Title & Sub-Title
+              TLoginHeader(),
 
-          child: Padding(
-        padding: TSpacingStyle.paddingWithAppBarHeight,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+              /// Form
+              TLoginForm(),
 
-          children: [
-            ///Logo, Title & Sub-Title
-            TLoginHeader(),
+              /// Divider
+              TFormDivider(dividerText: TTexts.orSignInWith.capitalize!),
+              const SizedBox(height: TSizes.spaceBtwItems),
 
-            /// Form
-            TLoginForm(),
-
-            /// Divider
-            TFormDivider(dividerText: TTexts.orSignInWith.capitalize!),
-            const SizedBox(height: TSizes.spaceBtwItems),
-
-            /// Footer
-            TSocialButtons(),
-          ],
+              /// Footer
+              TSocialButtons(),
+            ],
+          ),
         ),
-      )),
+      ),
     );
   }
 }

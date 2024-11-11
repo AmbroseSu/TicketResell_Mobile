@@ -34,24 +34,18 @@ class _TLoginFormState extends State<TLoginForm> {
   late AuthService _authService;
   late NavigationService _navigationService;
 
-  //late AlertService _alertService;
-
   String? email, password;
 
   Future<void> _signIn(BuildContext context) async {
     try {
       print('Email: ${_emailController.text}');
       print('Password: ${_passwordController.text}');
-      // Tạo SignInRequest từ dữ liệu người dùng nhập vào
       SignInRequest request = SignInRequest(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
         fcmToken: TokenManager().fcmToken!,
       );
 
-      print('00000000000000000000000000000' + request.email + request.password);
-
-      // Gửi yêu cầu POST đến API
       var response = await http.post(
         Uri.parse(
             'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Authentication/sign-in'),
@@ -59,62 +53,17 @@ class _TLoginFormState extends State<TLoginForm> {
         body: jsonEncode(request.toJson()),
       );
 
-      print(response.statusCode);
-
-      // Xử lý phản hồi từ API
       if (response.statusCode == 200) {
-        // Phản hồi thành công, xử lý dữ liệu từ server ở đây
         var responseData = jsonDecode(response.body);
         var userDTO = responseData['content']['userDTO'];
         var token = responseData['content']['token'];
-        print(userDTO);
         userManager.id = userDTO['id'];
         userManager.email = userDTO['email'];
         userManager.role = userDTO['role'];
         userManager.token = token;
 
-        print(
-            "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
-        print(userManager.id);
-        String? fcmToken = TokenManager().fcmToken;
-
-        // Send notification using PushNotificationService
-        // await PushNotificationService.sendNotificationToSelectedDrived(
-        //   fcmToken,
-        //   context
-        // );
-
-        print("00000000000000000000000000000000000000000000000000000000000");
-        // Hiển thị dialog hoặc thực hiện hành động phù hợp sau khi đăng nhập thành công
-        // showDialog(
-        //   context: context,
-        //   builder: (BuildContext context) {
-        //     return AlertDialog(
-        //       title: Text('Sign in successfully'),
-        //       content: Column(
-        //         mainAxisSize: MainAxisSize.min,
-        //         children: <Widget>[
-        //           Text('ID: ${userDTO['id']}'),
-        //           Text('Email: ${userDTO['email']}'),
-        //           Text('Role: ${userDTO['role']}'),
-        //           Text('Token: $token'),
-        //         ],
-        //       ),
-        //       actions: <Widget>[
-        //         TextButton(
-        //           child: Text('OK'),
-        //           onPressed: () {
-        //             Navigator.of(context).pop();
-        //             // Navigate to another screen or perform another action
         Get.to(() => const NavigationMenu());
-        //           },
-        //         ),
-        //       ],
-        //     );
-        //   },
-        // );
       } else {
-        // Phản hồi lỗi từ API, hiển thị thông báo lỗi
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -134,7 +83,6 @@ class _TLoginFormState extends State<TLoginForm> {
         );
       }
     } catch (e) {
-      // Xử lý lỗi trong quá trình gửi yêu cầu
       print('Error occurred during sign-in: $e');
       showDialog(
         context: context,
@@ -156,12 +104,37 @@ class _TLoginFormState extends State<TLoginForm> {
     }
   }
 
+  String? _emailValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Email is required';
+    }
+    if (!value.contains('@')) {
+      return 'Please enter a valid email';
+    }
+    return null;
+  }
+
+  String? _passwordValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Password is required';
+    }
+    if (value.length < 8) {
+      return 'Password must be at least 8 characters long';
+    }
+    if (!RegExp(r'[A-Z]').hasMatch(value)) {
+      return 'Password must start with an uppercase letter';
+    }
+    if (!RegExp(r'[!@$%&]').hasMatch(value)) {
+      return 'Password must contain at least one special character (@!%&)';
+    }
+    return null;
+  }
+
   @override
   void initState() {
     super.initState();
     _authService = _getIt.get<AuthService>();
     _navigationService = _getIt.get<NavigationService>();
-    //_alertService = _getIt.get<AlertService>();
   }
 
   @override
@@ -183,6 +156,7 @@ class _TLoginFormState extends State<TLoginForm> {
                   email = value;
                 });
               },
+              validator: _emailValidator,  // Add email validator
             ),
             const SizedBox(height: TSizes.spaceBtwInputFields),
 
@@ -209,6 +183,7 @@ class _TLoginFormState extends State<TLoginForm> {
                   password = value;
                 });
               },
+              validator: _passwordValidator,  // Add password validator
             ),
             const SizedBox(height: TSizes.spaceBtwInputFields / 2),
 
@@ -216,24 +191,18 @@ class _TLoginFormState extends State<TLoginForm> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                /// Remember Me
                 Row(
                   children: [
                     Checkbox(
                       value: true,
                       onChanged: (value) {},
                       checkColor: Colors.white,
-                      // Color of the checkmark
                       activeColor: Colors.blueAccent,
-                      // Background color when checked
-                      side: BorderSide(
-                          color: Colors.black), // Border color of the checkbox
+                      side: BorderSide(color: Colors.black),
                     ),
                     const Text(TTexts.rememberMe),
                   ],
                 ),
-
-                /// Forget Password
                 TextButton(
                     onPressed: () {},
                     child: const Text(
@@ -247,25 +216,10 @@ class _TLoginFormState extends State<TLoginForm> {
             /// Sign In Button
             GestureDetector(
               onTap: () async {
-                // print("99999999999999999999999999999999999999999");
-                // if (_loginFormKey.currentState?.validate() ?? false) {
-                //   _loginFormKey.currentState?.save();
-                //   bool result = await _authService.login(email!, password!);
-                //   print("00000000000000000000000000000000000000000000");
-                //   print(result);
-                //   print(result);
-                //   if (result) {
-                //     print("1111111111111111111111111111111111111111111111111111111");
-                //     //_navigationService.pushReplacementNamed("/navigation_menu");
-                //   } else {
-                //     print("6666666666666666666666666666666666666666666666666666666666666666");
-                //     // _alertService.showToast(
-                //     //   text: "Failed to login, Please try again!",
-                //     //   icon: Icons.error,
-                //     // );
-                //   }
-                // }
-                _signIn(context);
+                if (_loginFormKey.currentState?.validate() ?? false) {
+                  _loginFormKey.currentState?.save();
+                  _signIn(context);
+                }
               },
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 15),
@@ -302,7 +256,7 @@ class _TLoginFormState extends State<TLoginForm> {
                   borderRadius: BorderRadius.circular(15),
                   color: Colors.white,
                   border: Border.all(
-                      color: Color(0xFFC7C5CC), width: 2), // Add border here
+                      color: Color(0xFFC7C5CC), width: 2),
                 ),
                 child: Center(
                   child: Text(

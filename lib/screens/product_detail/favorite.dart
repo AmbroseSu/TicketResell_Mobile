@@ -130,7 +130,8 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: TAppBar(
+      appBar:
+      TAppBar(
         title: Text('Favorite', style: Theme.of(context).textTheme.headlineMedium),
         showBackArrow: true,
         actions: [
