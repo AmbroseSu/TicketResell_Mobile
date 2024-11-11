@@ -5,7 +5,7 @@ import 'package:iconsax/iconsax.dart';
 import '../../styles&text&sizes/colors.dart';
 import '../../styles&text&sizes/sizes.dart';
 import '../../widgets/appbar.dart';
-import '../../widgets/single_address.dart';
+import '../../widgets/single_platform.dart';
 import '../../widgets/t_circular_icon.dart';
 import '../explore_screen.dart';
 import 'add_new_address.dart';
@@ -32,7 +32,7 @@ class PlatformFeeScreen extends StatelessWidget {
           padding: EdgeInsets.all(TSizes.defaultSpace),
           child: Column(
             children: [
-              TSingleAddress(selectedAddress: true),
+              TSinglePlatform(selectedAddress: true),
               // TSingleAddress(selectedAddress: true),
             ],
           ),

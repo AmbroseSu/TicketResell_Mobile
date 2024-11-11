@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:ticket_resell/screens/create_post/create_ticket.dart';
-import 'package:ticket_resell/screens/platform_fee/address.dart';
+import 'package:ticket_resell/screens/platform_fee/platform.dart';
 import 'package:ticket_resell/screens/product_detail/all_post.dart';
 import '../../styles&text&sizes/sizes.dart';
 import '../../styles&text&sizes/text_strings.dart';

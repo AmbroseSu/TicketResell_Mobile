@@ -16,15 +16,10 @@ class OrderScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       /// -- AppBar
-      appBar: TAppBar(
-        title:
-        Text('My Booking', style: Theme.of(context).textTheme.headlineMedium), showBackArrow: true,
-        actions: [
-          TCircularIcon(
-            icon: Iconsax.add,
-            onPressed: () => Get.to(const ExploreScreen()),
-          )
-        ],
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text('My Booking', style: Theme.of(context).textTheme.headlineMedium),
+        centerTitle: true,
       ),
       body: const Padding(
         padding: EdgeInsets.all(TSizes.defaultSpace),
