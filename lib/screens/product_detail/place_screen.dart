@@ -46,7 +46,12 @@ class _PlaceScreenState extends State<PlaceScreen> {
     _databaseService = _getIt.get<DatabaseService>();
     print('))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))');
     print(widget.ticket.imageUrls);
-    imageUrls = widget.ticket.imageUrls;
+    if (widget.ticket.imageUrls.isEmpty){
+      imageUrls = ['https://i.pinimg.com/736x/d7/07/84/d70784b885602af2877dd7a7230bba2c.jpg'];
+    }else{
+      imageUrls = widget.ticket.imageUrls;
+    }
+
     print(imageUrls[0]);
     fetchOtherUserProfile();
   }

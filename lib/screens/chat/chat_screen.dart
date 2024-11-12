@@ -557,7 +557,7 @@ class _ChatScreenState extends State<ChatScreen> {
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
         otherFcmToken = responseData['content']['fcmToken'];
-        NotificationModel? notificationModel = NotificationModel(id: "", senderId: userManager.email!, receiverId: widget.ticket.email, title: "Request for ticket ${widget.ticket.ticketName}", body: "You have a request from ${userManager.email}", timestamp: Timestamp.fromDate(DateTime.now()),ticketRequestId: ticketRequestId);
+        NotificationModel? notificationModel = NotificationModel(id: "", senderId: userManager.email!, receiverId: widget.ticket.email, title: "Request for ticket ${widget.ticket.ticketName}", body: "You have a request from ${userManager.email}", timestamp: Timestamp.fromDate(DateTime.now()),ticketRequestId: ticketRequestId, status: 'Request');
         String? notificationId = await _databaseService.addNotification(notificationModel);
         print(")000000000000000000000000000000000000000000000000000000000000000000000000000000000");
         NotificationModel? notificationModelUpId = notificationModel.copyWith(id: notificationId);

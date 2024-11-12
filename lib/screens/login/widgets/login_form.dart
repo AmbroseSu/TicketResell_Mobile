@@ -6,6 +6,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:ticket_resell/api/auth_helper.dart';
 import 'package:ticket_resell/api/global_variables/fcm_token_manage.dart';
 import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/api/request/sign_in_request.dart';
@@ -15,6 +16,7 @@ import 'package:http/http.dart' as http;
 import '../../../navigation_menu.dart';
 import '../../../styles&text&sizes/sizes.dart';
 import '../../../styles&text&sizes/text_strings.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../signup/verify_email.dart';
 
 class TLoginForm extends StatefulWidget {
@@ -72,6 +74,9 @@ class _TLoginFormState extends State<TLoginForm> {
         userManager.email = userDTO['email'];
         userManager.role = userDTO['role'];
         userManager.token = token;
+
+
+        await saveLoginInfo(token);
 
         print(
             "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");

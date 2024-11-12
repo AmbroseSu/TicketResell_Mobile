@@ -34,9 +34,16 @@ class Ticket {
   });
 
   factory Ticket.fromJson(Map<String, dynamic> json) {
-    List<String> imageUrls = (json['imageTicketDTOs'] as List)
-        .map((image) => image['imageUrl'] as String)
-        .toList();
+    List<String> imageUrls = [];
+
+    if (json['imageTicketDTOs'] != null && json['imageTicketDTOs'] is List && (json['imageTicketDTOs'] as List).isNotEmpty) {
+      imageUrls = (json['imageTicketDTOs'] as List)
+          .map((image) => image['imageUrl'] as String)
+          .toList();
+    } else {
+      imageUrls = ['https://i.pinimg.com/736x/d7/07/84/d70784b885602af2877dd7a7230bba2c.jpg']; // Default image if null or empty
+    }
+
     return Ticket(
       id: json['id'],
       ticketName: json['ticketName'],

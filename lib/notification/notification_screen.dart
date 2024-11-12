@@ -41,7 +41,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Notifications"),
+        automaticallyImplyLeading: false,
+        title: const Text(
+          "Notifications",
+          style: TextStyle(
+            fontSize: 25, // Tăng kích thước chữ
+            fontWeight: FontWeight.bold, // Có thể thêm fontWeight nếu cần
+          ),
+        ),
+        centerTitle: true,
       ),
       body: StreamBuilder<QuerySnapshot<NotificationModel>>(
         stream: _databaseService.getNotifications(userManager.email!),

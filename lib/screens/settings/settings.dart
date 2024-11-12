@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:ticket_resell/api/auth_helper.dart';
+import 'package:ticket_resell/api/global_variables/fcm_token_manage.dart';
+import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/screens/create_post/create_ticket.dart';
 import 'package:ticket_resell/screens/product_detail/all_post.dart';
 import '../../styles&text&sizes/sizes.dart';
@@ -18,6 +21,8 @@ import '../order/order.dart';
 import '../product_detail/all_ticket.dart';
 import '../product_detail/favorite.dart';
 import '../profile/profile.dart';
+import '../request_ticket/all_ticket_request_buy.dart';
+import '../request_ticket/order_ticket.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -65,17 +70,26 @@ class SettingsScreen extends StatelessWidget {
 
                   // TSettingsMenuTile(icon: Iconsax.message, title: 'Chat Room', subTitle: 'All messages on this way', onTap: () => Get.to(() =>  AllChatsScreen()),),
                   //TSettingsMenuTile(icon: Iconsax.message, title: 'Chat Room', subTitle: 'All messages on this way', onTap: () => Get.to(() =>  AllChatsScreen()),),
-                  TSettingsMenuTile(
-                      icon: Iconsax.folder_2,
-                      title: 'All Posts',
-                      subTitle: 'List all posts in TicketResell',
-                      onTap: () => Get.to(() => const AllPost())),
+
 
                   TSettingsMenuTile(
                       icon: Iconsax.folder,
                       title: 'All Tickets',
                       subTitle: 'List all tickets in TicketResell',
                       onTap: () => Get.to(() => const AllTicket())),
+
+                  TSettingsMenuTile(
+                      icon: Iconsax.receipt_2_1,
+                      title: 'History Request',
+                      subTitle: 'List all History Request in TicketResell',
+                      onTap: () => Get.to(() => const AllTicketRequestBuyScreen())),
+
+                  TSettingsMenuTile(
+                      icon: Iconsax.ticket,
+                      title: 'Order Ticket',
+                      subTitle: 'List all Order Ticket in TicketResell',
+                      onTap: () => Get.to(() => const AllOrderTicketScreen())),
+
                   TSettingsMenuTile(
                       icon: Iconsax.heart,
                       title: 'Favorite Tickets',
@@ -135,8 +149,21 @@ class SettingsScreen extends StatelessWidget {
                   /// -- Logout Button
                   const SizedBox(height: TSizes.spaceBtwSections),
                   GestureDetector(
-                    onTap: () {
-                      Navigator.push(
+                    onTap: () async {
+                      // Gọi hàm logout để đăng xuất
+                      await logout();
+                      UserManager userManager = UserManager();
+                      userManager.id = null;
+                      userManager.email = null;
+                      userManager.fullname = null;
+                      userManager.token = null;
+                      userManager.role = null;
+                      TokenManager tokenManager = TokenManager();
+                      tokenManager.fcmToken = null;
+                      await userManager.clearUserData();
+
+                      // Chuyển hướng đến LoginScreen sau khi đăng xuất
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(builder: (context) => LoginScreen()),
                       );
@@ -150,7 +177,7 @@ class SettingsScreen extends StatelessWidget {
                       ),
                       child: Center(
                         child: Text(
-                          TTexts.loginOut,
+                          TTexts.loginOut, // Giả sử TTexts.loginOut là text "Logout"
                           style: GoogleFonts.getFont(
                             "Roboto Condensed",
                             fontWeight: FontWeight.w700,
@@ -161,6 +188,7 @@ class SettingsScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+
                   const SizedBox(height: TSizes.spaceBtwSections * 2.5),
                 ],
               ),
