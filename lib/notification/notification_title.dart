@@ -74,6 +74,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:ticket_resell/screens/request_ticket/ticket_request_detail.dart';
+import 'package:ticket_resell/screens/request_ticket/ticket_request_for_buyer_detail.dart';
 import 'package:ticket_resell/services/database_service.dart';
 
 class NotificationTile extends StatefulWidget {
@@ -158,7 +159,14 @@ class _NotificationTileState extends State<NotificationTile> {
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
         TicketRequest ticketRequest = TicketRequest.fromJson(responseData['content']);
-        Get.to(() => TicketRequestDetailScreen(ticketRequest: ticketRequest));
+        if(widget.notification.status.toLowerCase() == 'request'){
+          Get.to(() => TicketRequestDetailScreen(ticketRequest: ticketRequest));
+        }else{
+          if(widget.notification.status.toLowerCase() == 'accept'){
+            Get.to(() => TicketRequestForBuyerDetailScreen(ticketRequest: ticketRequest));
+          }
+        }
+
       } else {
         print('Failed to check email');
         Get.snackbar('Error', 'Failed to check email: ${response.statusCode}');

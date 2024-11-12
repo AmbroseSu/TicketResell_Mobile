@@ -21,7 +21,7 @@ class AllTicketRequestBuyScreen extends StatefulWidget {
 
 class _AllTicketRequestBuyScreenState extends State<AllTicketRequestBuyScreen> {
   List<TicketRequest> requests = [];
-  Ticket? ticket;
+  Map<int, String> ticketNames = {}; // Map để lưu trữ tên ticket theo ticketId
 
   @override
   void initState() {
@@ -42,11 +42,32 @@ class _AllTicketRequestBuyScreenState extends State<AllTicketRequestBuyScreen> {
             .map((json) => TicketRequest.fromJson(json))
             .toList();
       });
+
+      // Fetch ticket names for each request
+      for (var request in requests) {
+        if (!ticketNames.containsKey(request.ticketId)) {
+          await fetchTicketName(request.ticketId);
+        }
+      }
     } else {
       print('Failed to load tickets');
     }
   }
 
+  Future<void> fetchTicketName(int ticketId) async {
+    final response = await http.get(Uri.parse(
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get?ticketId=$ticketId'));
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      setState(() {
+        // Lưu tên ticket vào Map theo ticketId
+        ticketNames[ticketId] = data['content']['ticketName'] ?? 'Unknown Ticket';
+      });
+    } else {
+      print('Failed to load ticket name');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,10 +93,10 @@ class _AllTicketRequestBuyScreenState extends State<AllTicketRequestBuyScreen> {
           final senderName = request.userFullname;
           final price = request.price;
           final quantity = request.quantity;
-          fetchTickets(request.ticketId);
+          final ticketName = ticketNames[request.ticketId] ?? 'Loading...'; // Hiển thị tên ticket
           final requestDate = request.ticketRequestDate;
           final formattedDate =
-          DateFormat('dd/MM/yyyy').format(request.ticketRequestDate); // Including time
+          DateFormat('HH:mm dd/MM/yyyy').format(request.ticketRequestDate); // Including time
           final status = request.status;
 
           return GestureDetector(
@@ -100,7 +121,7 @@ class _AllTicketRequestBuyScreenState extends State<AllTicketRequestBuyScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          senderName,
+                          ticketName,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20.0,
@@ -116,6 +137,7 @@ class _AllTicketRequestBuyScreenState extends State<AllTicketRequestBuyScreen> {
                       ],
                     ),
                     const SizedBox(height: 8.0),
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -132,7 +154,7 @@ class _AllTicketRequestBuyScreenState extends State<AllTicketRequestBuyScreen> {
                                 ? Colors.blueAccent
                                 : (status == 1 ? Colors.green : Colors.red),
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 24, vertical: 5),
+                                horizontal: 20, vertical: 5),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20),
                             ),
@@ -145,7 +167,7 @@ class _AllTicketRequestBuyScreenState extends State<AllTicketRequestBuyScreen> {
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
-                              fontSize: 17,
+                              fontSize: 15,
                             ),
                           ),
                         ),
@@ -159,20 +181,5 @@ class _AllTicketRequestBuyScreenState extends State<AllTicketRequestBuyScreen> {
         },
       ),
     );
-  }
-
-  Future<void> fetchTickets(int ticketId) async {
-    final response = await http.get(Uri.parse(
-        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get?ticketId=${ticketId}'));
-    print(response.statusCode);
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      setState(() {
-        ticket = Ticket.fromJson(data['content']);
-      });
-    } else {
-      // Xử lý lỗi ở đây (hiển thị thông báo lỗi hoặc xử lý khác)
-      print('Failed to load tickets');
-    }
   }
 }

@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ticket_resell/navigation_menu.dart';
+import 'package:ticket_resell/notification/notification_screen.dart';
 import 'package:ticket_resell/screens/product_detail/place_screen.dart';
 import 'package:ticket_resell/screens/request_ticket/all_ticket_request_buy.dart';
 import 'package:http/http.dart' as http;
@@ -32,7 +34,8 @@ class _ExploreScreenState extends State<ExploreScreen>
     super.initState();
     // _tabController = TabController(length: 4, vsync: this);
     fetchCategories();
-
+    NotificationScreen();
+    NavigationMenu();
   }
 
 

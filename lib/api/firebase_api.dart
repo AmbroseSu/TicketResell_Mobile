@@ -9,6 +9,7 @@ import 'package:ticket_resell/notification/notification_controller.dart';
 import 'package:ticket_resell/notification/notification_read.dart';
 import 'package:ticket_resell/notification/notification_screen.dart';
 import 'package:ticket_resell/screens/request_ticket/ticket_request_detail.dart';
+import 'package:ticket_resell/screens/request_ticket/ticket_request_for_buyer_detail.dart';
 import 'package:ticket_resell/services/database_service.dart';
 import '../../main.dart';
 import 'package:http/http.dart' as http;
@@ -77,6 +78,7 @@ class FirebaseApi {
     final body = message.notification?.body ?? 'Default Body';
     final ticketRequestId = message.data['ticketRequestId'] ?? 'Default Ticket Request ID';
     final notificationId = message.data['notificationId'] ?? 'Default Notification ID';
+    final notificationStatus = message.data['status'] ?? 'Default Notification Status';
 
     print("Navigating with message: Title: $title, Body: $body");
     print(ticketRequestId);
@@ -94,7 +96,7 @@ class FirebaseApi {
     if (shouldCheckRequest) {
       int requestTicketId = int.parse(ticketRequestId);
       shouldCheckRequest = false;
-      checkTicketRequest(requestTicketId, notificationId);
+      checkTicketRequest(requestTicketId, notificationId, notificationStatus);
 
     }else{
       print("66666666666666666666666666666666666666222222222222222222222222222222222222222222");
@@ -139,7 +141,7 @@ class FirebaseApi {
   }
 
 
-  Future<void> checkTicketRequest(int ticketRequestId, String notificationId) async {
+  Future<void> checkTicketRequest(int ticketRequestId, String notificationId, String notificationStatus) async {
     final url = 'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/TicketRequest/get-ticket-request-by-id?ticketRequestId=$ticketRequestId';
     final headers = {
       'Content-Type': 'application/json',
@@ -160,6 +162,7 @@ class FirebaseApi {
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
         TicketRequest ticketRequest = TicketRequest.fromJson(responseData['content']);
+        shouldCheckRequest = false;
         //navigatorKey.currentState?.push(
         //  MaterialPageRoute(
         //    builder: (context) => TicketRequestDetailScreen(ticketRequest: ticketRequest),
@@ -172,7 +175,14 @@ class FirebaseApi {
         print(notificationId);
         await notificationRead.markAsRead(notificationId);
         NotificationScreen();
-        Get.to(() => TicketRequestDetailScreen(ticketRequest: ticketRequest,));
+        if(notificationStatus.toLowerCase() == 'request'){
+          Get.to(() => TicketRequestDetailScreen(ticketRequest: ticketRequest,));
+        }else{
+          if(notificationStatus.toLowerCase() == 'accept'){
+            Get.to(() => TicketRequestForBuyerDetailScreen(ticketRequest: ticketRequest,));
+          }
+        }
+
       } else {
         print('Failed to ');
         //Get.snackbar('Error', 'Failed to check email: ${response.statusCode}');

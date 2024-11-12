@@ -12,7 +12,20 @@
           "package_name": "com.prn.ticket_resell_mobile"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "663090094318-no59ns83hblolmgkpkubrr5d1p86m6fm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.prn.ticket_resell_mobile",
+            "certificate_hash": "2d507d3623e13674c23f15aabe157938acfe342a"
+          }
+        },
+        {
+          "client_id": "663090094318-7u526j2396odghhe8t2p6f1injg6aq4g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBV0oWP0GdPN37mDtdjEMo9J3Gn4uwzlT4"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "663090094318-7u526j2396odghhe8t2p6f1injg6aq4g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
