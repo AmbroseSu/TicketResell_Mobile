@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:ticket_resell/styles&text&sizes/colors.dart';
 
+import 'create_post.dart';
 import 'create_ticket.dart';
 //
 // class CreatePage extends StatelessWidget {
@@ -72,7 +73,9 @@ class CreatePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text("Create Options"),
         centerTitle: true,
       ),
@@ -146,16 +149,5 @@ class CreatePage extends StatelessWidget {
   }
 }
 
-// Mẫu trang CreatePost (giả sử đã có sẵn)
-class CreatePost extends StatelessWidget {
-  const CreatePost({super.key});
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Create Post")),
-      body: Center(child: Text("Post Creation Form")),
-    );
-  }
-}
 
