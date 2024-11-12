@@ -18,6 +18,7 @@ import '../../widgets/user_profile_tile.dart';
 import '../cart/cart.dart';
 import '../login/login.dart';
 import '../order/order.dart';
+import '../password/create_newpass.dart';
 import '../product_detail/all_ticket.dart';
 import '../product_detail/favorite.dart';
 import '../profile/profile.dart';
@@ -106,6 +107,13 @@ class SettingsScreen extends StatelessWidget {
                   //     title: 'Payment Platform',
                   //     subTitle: 'Add, remove products and move to checkout',
                   //     onTap: () => Get.to(() => const CartScreen())),
+                  TSettingsMenuTile(
+                    icon: Icons.password,
+                    title: 'Change Password',
+                    subTitle:
+                    'Change your account password with OTP verification',
+                    onTap: () => Get.to(() => const CreateNewpass()),
+                  ),
                   TSettingsMenuTile(
                       icon: Iconsax.bag_tick,
                       title: 'My Booking',

@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-
-
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:iconsax/iconsax.dart';
 import 'package:ticket_resell/screens/platform_fee/platform.dart';
-
 import '../../navigation_menu.dart';
 
 class CreatePost extends StatefulWidget {
@@ -20,77 +16,117 @@ class _CreatePostState extends State<CreatePost> {
   String? selectedTicket;
   List<String> tickets = [];
   TextEditingController _dateController = TextEditingController();
-  TextEditingController _timeController = TextEditingController();
+  final TextEditingController _ticketNameController = TextEditingController();
+  final TextEditingController _ticketDescriptionController = TextEditingController();
+
   TimeOfDay? selectedTime;
+  Map<String, int> TicketMap = {};
 
   @override
   void initState() {
     super.initState();
-    fetchCategories();  // Fetch categories when the widget is initialized
+    fetchTicketNames();  // Fetch categories when the widget is initialized
   }
 
   @override
   void dispose() {
     _dateController.dispose();
+    _ticketNameController.dispose();
+    _ticketDescriptionController.dispose();
     super.dispose();
   }
 
-  // Fetch categories from the API
-  Future<void> fetchCategories() async {
+// Fetch categories from the API
+  Future<void> fetchTicketNames() async {
     final response = await http.get(
-      Uri.parse("https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/TicketCategory/categories?page=1&limit=1000"),
+      Uri.parse("https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get-list?status=ACTIVE&page=1&limit=1000"),
     );
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      List<String> fetchedCategories = [];
-      for (var category in data['content']) {
-        fetchedCategories.add(category['name']);
+
+      // Populate tickets and TicketMap if 'content' exists
+      if (data.containsKey('content') && data['content'] is List) {
+        List<String> fetchedTickets = [];
+        for (var ticket in data['content']) {
+          String ticketName = ticket['ticketName'];
+          int ticketId = ticket['ticketId'];
+
+          fetchedTickets.add(ticketName);
+          TicketMap[ticketName] = ticketId;
+        }
+        setState(() {
+          tickets = fetchedTickets;
+        });
+      } else {
+        print('Content field missing or is not a List');
       }
-      setState(() {
-        tickets = fetchedCategories;
-      });
     } else {
-      // Handle the error
-      throw Exception('Failed to load categories');
+      print('Failed to load tickets: ${response.statusCode}');
     }
   }
 
-  // Date and time picker logic
-  Future<void> _selectDate(BuildContext context) async {
-    DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-    if (pickedDate != null) {
-      setState(() {
-        _dateController.text = "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-      });
-      _selectTime(context, pickedDate);
+// Create post
+  Future<void> createPost() async {
+    try {
+      if (_ticketNameController.text.isEmpty ||
+          _ticketDescriptionController.text.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please fill all the fields')));
+        return;
+      }
+
+      // Check if selectedTicket exists in TicketMap
+      int? ticketId = TicketMap[selectedTicket];
+      if (ticketId == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Please select a valid ticket')));
+        return;
+      }
+
+      final response = await http.post(
+        Uri.parse("https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Post/new"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "title": _ticketNameController.text,
+          "description": _ticketDescriptionController.text,
+          "ticketId": ticketId, // Use the ticketId from TicketMap
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(data['message'] ?? "Post created successfully"),
+        ));
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PlatformFeeScreen()),
+        );
+      } else {
+        print("Error: ${response.statusCode}");
+        print("Response: ${response.body}");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to create ticket: ${response.body}')),
+        );
+      }
+    } catch (e) {
+      print("Exception: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('An error occurred while creating ticket: $e')),
+      );
     }
   }
 
-  Future<void> _selectTime(BuildContext context, DateTime pickedDate) async {
-    TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay(hour: pickedDate.hour, minute: pickedDate.minute),
-    );
-    if (pickedTime != null) {
-      setState(() {
-        selectedTime = pickedTime;
-        _timeController.text = "${pickedTime.format(context)}";
-      });
-    }
-  }
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('Create New Ticket', style: Theme.of(context).textTheme.headlineMedium),
+        title: Text('Create New Post', style: Theme.of(context).textTheme.headlineMedium),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -120,6 +156,7 @@ class _CreatePostState extends State<CreatePost> {
                   children: [
                     /// Post Title
                     TextFormField(
+                      controller: _ticketNameController,
                       decoration: const InputDecoration(
                         labelText: 'Post Title',
                         prefixIcon: Icon(Icons.post_add),
@@ -129,6 +166,7 @@ class _CreatePostState extends State<CreatePost> {
 
                     /// Description
                     TextFormField(
+                      controller: _ticketDescriptionController,
                       decoration: const InputDecoration(
                         labelText: 'Description',
                         prefixIcon: Icon(Icons.description),
@@ -145,8 +183,8 @@ class _CreatePostState extends State<CreatePost> {
                       dropdownColor: Colors.white,
                       value: selectedTicket,
                       items: tickets.isEmpty
-                          ? [DropdownMenuItem(child: Text("Loading..."))]  // Show loading indicator if categories are not fetched
-                          : tickets.map<DropdownMenuItem<String>>((String value) {
+                          ? [DropdownMenuItem(child: Text("Loading..."))]
+                          : tickets.toSet().map((String value) {  // Convert to Set to ensure unique items
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value),
@@ -158,6 +196,7 @@ class _CreatePostState extends State<CreatePost> {
                         });
                       },
                     ),
+
                     const SizedBox(height: 16),
 
                     /// Terms & Conditions Checkbox
@@ -207,13 +246,14 @@ class _CreatePostState extends State<CreatePost> {
 
                     /// Create New Post Button
                     GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const PlatformFeeScreen()),
-                        );
-                      },
+                      onTap: createPost,
+                      //     () {
+                      //   Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) => const PlatformFeeScreen()),
+                      //   );
+                      // },
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 15),
                         decoration: BoxDecoration(
