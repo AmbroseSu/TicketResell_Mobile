@@ -6,6 +6,7 @@ import 'package:ticket_resell/api/auth_helper.dart';
 import 'package:ticket_resell/api/global_variables/fcm_token_manage.dart';
 import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/screens/create_post/create_ticket.dart';
+import 'package:ticket_resell/screens/platform_fee/platform.dart';
 import 'package:ticket_resell/screens/product_detail/all_post.dart';
 import '../../styles&text&sizes/sizes.dart';
 import '../../styles&text&sizes/text_strings.dart';
@@ -14,7 +15,6 @@ import '../../widgets/primary_header_container.dart';
 import '../../widgets/section_heading.dart';
 import '../../widgets/settings_menu_tile.dart';
 import '../../widgets/user_profile_tile.dart';
-import '../address/address.dart';
 import '../cart/cart.dart';
 import '../login/login.dart';
 import '../order/order.dart';
@@ -97,15 +97,15 @@ class SettingsScreen extends StatelessWidget {
                       onTap: () => Get.to(() => const FavoriteScreen())),
                   TSettingsMenuTile(
                     icon: Iconsax.safe_home,
-                    title: 'My Addresses',
-                    subTitle: 'Set shopping delivery address',
-                    onTap: () => Get.to(() => const UserAddressScreen()),
+                    title: 'Platform Fee',
+                    subTitle: 'All platform fee to create new post',
+                    onTap: () => Get.to(() => const PlatformFeeScreen()),
                   ),
-                  TSettingsMenuTile(
-                      icon: Iconsax.shopping_cart,
-                      title: 'Payment Platform',
-                      subTitle: 'Add, remove products and move to checkout',
-                      onTap: () => Get.to(() => const CartScreen())),
+                  // TSettingsMenuTile(
+                  //     icon: Iconsax.shopping_cart,
+                  //     title: 'Payment Platform',
+                  //     subTitle: 'Add, remove products and move to checkout',
+                  //     onTap: () => Get.to(() => const CartScreen())),
                   TSettingsMenuTile(
                       icon: Iconsax.bag_tick,
                       title: 'My Booking',

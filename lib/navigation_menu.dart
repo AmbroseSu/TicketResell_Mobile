@@ -1,19 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/notification/navigation_controller.dart';
 import 'package:ticket_resell/notification/notification_controller.dart';
-import 'package:ticket_resell/notification/notification_screen.dart';
-import 'package:ticket_resell/screens/cart/cart.dart';
-import 'package:ticket_resell/screens/chat/allchats_screen.dart';
-import 'package:ticket_resell/screens/chat/chat_screen.dart';
-import 'package:ticket_resell/screens/create_post/create_ticket.dart';
-import 'package:ticket_resell/screens/explore_screen.dart';
-import 'package:ticket_resell/screens/order/order.dart';
-import 'package:ticket_resell/screens/product_detail/favorite.dart';
-import 'package:ticket_resell/screens/request_ticket/all_ticket_seller.dart';
-import 'package:ticket_resell/screens/settings/settings.dart';
 import 'package:ticket_resell/styles&text&sizes/colors.dart';
 import 'package:ticket_resell/widgets/helper_functions.dart';
 

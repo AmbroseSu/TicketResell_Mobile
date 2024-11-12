@@ -130,15 +130,10 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: TAppBar(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text('Favorite', style: Theme.of(context).textTheme.headlineMedium),
-        showBackArrow: true,
-        actions: [
-          TCircularIcon(
-            icon: Iconsax.add,
-            onPressed: () => Get.to(const ExploreScreen()),
-          )
-        ],
+        centerTitle: true,
       ),
       body: tickets.isEmpty
           ? Center(child: CircularProgressIndicator()) // Hiển thị vòng tròn loading khi chưa có dữ liệu
