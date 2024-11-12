@@ -46,7 +46,9 @@ class TProductCardVertical extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(10), // Adjust as needed for rounded corners
                       child: Image.network(
-                        ticket.imageUrls[0],
+                        ticket.imageUrls.isNotEmpty
+                            ? ticket.imageUrls[0]
+                            : 'https://i.pinimg.com/736x/d7/07/84/d70784b885602af2877dd7a7230bba2c.jpg',
                         fit: BoxFit.cover,
                       ),
                     ),

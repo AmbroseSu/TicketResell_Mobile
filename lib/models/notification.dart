@@ -8,6 +8,7 @@ class NotificationModel {
   final String body;
   final int? ticketRequestId;  // Thêm trường ticketRequestId
   final Timestamp timestamp;
+  final String status;
   final bool isRead;
 
   NotificationModel({
@@ -18,6 +19,7 @@ class NotificationModel {
     required this.body,
     this.ticketRequestId,  // Thêm vào constructor
     required this.timestamp,
+    required this.status,
     this.isRead = false,
   });
 
@@ -33,7 +35,22 @@ class NotificationModel {
     ? json['ticketRequestId']
         : int.tryParse(json['ticketRequestId']?.toString() ?? ''),  // Lấy giá trị từ JSON
       timestamp: json['timestamp'],
+      status: json['status'],
       isRead: json['isRead'] ?? false,
+    );
+  }
+
+  NotificationModel copyWith({String? id}) {
+    return NotificationModel(
+      id: id ?? this.id, // Sử dụng id mới nếu có, ngược lại dùng id hiện tại
+      senderId: senderId,
+      receiverId: receiverId,
+      title: title,
+      body: body,
+      ticketRequestId: ticketRequestId,
+      timestamp: timestamp,
+      status: status,
+      isRead: isRead,
     );
   }
 
@@ -46,6 +63,7 @@ class NotificationModel {
       'body': body,
       'ticketRequestId': ticketRequestId,
       'timestamp': timestamp,
+      'status': status,
       'isRead': isRead,
     };
   }

@@ -36,7 +36,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
   final GetIt _getIt = GetIt.instance;
   UserProfile? otherUser;
   late DatabaseService _databaseService;
-  Ticket emptyTicket = Ticket(id: 0, ticketName: "", price: 0, quantity: 0, expirationDate: "", venue: "", status: 0, categoryName: "", postId: 0, postTitle: "", postDescription: "", createdDate: "", postStatus: false, userId: 0, email: "", imageUrls: []);
+  Ticket emptyTicket = Ticket(id: 0, ticketName: "", price: 0, quantity: 0, expirationDate: "", venue: "", status: 0, categoryName: "", postTitle: "", postDescription: "", createdDate: "", userId: 0, email: "", imageUrls: [], categoryId: 0);
   late List<String> imageUrls;
 
 
@@ -46,7 +46,12 @@ class _PlaceScreenState extends State<PlaceScreen> {
     _databaseService = _getIt.get<DatabaseService>();
     print('))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))');
     print(widget.ticket.imageUrls);
-    imageUrls = widget.ticket.imageUrls;
+    if (widget.ticket.imageUrls.isEmpty){
+      imageUrls = ['https://i.pinimg.com/736x/d7/07/84/d70784b885602af2877dd7a7230bba2c.jpg'];
+    }else{
+      imageUrls = widget.ticket.imageUrls;
+    }
+
     print(imageUrls[0]);
     fetchOtherUserProfile();
   }

@@ -40,6 +40,7 @@ class _SignupScreenState extends State<SignupScreen> {
   late DatabaseService _databaseService;
   //String? password, name;
   UserManager userManager = UserManager();
+  TokenManager tokenManager = TokenManager();
   String? email = UserManager().email;
   File? selectedImage;
   String? pfpURL;
@@ -78,7 +79,9 @@ class _SignupScreenState extends State<SignupScreen> {
     final String confirmPassword = _passwordConfirmController.text;
     final String address = _addressController.text;
     final int gender = selectedGender.value ?? 3;
-    final String? fcmtoken = TokenManager().fcmToken;
+    print("000000000101010101010101010101101010101010110101010101011");
+    print(tokenManager.fcmToken);
+    String? fcmtoken = tokenManager.fcmToken;
     //final String? fcmtoken = "String";
     //String? pfpURL;
 
@@ -155,7 +158,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
       print('Response Status Code: ${response.statusCode}');
       print('Response Body: ${response.body}');
-      String? fcmToken = TokenManager().fcmToken;
+      String? fcmToken = tokenManager.fcmToken;
       if (response.statusCode == 200) {
         var responseData = jsonDecode(response.body);
         String body = "Save information successfully. Please login !!";

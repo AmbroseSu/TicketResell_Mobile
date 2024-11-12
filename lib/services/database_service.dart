@@ -134,8 +134,18 @@ class DatabaseService {
     }
   }
 
-  Future<void> addNotification(NotificationModel notification) async {
-    await _notificationsCollection?.add(notification);
+  // Future<void> addNotification(NotificationModel notification) async {
+  //   await _notificationsCollection?.add(notification);
+  // }
+
+  Future<String?> addNotification(NotificationModel notificationModel) async {
+    try {
+      final docRef = await _notificationsCollection?.add(notificationModel);
+      return docRef?.id; // Trả về notificationId sau khi thêm
+    } catch (e) {
+      print("Failed to add notification: $e");
+      rethrow;
+    }
   }
 
 

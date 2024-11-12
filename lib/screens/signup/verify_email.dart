@@ -4,8 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:googleapis/androidenterprise/v1.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:ticket_resell/api/global_variables/fcm_token_manage.dart';
 import 'package:ticket_resell/api/global_variables/user_manage.dart';
+import 'package:ticket_resell/screens/signup/signup.dart';
 import '../../styles&text&sizes/sizes.dart';
 import '../../styles&text&sizes/text_strings.dart';
 import '../../widgets/helper_functions.dart';
@@ -44,14 +47,22 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
+        if(responseData['message'] == "Please Sign Up"){
+          Get.to(() => SignupScreen());
+        }else{
+          UserManager userManager = UserManager();
+          userManager.id = responseData['content']['id'];
+          userManager.email = responseData['content']['email'];
+          userManager.role = responseData['content']['role'];
 
-        UserManager userManager = UserManager();
-        userManager.id = responseData['content']['id'];
-        userManager.email = responseData['content']['email'];
-        userManager.role = responseData['content']['role'];
+          // Chuyển đến OtpVerificationScreen với id và role
+          Get.to(() => OtpVerificationScreen());
+        }
+        //final userId = responseData['content']['id'];
+        //final userRole = responseData['content']['role'];
+        //final userEmail = responseData['content']['email'];
 
-        // Chuyển đến OtpVerificationScreen với id và role
-        Get.to(() => OtpVerificationScreen());
+
       } else {
         print('Failed to check email');
         Get.snackbar('Error', 'Failed to check email: ${response.statusCode}');

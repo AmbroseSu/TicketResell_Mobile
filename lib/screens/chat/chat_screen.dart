@@ -89,7 +89,19 @@ class _ChatScreenState extends State<ChatScreen> {
         _buildUI();
         _showRequestFormForBook();
       });
-    }
+    }//else{
+    //   if(widget.deal == false && widget.ticket.id == 0){
+    //     WidgetsBinding.instance.addPostFrameCallback((_) {
+    //       _buildUI();
+    //       //_showRequestFormForBook();
+    //     });
+    //   }else{
+    //     WidgetsBinding.instance.addPostFrameCallback((_) {
+    //       _buildUI();
+    //       _showRequestForm();
+    //     });
+    //   }
+    // }
   }
 
   @override
@@ -545,18 +557,20 @@ class _ChatScreenState extends State<ChatScreen> {
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
         otherFcmToken = responseData['content']['fcmToken'];
-        NotificationModel? notificationModel = NotificationModel(id: "", senderId: userManager.email!, receiverId: widget.ticket.email, title: "Request for ticket ${widget.ticket.ticketName}", body: "You have a request from ${userManager.email}", timestamp: Timestamp.fromDate(DateTime.now()),ticketRequestId: ticketRequestId);
-        _databaseService.addNotification(notificationModel);
+        NotificationModel? notificationModel = NotificationModel(id: "", senderId: userManager.email!, receiverId: widget.ticket.email, title: "Request for ticket ${widget.ticket.ticketName}", body: "You have a request from ${userManager.email}", timestamp: Timestamp.fromDate(DateTime.now()),ticketRequestId: ticketRequestId, status: 'Request');
+        String? notificationId = await _databaseService.addNotification(notificationModel);
         print(")000000000000000000000000000000000000000000000000000000000000000000000000000000000");
-        print(notificationModel.id);
-        print(notificationModel.senderId);
-        print(notificationModel.title);
-        print(notificationModel.body);
-        print(notificationModel.receiverId);
-        print(notificationModel.ticketRequestId);
+        NotificationModel? notificationModelUpId = notificationModel.copyWith(id: notificationId);
+        print(notificationModelUpId.id);
+        print(notificationModelUpId.senderId);
+        print(notificationModelUpId.title);
+        print(notificationModelUpId.body);
+        print(notificationModelUpId.receiverId);
+        print(notificationModelUpId.ticketRequestId);
 
 
-        await PushNotificationService.sendNotificationToSelectedDrivedForRequest(otherFcmToken,context,notificationModel);
+
+        await PushNotificationService.sendNotificationToSelectedDrivedForRequest(otherFcmToken,context,notificationModelUpId);
 
         // await PushNotificationService.sendNotificationToSelectedDrived(
         //     otherFcmToken,
