@@ -854,6 +854,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:iconsax/iconsax.dart';
+
 class CreateTicket extends StatefulWidget {
   const CreateTicket({super.key});
 
@@ -912,6 +913,68 @@ class _CreateTicketState extends State<CreateTicket> {
     }
   }
 
+  // Future<void> createTicket() async {
+  //   try {
+  //     if (_ticketNameController.text.isEmpty ||
+  //         _priceController.text.isEmpty ||
+  //         _quantityController.text.isEmpty ||
+  //         selectedCategory == null ||
+  //         _venueController.text.isEmpty ||
+  //         pickedDate == null) {
+  //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please fill all the fields')));
+  //       return;
+  //     }
+  //
+  //     final expirationDate = _dateController.text.isNotEmpty ? _dateController.text : null;
+  //
+  //     print('Ticket Name: ${_ticketNameController.text}');
+  //     print('Price: ${_priceController.text}');
+  //     print('Quantity: ${_quantityController.text}');
+  //     print('Expiration Date: $expirationDate');
+  //     print('Venue: ${_venueController.text}');
+  //     print('Selected Category: $selectedCategory');
+  //     print('Category ID: ${categoryMap[selectedCategory]}');
+  //     print('User ID: $userId');
+  //
+  //     final response = await http.post(
+  //       Uri.parse("https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/new"),
+  //       headers: {"Content-Type": "application/json"},
+  //       body: jsonEncode({
+  //         "name": _ticketNameController.text,
+  //         "price": int.tryParse(_priceController.text) ?? 0,
+  //         "quantity": int.tryParse(_quantityController.text) ?? 1,
+  //         "expirationDate": expirationDate,
+  //         "venue": _venueController.text,
+  //         "categoryId": categoryMap[selectedCategory] ?? 0, // Ensure categoryId is valid
+  //         "userId": userId,
+  //       }),
+  //     );
+  //
+  //     if (response.statusCode == 200) {
+  //       final data = json.decode(response.body);
+  //       // final ticketId = data['ticketId'];
+  //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  //         content: Text(data['message'] ?? "Ticket created successfully"),
+  //       ));
+  //       Navigator.push(
+  //         context,
+  //         MaterialPageRoute(builder: (context) => UploadFile()),
+  //       );
+  //     } else {
+  //       print("Error: ${response.statusCode}");
+  //       print("Response: ${response.body}"); // Print error response
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('Failed to create ticket: ${response.body}')),
+  //       );
+  //     }
+  //   } catch (e) {
+  //     print("Exception: $e");
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text('An error occurred while creating ticket: $e')),
+  //     );
+  //   }
+  // }
+
   Future<void> createTicket() async {
     try {
       if (_ticketNameController.text.isEmpty ||
@@ -925,15 +988,6 @@ class _CreateTicketState extends State<CreateTicket> {
       }
 
       final expirationDate = _dateController.text.isNotEmpty ? _dateController.text : null;
-
-      print('Ticket Name: ${_ticketNameController.text}');
-      print('Price: ${_priceController.text}');
-      print('Quantity: ${_quantityController.text}');
-      print('Expiration Date: $expirationDate');
-      print('Venue: ${_venueController.text}');
-      print('Selected Category: $selectedCategory');
-      print('Category ID: ${categoryMap[selectedCategory]}');
-      print('User ID: $userId');
 
       final response = await http.post(
         Uri.parse("https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/new"),
@@ -951,12 +1005,16 @@ class _CreateTicketState extends State<CreateTicket> {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        final ticketId = data['content']['id']; // Get ticketId from response
+
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(data['message'] ?? "Ticket created successfully"),
         ));
+
+        // Navigate to UploadFile screen and pass ticketId
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const UploadFile()),
+          MaterialPageRoute(builder: (context) => UploadFile(ticketId: ticketId)),
         );
       } else {
         print("Error: ${response.statusCode}");
@@ -972,6 +1030,7 @@ class _CreateTicketState extends State<CreateTicket> {
       );
     }
   }
+
 
   Future<void> _selectDate(BuildContext context) async {
     pickedDate = await showDatePicker(
