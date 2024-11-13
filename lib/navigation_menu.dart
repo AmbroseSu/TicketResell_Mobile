@@ -22,7 +22,7 @@ class NavigationMenu extends StatelessWidget {
     final notificationController = Get.find<NotificationController>();
     final navigationController = Get.put(NavigationController());
     final darkMode = THelperFunctions.isDarkMode(context);
-
+    NotificationScreen();
     return Scaffold(
       bottomNavigationBar: Obx(
             () => NavigationBar(

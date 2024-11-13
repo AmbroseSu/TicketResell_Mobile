@@ -31,7 +31,6 @@ import '../../styles&text&sizes/sizes.dart';
 //   }
 // }
 
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -80,26 +79,28 @@ class _PlatformFeeScreenState extends State<PlatformFeeScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('Platform Fee', style: Theme.of(context).textTheme.headlineMedium),
+        title: Text('Platform Fee',
+            style: Theme.of(context).textTheme.headlineMedium),
         centerTitle: true,
       ),
       backgroundColor: Colors.white,
       body: platformFees.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: platformFees.map((fee) {
-              return TSinglePlatform(
-                name: fee['name'],
-                quantity: fee['quantity'].toString(),
-                price: fee['price'].toString(),
-              );
-            }).toList(),
-          ),
-        ),
-      ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: platformFees.map((fee) {
+                    return TSinglePlatform(
+                      name: fee['name'],
+                      quantity: fee['quantity'],
+                      price: fee['price'].toString(),
+                      platformFeeId: fee['id'],
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
     );
   }
 }

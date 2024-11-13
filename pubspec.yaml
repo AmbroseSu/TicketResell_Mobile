@@ -52,6 +52,7 @@ dependencies:
   intl_utils: ^2.8.7
   shared_preferences: ^2.3.2
   google_sign_in: ^6.2.1
+  qr_flutter: ^4.1.0
 
 dev_dependencies:
   flutter_test:
