@@ -6,6 +6,8 @@ import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:ticket_resell/api/response/post.dart';
+import 'package:ticket_resell/styles&text&sizes/post_card_vertical.dart';
 import 'package:ticket_resell/styles&text&sizes/product_card_vertical_fav.dart';
 import '../../api/response/ticket.dart';
 import '../../styles&text&sizes/product_card_vertical.dart';
@@ -24,7 +26,7 @@ class AllPost extends StatefulWidget {
 }
 
 class _AllPostState extends State<AllPost> {
-  List<Ticket> tickets = [];
+  List<PostResponse> posts = [];
 
   @override
   void initState() {
@@ -34,13 +36,14 @@ class _AllPostState extends State<AllPost> {
 
   Future<void> fetchTickets() async {
     final response = await http.get(Uri.parse(
-        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Post/get-lists?page=1&limit=1000'));
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Post/get-lists?status=ACTIVE&page=1&limit=10'));
     print(response.statusCode);
-    if (response.statusCode == 200) {
+    var responseData = jsonDecode(response.body);
+    if (responseData['statusCode'] == 200) {
       final data = json.decode(response.body);
       setState(() {
-        tickets = (data['content'] as List)
-            .map((json) => Ticket.fromJson(json))
+        posts = (data['content'] as List)
+            .map((json) => PostResponse.fromJson(json))
             .toList();
       });
     } else {
@@ -64,7 +67,7 @@ class _AllPostState extends State<AllPost> {
           padding: EdgeInsets.all(TSizes.defaultSpace),
           child: Column(
             children: [
-              TGridLayout(itemCount: tickets.length, itemBuilder: (_, index) => TProductCardVertical(ticket: tickets[index],))
+              TGridLayout(itemCount: posts.length, itemBuilder: (_, index) => PostCardVertical(postResponse: posts[index],))
             ],
           ),
         ),
