@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 
 
 class UploadFile extends StatefulWidget {
-  final int ticketId; // Thêm ticketId để gửi lên API
+  final int ticketId;
   const UploadFile({super.key, required this.ticketId});
 
   @override
@@ -36,7 +36,7 @@ class _UploadFileState extends State<UploadFile> {
     if (pickedFiles == null || pickedFiles!.isEmpty) return;
 
     setState(() {
-      isUploading = true; // Bắt đầu quá trình upload
+      isUploading = true;
     });
 
     uploadTasks = [];
@@ -86,7 +86,7 @@ class _UploadFileState extends State<UploadFile> {
         imageUrls
       );
 
-      print('Sending data to API: $body');  // Debug: Check the body format.
+      print('Sending data to API: $body');
 
       final url = Uri.parse(
           'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/images?ticketId=${widget.ticketId}'

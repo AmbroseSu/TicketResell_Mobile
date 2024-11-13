@@ -10,6 +10,7 @@ import 'package:ticket_resell/api/auth_helper.dart';
 import 'package:ticket_resell/api/global_variables/fcm_token_manage.dart';
 import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/api/request/sign_in_request.dart';
+import 'package:ticket_resell/screens/password/create_newpass.dart';
 import 'package:ticket_resell/services/auth_service.dart';
 import 'package:ticket_resell/services/navigation_service.dart';
 import 'package:http/http.dart' as http;
@@ -257,7 +258,12 @@ class _TLoginFormState extends State<TLoginForm> {
                   ],
                 ),
                 TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => CreateNewpass()),
+                      );
+                    },
                     child: const Text(
                       TTexts.forgotPassword,
                       style: TextStyle(color: Colors.black),

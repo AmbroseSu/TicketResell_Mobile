@@ -5,6 +5,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:ticket_resell/api/auth_helper.dart';
 import 'package:ticket_resell/api/global_variables/fcm_token_manage.dart';
 import 'package:ticket_resell/api/global_variables/user_manage.dart';
+import 'package:ticket_resell/screens/create_post/create_options.dart';
 import 'package:ticket_resell/screens/create_post/create_ticket.dart';
 import 'package:ticket_resell/screens/platform_fee/platform.dart';
 import 'package:ticket_resell/screens/product_detail/all_post.dart';
@@ -64,17 +65,26 @@ class SettingsScreen extends StatelessWidget {
               child: Column(
                 children: [
                   /// -- Account Settings
-                  //const SizedBox(height: TSizes.spaceBtwSections *),
                   const TSectionHeading(
                       title: 'Account Settings', showActionButton: false),
                   const SizedBox(height: TSizes.spaceBtwItems * 0.2),
 
                   // TSettingsMenuTile(icon: Iconsax.message, title: 'Chat Room', subTitle: 'All messages on this way', onTap: () => Get.to(() =>  AllChatsScreen()),),
                   //TSettingsMenuTile(icon: Iconsax.message, title: 'Chat Room', subTitle: 'All messages on this way', onTap: () => Get.to(() =>  AllChatsScreen()),),
-
-
                   TSettingsMenuTile(
                       icon: Iconsax.folder,
+                      title: 'All Posts',
+                      subTitle: 'List all posts in TicketResell',
+                      onTap: () => Get.to(() => const AllPost())),
+
+                  TSettingsMenuTile(
+                      icon: Iconsax.heart,
+                      title: 'Favorite Posts',
+                      subTitle: 'List of your favorite posts',
+                      onTap: () => Get.to(() => const FavoriteScreen())),
+
+                  TSettingsMenuTile(
+                      icon: Iconsax.ticket,
                       title: 'All Tickets',
                       subTitle: 'List all tickets in TicketResell',
                       onTap: () => Get.to(() => const AllTicket())),
@@ -92,11 +102,6 @@ class SettingsScreen extends StatelessWidget {
                       onTap: () => Get.to(() => const AllOrderTicketScreen())),
 
                   TSettingsMenuTile(
-                      icon: Iconsax.heart,
-                      title: 'Favorite Tickets',
-                      subTitle: 'List of your favorite tours',
-                      onTap: () => Get.to(() => const FavoriteScreen())),
-                  TSettingsMenuTile(
                     icon: Iconsax.safe_home,
                     title: 'Platform Fee',
                     subTitle: 'All platform fee to create new post',
@@ -107,6 +112,12 @@ class SettingsScreen extends StatelessWidget {
                   //     title: 'Payment Platform',
                   //     subTitle: 'Add, remove products and move to checkout',
                   //     onTap: () => Get.to(() => const CartScreen())),
+
+                  TSettingsMenuTile(
+                      icon: Iconsax.bag_tick,
+                      title: 'Platform Order',
+                      subTitle: 'Your platform orders in here',
+                      onTap: () => Get.to(() => const OrderScreen())),
                   TSettingsMenuTile(
                     icon: Icons.password,
                     title: 'Change Password',
@@ -115,15 +126,10 @@ class SettingsScreen extends StatelessWidget {
                     onTap: () => Get.to(() => const CreateNewpass()),
                   ),
                   TSettingsMenuTile(
-                      icon: Iconsax.bag_tick,
-                      title: 'My Booking',
-                      subTitle: 'In-progress and Completed Orders',
-                      onTap: () => Get.to(() => const OrderScreen())),
-                  TSettingsMenuTile(
                     icon: Iconsax.document_upload,
-                    title: 'Create Post',
-                    subTitle: 'Upload Data to your Cloud Firebase',
-                    onTap: () => Get.to(() => const CreateTicket()),
+                    title: 'Create Options',
+                    subTitle: 'Create new post & create new ticket',
+                    onTap: () => Get.to(() => const CreatePage()),
                   ),
 
                   // const TSettingsMenuTile(icon: Iconsax.discount_shape, title: 'Recommend Tours', subTitle: 'List of all the recommend tours'),
