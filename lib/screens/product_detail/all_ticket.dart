@@ -36,13 +36,18 @@ class _AllTicketState extends State<AllTicket> {
     final response = await http.get(Uri.parse(
         'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get-list?page=1&limit=1000'));
     print(response.statusCode);
-    if (response.statusCode == 200) {
+    var responseData = jsonDecode(response.body);
+
+    if (responseData['statusCode'] == 200) {
+
       final data = json.decode(response.body);
       setState(() {
         tickets = (data['content'] as List)
             .map((json) => Ticket.fromJson(json))
             .toList();
       });
+      print("0101010101010101010101010101010101010101");
+      print(tickets[1]);
     } else {
       // Xử lý lỗi ở đây (hiển thị thông báo lỗi hoặc xử lý khác)
       print('Failed to load tickets');

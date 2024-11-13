@@ -76,7 +76,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     print("))0000-00000000000000000000000000000000000000000000000000000");
     print(widget.deal);
-    print(widget.ticket.id);
+    print(widget.ticket.ticketId);
 
     _checkAndCreateChat();
   }
@@ -84,7 +84,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (widget.deal == false && widget.ticket.id != 0) {
+    if (widget.deal == false && widget.ticket.ticketId != 0) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _buildUI();
         _showRequestFormForBook();
@@ -115,7 +115,7 @@ class _ChatScreenState extends State<ChatScreen> {
           Padding(
             padding: const EdgeInsets.only(right: 10.0),
             child: Visibility(
-              visible: !(widget.deal == false && widget.ticket.id == 0),
+              visible: !(widget.deal == false && widget.ticket.ticketId == 0),
               child: Container(
                 decoration: BoxDecoration(
                   //color: Colors.lightBlueAccent, // Màu nền xanh nhạt
@@ -303,7 +303,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                     quantity: quantity,
                                     address: address,
                                     userId: userManager.id!,
-                                    ticketId: widget.ticket.id);
+                                    ticketId: widget.ticket.ticketId);
 
                                 ChatMessage requestMessage = ChatMessage(
                                   user: currentUser!,
@@ -457,7 +457,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                     quantity: quantity,
                                     address: address,
                                     userId: userManager.id!,
-                                    ticketId: widget.ticket.id);
+                                    ticketId: widget.ticket.ticketId);
 
                                 ChatMessage requestMessage = ChatMessage(
                                   user: currentUser!,

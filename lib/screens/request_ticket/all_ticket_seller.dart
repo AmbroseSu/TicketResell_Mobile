@@ -92,7 +92,7 @@ class _AllTicketSellerScreenState extends State<AllTicketSellerScreen> {
           final quantity = ticket.quantity;
           //final expiredDate = ticket.expirationDate;
           print("))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))");
-          print(ticket.id);
+          print(ticket.ticketId);
 
           final dateTime = DateTime.parse(ticket.expirationDate);
           final formattedDate = DateFormat('HH:mm dd/MM/yyyy').format(dateTime);
@@ -104,7 +104,7 @@ class _AllTicketSellerScreenState extends State<AllTicketSellerScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AllRequestTicketScreen(ticketId: ticket.id,),
+                  builder: (context) => AllRequestTicketScreen(ticketId: ticket.ticketId,),
                 ),
               );
             },
