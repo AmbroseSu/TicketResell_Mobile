@@ -55,7 +55,7 @@ class _AllTicketSellerScreenState extends State<AllTicketSellerScreen> {
 
   Future<void> fetchTickets() async {
     final response = await http.get(Uri.parse(
-        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get/user?email=${userManager.email}&page=1&limit=10'));
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get-user?id=${userManager.id}&page=1&limit=1000'));
     print(response.statusCode);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -119,13 +119,18 @@ class _AllTicketSellerScreenState extends State<AllTicketSellerScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          name,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.0, // Kích thước font lớn hơn cho Name
+                        Flexible(
+                          child: Text(
+                            name,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20.0, // Font size for Name
+                            ),
+                            softWrap: true, // Enables wrapping
+                            overflow: TextOverflow.ellipsis, // Adds "..." if text is too long
                           ),
                         ),
+                        const SizedBox(width: 10), // Optional: Add some space between name and price
                         Text(
                           "\$${price.toStringAsFixed(2)} / Ticket",
                           style: const TextStyle(

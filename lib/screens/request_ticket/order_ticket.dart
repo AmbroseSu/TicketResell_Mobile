@@ -120,11 +120,15 @@ class _AllOrderTicketScreenState extends State<AllOrderTicketScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          ticketName, // Hiển thị tên của ticket
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25.0,
+                        Flexible(
+                          child: Text(
+                            ticketName,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 25.0, // Font size for Name
+                            ),
+                            softWrap: true, // Enables wrapping
+                            overflow: TextOverflow.ellipsis, // Adds "..." if text is too long
                           ),
                         ),
                         Text(
