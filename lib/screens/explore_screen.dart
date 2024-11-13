@@ -5,8 +5,7 @@ import 'package:flutter/painting.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ticket_resell/navigation_menu.dart';
 import 'package:ticket_resell/notification/notification_screen.dart';
-import 'package:ticket_resell/screens/product_detail/place_screen.dart';
-import 'package:ticket_resell/screens/request_ticket/all_ticket_request_buy.dart';
+import 'package:ticket_resell/screens/order/order.dart';
 import 'package:http/http.dart' as http;
 import '../styles&text&sizes/image_strings.dart';
 import '../styles&text&sizes/sizes.dart';
@@ -128,7 +127,7 @@ class _ExploreScreenState extends State<ExploreScreen>
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                                  AllTicketRequestBuyScreen(),
+                                  OrderScreen(),
                             ),
                           );
                         },
