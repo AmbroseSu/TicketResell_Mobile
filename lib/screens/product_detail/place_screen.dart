@@ -14,7 +14,6 @@ import '../../styles&text&sizes/sizes.dart';
 import '../../widgets/gallery_slider.dart';
 import '../../widgets/section_heading.dart';
 
-
 class PlaceScreen extends StatefulWidget {
   final Ticket ticket;
 
@@ -36,19 +35,40 @@ class _PlaceScreenState extends State<PlaceScreen> {
   final GetIt _getIt = GetIt.instance;
   UserProfile? otherUser;
   late DatabaseService _databaseService;
-  Ticket emptyTicket = Ticket(ticketId: 0, ticketName: "", price: 0, quantity: 0, expirationDate: "", venue: "", status: "", isDeleted: false, categoryId: 0, categoryName: "", postId: 0, postTitle: "", postDescription: "", currentPostStatus: "", createdDate: "", userId: 0, email: "", imageUrls: [], feedbackDTOs: []);
+  Ticket emptyTicket = Ticket(
+      ticketId: 0,
+      ticketName: "",
+      price: 0,
+      quantity: 0,
+      expirationDate: "",
+      venue: "",
+      status: "",
+      isDeleted: false,
+      categoryId: 0,
+      categoryName: "",
+      postId: 0,
+      postTitle: "",
+      postDescription: "",
+      currentPostStatus: "",
+      createdDate: "",
+      userId: 0,
+      email: "",
+      imageUrls: [],
+      feedbackDTOs: []);
   late List<String> imageUrls;
-
 
   @override
   void initState() {
     super.initState();
     _databaseService = _getIt.get<DatabaseService>();
-    print('))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))');
+    print(
+        '))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))');
     print(widget.ticket.imageUrls);
-    if (widget.ticket.imageUrls.isEmpty){
-      imageUrls = ['https://i.pinimg.com/736x/d7/07/84/d70784b885602af2877dd7a7230bba2c.jpg'];
-    }else{
+    if (widget.ticket.imageUrls.isEmpty) {
+      imageUrls = [
+        'https://i.pinimg.com/736x/d7/07/84/d70784b885602af2877dd7a7230bba2c.jpg'
+      ];
+    } else {
       imageUrls = widget.ticket.imageUrls;
     }
 
@@ -175,7 +195,8 @@ class _PlaceScreenState extends State<PlaceScreen> {
                     // Chỉ báo ảnh
                     Positioned(
                       bottom: 20, // Đặt chỉ báo ở vị trí dưới cùng
-                      left: MediaQuery.of(context).size.width / 2 - 30, // Đặt giữa
+                      left: MediaQuery.of(context).size.width / 2 -
+                          30, // Đặt giữa
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: List.generate(imageUrls.length, (index) {
@@ -202,13 +223,19 @@ class _PlaceScreenState extends State<PlaceScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        widget.ticket.ticketName,
-                        style: GoogleFonts.getFont(
-                          "Montserrat",
-                          fontWeight: FontWeight.w600,
-                          fontSize: 28,
-                          color: Color(0xFF232323),
+                      Container(
+                        width: 250, // Set a maximum width here to limit line length
+                        child: Text(
+                          widget.ticket.ticketName,
+                          style: GoogleFonts.getFont(
+                            "Montserrat",
+                            fontWeight: FontWeight.w600,
+                            fontSize: 25,
+                            color: const Color(0xFF232323),
+                          ),
+                          maxLines: 2, // Allows up to 2 lines
+                          overflow: TextOverflow.ellipsis, // Adds ellipsis if text exceeds 2 lines
+                          softWrap: true, // Enables text wrapping
                         ),
                       ),
                       GestureDetector(
@@ -230,7 +257,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
                           style: GoogleFonts.getFont(
                             "Roboto Condensed",
                             fontWeight: FontWeight.w700,
-                            fontSize: 16,
+                            fontSize: 17,
                             color: Colors.blueAccent,
                           ),
                         ),
@@ -423,8 +450,8 @@ class _PlaceScreenState extends State<PlaceScreen> {
               ),
               GestureDetector(
                 onTap: () => Get.to(() => ChatScreen(
-                  deal: false,
-                  ticket: widget.ticket,
+                      deal: false,
+                      ticket: widget.ticket,
                       chatUser: otherUser!,
                     )),
                 child: Container(

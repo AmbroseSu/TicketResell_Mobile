@@ -43,12 +43,16 @@ class _TLoginFormState extends State<TLoginForm> {
     try {
       print('Email: ${_emailController.text}');
       print('Password: ${_passwordController.text}');
+      // Tạo SignInRequest từ dữ liệu người dùng nhập vào
       SignInRequest request = SignInRequest(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
         fcmToken: TokenManager().fcmToken!,
       );
 
+      print('00000000000000000000000000000' + request.email + request.password);
+
+      // Gửi yêu cầu POST đến API
       var response = await http.post(
         Uri.parse(
             'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Authentication/sign-in'),
@@ -56,17 +60,21 @@ class _TLoginFormState extends State<TLoginForm> {
         body: jsonEncode(request.toJson()),
       );
 
+      print(response.statusCode);
+
+      // Xử lý phản hồi từ API
       if (response.statusCode == 200) {
+        // Phản hồi thành công, xử lý dữ liệu từ server ở đây
         var responseData = jsonDecode(response.body);
         var userDTO = responseData['content']['userDTO'];
         var token = responseData['content']['token'];
+        print(userDTO);
         userManager.id = userDTO['id'];
         userManager.email = userDTO['email'];
         userManager.role = userDTO['role'];
         userManager.token = token;
 
         await saveLoginInfo(token);
-
         print(
             "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
         print(userManager.id);
@@ -101,7 +109,14 @@ class _TLoginFormState extends State<TLoginForm> {
         //             Navigator.of(context).pop();
         //             // Navigate to another screen or perform another action
         Get.to(() => const NavigationMenu());
+        //           },
+        //         ),
+        //       ],
+        //     );
+        //   },
+        // );
       } else {
+        // Phản hồi lỗi từ API, hiển thị thông báo lỗi
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -121,6 +136,7 @@ class _TLoginFormState extends State<TLoginForm> {
         );
       }
     } catch (e) {
+      // Xử lý lỗi trong quá trình gửi yêu cầu
       print('Error occurred during sign-in: $e');
       showDialog(
         context: context,

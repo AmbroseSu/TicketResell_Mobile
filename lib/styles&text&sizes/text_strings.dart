@@ -16,6 +16,7 @@ class TTexts {
   static const String lastName = "Last Name";
   static const String fullName = "Full Name";
   static const String email = "Email";
+  static const String currentPassword = "Curent Password";
   static const String password = "Password";
   static const String newPassword = "New Password";
   static const String conPassword = "Confirm Password";
@@ -63,7 +64,7 @@ class TTexts {
   static const String otpVerificationSubTitle = "Please enter the OTP code sent to your email";
   static const String createNewPassTitle = "Create New Password";
   static const String createNewPassSubTitle = "Please enter new password";
-  static const String changeYourPasswordTitle = "Password Reset Email Sent";
+  static const String changeYourPasswordTitle = "Change Password Successfully";
   static const String changeYourPasswordSubTitle = "Account Security is Our Priority! We've Sent You a Secure Link to Safely Change Your Password and Keep Your Account Protected.";
   static const String confirmEmailTitle = "Verify your email address!";
   static const String confirmEmailSubTitle = "Congratulations! Your Account Awaits: Verify Your Email to Start Shopping and Experience TripWonder";

@@ -172,8 +172,6 @@ class SettingsScreen extends StatelessWidget {
                       userManager.fullname = null;
                       userManager.token = null;
                       userManager.role = null;
-                      TokenManager tokenManager = TokenManager();
-                      tokenManager.fcmToken = null;
                       await userManager.clearUserData();
 
                       // Chuyển hướng đến LoginScreen sau khi đăng xuất

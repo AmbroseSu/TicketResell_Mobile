@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/styles&text&sizes/product_card_vertical_fav.dart';
 import '../../api/response/ticket.dart';
 import '../../styles&text&sizes/product_card_vertical.dart';
@@ -34,7 +35,7 @@ class _AllTicketState extends State<AllTicket> {
 
   Future<void> fetchTickets() async {
     final response = await http.get(Uri.parse(
-        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get-list?page=1&limit=1000'));
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get-user?id=${UserManager().id}&page=1&limit=10'));
     print(response.statusCode);
     var responseData = jsonDecode(response.body);
 

@@ -35,7 +35,7 @@ class TicketRequest {
       quantity: json['quantity'],
       ticketRequestDate: DateTime.parse(json['ticketRequestDate']),
       address: json['address'],
-      status: json['status'],
+      status: statusFromText(json['status']),
       isDeleted: json['isDeleted'],
       userFullname: json['userFullname'],
       userEmail: json['userEmail'],
@@ -59,6 +59,19 @@ class TicketRequest {
         return 'Rejected';
       default:
         return 'Unknown';
+    }
+  }
+
+  static int statusFromText(String statusText) {
+    switch (statusText.toUpperCase()) {
+      case 'WAITING':
+        return 0;
+      case 'CONFIRMED':
+        return 1;
+      case 'REJECTED':
+        return 2;
+      default:
+        throw ArgumentError('Invalid status text: $statusText');
     }
   }
 }

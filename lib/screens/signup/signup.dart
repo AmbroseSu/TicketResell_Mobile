@@ -69,6 +69,7 @@ class _SignupScreenState extends State<SignupScreen> {
     _storageService = _getIt.get<StorageService>();
     _databaseService = _getIt.get<DatabaseService>();
     //_alertService = _getIt.get<AlertService>();
+    print(tokenManager.fcmToken);
   }
 
   Future<void> _signup() async {

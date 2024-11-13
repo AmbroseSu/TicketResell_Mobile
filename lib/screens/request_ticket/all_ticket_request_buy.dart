@@ -120,11 +120,15 @@ class _AllTicketRequestBuyScreenState extends State<AllTicketRequestBuyScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          ticketName,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20.0,
+                        Flexible(
+                          child: Text(
+                            ticketName,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20.0, // Font size for Name
+                            ),
+                            softWrap: true, // Enables wrapping
+                            overflow: TextOverflow.ellipsis, // Adds "..." if text is too long
                           ),
                         ),
                         Text(

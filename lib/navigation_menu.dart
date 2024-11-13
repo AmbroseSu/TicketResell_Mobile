@@ -3,17 +3,20 @@ import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:ticket_resell/notification/navigation_controller.dart';
 import 'package:ticket_resell/notification/notification_controller.dart';
+import 'package:ticket_resell/notification/notification_screen.dart';
 import 'package:ticket_resell/styles&text&sizes/colors.dart';
 import 'package:ticket_resell/widgets/helper_functions.dart';
 
 class NavigationMenu extends StatelessWidget {
   const NavigationMenu({super.key});
 
+
   @override
   Widget build(BuildContext context) {
     // Initialize NotificationController if not already done
     if (Get.isRegistered<NotificationController>() == false) {
       Get.put(NotificationController());
+      NotificationScreen();
     }
 
     final notificationController = Get.find<NotificationController>();
