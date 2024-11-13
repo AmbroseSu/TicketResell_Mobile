@@ -1,6 +1,9 @@
+import 'package:ticket_resell/api/response/post_element.dart';
+
 import 'feedback.dart';
 
-class Ticket {
+class PostResponse {
+  final List<PostElement> postElements;
   final int ticketId;
   final String ticketName;
   final int price;
@@ -11,17 +14,13 @@ class Ticket {
   final bool isDeleted;
   final int categoryId;
   final String categoryName;
-  final int postId;
-  final String postTitle;
-  final String postDescription;
-  final String currentPostStatus;
-  final String createdDate;
   final int userId;
   final String email;
   final List<String> imageUrls;
   final List<Feedback> feedbackDTOs;
 
-  Ticket({
+  PostResponse({
+    required this.postElements,
     required this.ticketId,
     required this.ticketName,
     required this.price,
@@ -32,18 +31,13 @@ class Ticket {
     required this.isDeleted,
     required this.categoryId,
     required this.categoryName,
-    required this.postId,
-    required this.postTitle,
-    required this.postDescription,
-    required this.currentPostStatus,
-    required this.createdDate,
     required this.userId,
     required this.email,
     required this.imageUrls,
     required this.feedbackDTOs,
   });
 
-  factory Ticket.fromJson(Map<String, dynamic> json) {
+  factory PostResponse.fromJson(Map<String, dynamic> json) {
     List<String> imageUrls = [];
 
     if (json['imageTicketDTOs'] != null && json['imageTicketDTOs'] is List && (json['imageTicketDTOs'] as List).isNotEmpty) {
@@ -60,25 +54,22 @@ class Ticket {
           .map((feedbackJson) => Feedback.fromJson(feedbackJson))
           .toList();
     }
-
-    return Ticket(
-      ticketId: json['ticketId'] ?? 0,
-      ticketName: json['ticketName'] ?? "",
-      price: json['price'] ?? 0,
-      quantity: json['quantity'] ?? 0,
-      expirationDate: json['expirationDate'] ?? "",
-      venue: json['venue'] ?? "",
-      status: json['status'] ?? "",
-      isDeleted: json['isDeleted'] ?? "",
-      categoryId: json['categoryId'] ?? 0,
-      categoryName: json['categoryName'] ?? "",
-      postId: (json['postId'] ?? 0) as int,
-      postTitle: json['postTitle'] ?? "",
-      postDescription: json['postDescription'] ?? "",
-      currentPostStatus: json['currentPostStatus'] ?? "",
-      createdDate: json['createdDate'] ?? "",
-      userId: json['userId'] ?? 0,
-      email: json['email'] ?? "",
+    return PostResponse(
+      postElements: (json['postElements'] as List)
+          .map((postJson) => PostElement.fromJson(postJson))
+          .toList(),
+      ticketId: json['ticketId'],
+      ticketName: json['ticketName'],
+      price: json['price'],
+      quantity: json['quantity'],
+      expirationDate: json['expirationDate'],
+      venue: json['venue'],
+      status: json['status'],
+      isDeleted: json['isDeleted'],
+      categoryId: json['categoryId'],
+      categoryName: json['categoryName'],
+      userId: json['userId'],
+      email: json['email'],
       imageUrls: imageUrls,
       feedbackDTOs: feedbacks,
     );

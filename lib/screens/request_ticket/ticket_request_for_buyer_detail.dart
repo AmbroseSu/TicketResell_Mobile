@@ -313,7 +313,7 @@ class _TicketRequestForBuyerDetailScreen extends State<TicketRequestForBuyerDeta
                           );
                         }
 
-                        Ticket emptyTicket = Ticket(id: 0, ticketName: "", price: 0, quantity: 0, expirationDate: "", venue: "", status: 0, categoryName: "", postTitle: "", postDescription: "", createdDate: "", userId: 0, email: "", imageUrls: [], categoryId: 0);
+                        Ticket emptyTicket = Ticket(ticketId: 0, ticketName: "", price: 0, quantity: 0, expirationDate: "", venue: "", status: "", isDeleted: false, categoryId: 0, categoryName: "", postId: 0, postTitle: "", postDescription: "", currentPostStatus: "", createdDate: "", userId: 0, email: "", imageUrls: [], feedbackDTOs: []);
 
                         // Điều hướng đến màn hình chat
                         Navigator.of(context).push(
