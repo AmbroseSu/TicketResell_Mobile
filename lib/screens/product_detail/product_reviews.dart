@@ -3,6 +3,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:path/path.dart';
+import 'package:ticket_resell/api/response/ticket.dart';
 import 'package:ticket_resell/styles&text&sizes/image_strings.dart';
 import '../../styles&text&sizes/sizes.dart';
 import '../../widgets/appbar.dart';
@@ -114,8 +115,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:iconsax/iconsax.dart';
 
-class ProductReviewsScreen extends StatelessWidget {
-  const ProductReviewsScreen({super.key});
+class ProductReviewsScreen extends StatefulWidget {
+  final Ticket ticket;
+  const ProductReviewsScreen({super.key, required this.ticket});
+
+  @override
+  _ProductReviewsScreenState createState() => _ProductReviewsScreenState();
+}
+
+class _ProductReviewsScreenState extends State<ProductReviewsScreen> {
 
   void _showFeedbackDialog(BuildContext context) {
     double rating = 0;
