@@ -82,9 +82,13 @@ class _PlaceScreenState extends State<PlaceScreen> {
             "Authorization": 'Bearer ${UserManager().token}'
           });
       if (response.statusCode == 200) {
-        print('Added to favorites successfully.');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Ticket added successfully to Favorites')),
+        );
       } else {
-        print('Failed to add to favorites: ${response.statusCode}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to add Ticket to Favorites')),
+        );
       }
     } catch (e) {
       print('Error: $e');

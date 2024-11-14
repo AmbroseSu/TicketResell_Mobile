@@ -19,6 +19,7 @@ class AllOrderTicketScreen extends StatefulWidget {
 class _AllOrderTicketScreenState extends State<AllOrderTicketScreen> {
   List<Order> orders = [];
   Map<int, Ticket> tickets = {}; // Sử dụng một Map để lưu các Ticket theo ticketId
+  bool isButtonVisible = true;
 
   @override
   void initState() {
@@ -158,6 +159,13 @@ class _AllOrderTicketScreenState extends State<AllOrderTicketScreen> {
                             Text("Order Date: $formattedDate"),
                           ],
                         ),
+                        ElevatedButton(
+                          onPressed: () {
+                            // Define your button action here
+                            fetchstatusorder(order.id);
+                          },
+                          child: const Text("Confirm"), // Set the button label
+                        ),
                       ],
                     ),
                   ],
@@ -169,4 +177,24 @@ class _AllOrderTicketScreenState extends State<AllOrderTicketScreen> {
       ),
     );
   }
+
+  Future<void> fetchstatusorder(int orderId) async {
+    final response = await http.put(Uri.parse(
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Order/confirm-order-by-user?orderId=$orderId'),
+        headers: {
+          "Authorization": 'Bearer ${UserManager().token}'
+        });
+    print(response.statusCode);
+    final data = json.decode(response.body);
+    if (data['statusCode'] == 200) {
+      Fluttertoast.showToast(
+        msg: "Confirm had ticket!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+      );
+    } else {
+      print('Failed to load ticket');
+    }
+  }
+
 }

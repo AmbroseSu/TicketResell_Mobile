@@ -3,8 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
+import 'package:path/path.dart';
 import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/api/response/post.dart';
 import 'package:http/http.dart' as http;
@@ -79,7 +81,7 @@ class _PopularItemState extends State<PopularItem> {
                         activePostElement!.title,
                         style: GoogleFonts.robotoCondensed(
                           fontWeight: FontWeight.w500,
-                          fontSize: 15,
+                          fontSize: 10,
                           color: Colors.white,
                         ),
                       ),
@@ -95,16 +97,17 @@ class _PopularItemState extends State<PopularItem> {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            SvgPicture.asset(
-                              'assets/vectors/star_1_x2.svg',
-                              width: 20,
-                              height: 20,
-                            ),
+                            // SvgPicture.asset(
+                            //   'assets/vectors/star_1_x2.svg',
+                            //   width: 20,
+                            //   height: 20,
+                            // ),
+                            Icon( Iconsax.tick_circle, color: Colors.blueAccent,),
                             Text(
-                              "rating",
+                              "${activePostElement!.status}",
                               style: GoogleFonts.robotoCondensed(
                                 fontWeight: FontWeight.w500,
-                                fontSize: 12,
+                                fontSize: 10,
                                 color: Colors.white,
                               ),
                             ),
@@ -112,17 +115,17 @@ class _PopularItemState extends State<PopularItem> {
                         ))
                   ],
                 ),
-                Container(
-                  padding: EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.favorite,
-                    color: Colors.redAccent,
-                  ),
-                ),
+                // Container(
+                //   padding: EdgeInsets.all(5),
+                //   decoration: BoxDecoration(
+                //     color: Colors.white,
+                //     shape: BoxShape.circle,
+                //   ),
+                //   child: Icon(
+                //     Icons.favorite,
+                //     color: Colors.redAccent,
+                //   ),
+                // ),
               ],
             ),
             SizedBox(height: 10),
