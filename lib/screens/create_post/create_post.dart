@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:iconsax/iconsax.dart';
 import 'package:ticket_resell/screens/platform_fee/platform.dart';
+import '../../api/global_variables/user_manage.dart';
 import '../../navigation_menu.dart';
 
 class CreatePost extends StatefulWidget {
@@ -38,12 +39,14 @@ class _CreatePostState extends State<CreatePost> {
 
 // Fetch categories from the API
   Future<void> fetchTicketNames() async {
-    final response = await http.get(
-      Uri.parse("https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get-list?status=ACTIVE&page=1&limit=1000"),
-    );
+    final int? userId = UserManager().id;
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
+    final response = await http.get(
+      Uri.parse("https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get-user?id=$userId&page=1&limit=100"),
+    );
+    final data = json.decode(response.body);
+
+    if (data['statusCode'] == 200) {
 
       // Populate tickets and TicketMap if 'content' exists
       if (data.containsKey('content') && data['content'] is List) {
