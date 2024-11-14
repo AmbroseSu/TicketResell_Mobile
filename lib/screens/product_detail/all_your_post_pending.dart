@@ -49,7 +49,6 @@ class _AllYourPostPendingState extends State<AllYourPostPending> {
             .toList();
       });
     } else {
-      // Xử lý lỗi ở đây (hiển thị thông báo lỗi hoặc xử lý khác)
       print('Failed to load tickets');
     }
   }

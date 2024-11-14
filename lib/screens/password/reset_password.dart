@@ -2,11 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import '../../styles&text&sizes/image_strings.dart';
 import '../../styles&text&sizes/sizes.dart';
 import '../../styles&text&sizes/text_strings.dart';
-import '../../widgets/helper_functions.dart';
 import '../login/login.dart';
 
 class ResetPassword extends StatelessWidget {
@@ -26,9 +23,7 @@ class ResetPassword extends StatelessWidget {
           padding: const EdgeInsets.all(TSizes.defaultSpace),
           child: Column(
             children: [
-              // /// Image with 60% of screen width
-              // Image(image: const AssetImage(TImages.deliveredEmail), width: THelperFunctions.screenWidth() * 0.6),
-              // const SizedBox(height: TSizes.spaceBtwSections),
+
 
               /// Title & SubTitle
               Text(TTexts.changeYourPasswordTitle, style: Theme.of(context).textTheme.headlineMedium, textAlign: TextAlign.center),
@@ -36,11 +31,7 @@ class ResetPassword extends StatelessWidget {
               Text(TTexts.changeYourPasswordSubTitle, style: Theme.of(context).textTheme.labelMedium, textAlign: TextAlign.center),
               const SizedBox(height: TSizes.spaceBtwSections),
 
-              /// Buttons
-              // SizedBox(
-              //   width: double.infinity,
-              //   child: ElevatedButton(onPressed: () => Get.to(() => const LoginScreen()), child: const Text(TTexts.done)),
-              // ),
+
               GestureDetector(
                 onTap: () {
                   Navigator.push(

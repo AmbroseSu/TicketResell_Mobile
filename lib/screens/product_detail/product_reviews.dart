@@ -1,119 +1,17 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:path/path.dart';
+import 'package:intl/intl.dart';
+import 'package:readmore/readmore.dart';
+import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/api/response/ticket.dart';
 import 'package:ticket_resell/styles&text&sizes/image_strings.dart';
 import '../../styles&text&sizes/sizes.dart';
 import '../../widgets/appbar.dart';
-import '../../widgets/comment_input_icon.dart';
-import '../../widgets/primary_header_container.dart';
-import '../../widgets/progress_indicator_and_rating.dart';
+import 'package:http/http.dart' as http;
 import '../../widgets/rating_progress_indicator.dart';
 import '../../widgets/t_circular_icon.dart';
-import '../../widgets/t_circular_image.dart';
-import '../../widgets/user_profile_tile.dart';
-import '../../widgets/user_review_card.dart';
-import '../profile/profile.dart';
-
-//
-// class ProductReviewsScreen extends StatelessWidget {
-//   const ProductReviewsScreen({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.white,
-//
-//       /// -- Appbar
-//       appBar: TAppBar(
-//         title: Text('Reviews & Ratings', style: Theme.of(context).textTheme.headlineMedium),
-//         showBackArrow: true,
-//         actions: [
-//           TCircularIcon(
-//             icon: Iconsax.add,
-//             onPressed: () {},
-//           )
-//         ],
-//       ),
-//
-//       /// -- Body
-//       body: SingleChildScrollView(
-//         child: Padding(
-//           padding: const EdgeInsets.all(TSizes.defaultSpace),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               const SizedBox(height: TSizes.spaceBtwItems),
-//
-//               /// -- Overall Product Ratings
-//
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.center, // Center the entire row
-//                 children: [
-//                   // Average Rating Image with adjusted size
-//                   SizedBox(
-//                     width: 80, // Adjust the width as needed
-//                     height: 80, // Adjust the height as needed
-//                     child: TCircularImage(
-//                       image: 'assets/movies/conan.jpg',
-//                     ),
-//                   ),
-//
-//                   const SizedBox(width: 16), // Space between image and text
-//
-//                   // Rating Breakdown with larger text, centered vertically
-//                   Expanded(
-//                     child: Column(
-//                       mainAxisAlignment: MainAxisAlignment.center, // Center content vertically
-//                       crossAxisAlignment: CrossAxisAlignment.start,
-//                       children: [
-//                         Text(
-//                           "Name: Nam Le",
-//                           style: TextStyle(
-//                             fontSize: 20, // Increase font size as needed
-//                             fontWeight: FontWeight.bold, // Optional: make text bold
-//                           ),
-//                         ),
-//                         Text(
-//                           "Point: 1000",
-//                           style: TextStyle(
-//                             fontSize: 18, // Increase font size as needed
-//                           ),
-//                         ),
-//                       ],
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//
-//
-//               const SizedBox(height: TSizes.spaceBtwItems),
-//               // TRatingBarIndicator(rating: 4.8),
-//               // Text('12,611 reviews', style: Theme.of(context).textTheme.bodySmall),
-//               const SizedBox(height: TSizes.spaceBtwSections),
-//
-//               /// User Reviews List
-//               const UserReviewCard(),
-//               const UserReviewCard(),
-//               const UserReviewCard(),
-//               const UserReviewCard(),
-//
-//               // /// Input Comment
-//               // const CommentInputWidget(),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-
-import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:iconsax/iconsax.dart';
 
 class ProductReviewsScreen extends StatefulWidget {
   final Ticket ticket;
@@ -123,7 +21,121 @@ class ProductReviewsScreen extends StatefulWidget {
   _ProductReviewsScreenState createState() => _ProductReviewsScreenState();
 }
 
+
+
 class _ProductReviewsScreenState extends State<ProductReviewsScreen> {
+  String? imageUser;
+  String? fullname;
+  String? point;
+  List<Map<String, dynamic>> feedbacks = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getUserbyId();
+    getFeedbacks();
+  }
+
+  Future<void> getUserbyId() async {
+    final response = await http.get(Uri.parse(
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/User/get-user-by-id?id=${widget.ticket.userId}'),
+        headers: {
+          "Authorization": 'Bearer ${UserManager().token}'
+        }
+    );
+    var responseData = jsonDecode(response.body);
+
+    if (responseData['statusCode'] == 201) {
+      final data = responseData['content'];
+      setState(() {
+        imageUser = data['image'];
+        fullname = data['fullname'];
+        point = data['point'].toString();
+      });
+    } else {
+      print('Failed to load user data');
+    }
+  }
+
+
+
+  Future<void> getFeedbacks() async {
+    final response = await http.get(Uri.parse(
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Feedback/get-by-ticketid?ticketId=${widget.ticket.ticketId}&page=1&limit=10'),
+        headers: {
+          "Authorization": 'Bearer ${UserManager().token}'
+        }
+    );
+
+    if (response.statusCode == 200) {
+      var responseData = jsonDecode(utf8.decode(response.bodyBytes));
+      if (responseData['statusCode'] == 200) {
+        final feedbackList = responseData['content'] as List;
+        setState(() {
+          feedbacks = feedbackList.map((e) => {
+            'rating': e['rating'],
+            'context': e['context']?.toString(),
+            'fullName': e['fullName']?.toString(),
+            'createdDate': formatDate(e['createdDate']),
+          }).toList();
+        });
+      } else {
+        print('Failed to load feedbacks');
+      }
+    } else {
+      print('Error: ${response.statusCode}');
+    }
+  }
+
+  String formatDate(String date) {
+    try {
+      DateTime parsedDate = DateTime.parse(date);
+      return DateFormat('dd/MM/yyyy').format(parsedDate);
+    } catch (e) {
+      return date;
+    }
+  }
+
+
+  Future<void> addFeedback(double rating, String feedbackText) async {
+    print('Rating: $rating');
+    print('Feedback Text: $feedbackText');
+    print('Ticket ID: ${widget.ticket.ticketId}');
+    print('User ID: ${UserManager().id}');
+
+    int intRating = rating.toInt();
+
+    final Map<String, dynamic> requestBody = {
+      'rating': intRating,
+      'context': feedbackText.trim(),
+      'ticketId': widget.ticket.ticketId,
+      'userId': UserManager().id,
+    };
+
+    print('Request Body: ${jsonEncode(requestBody)}');
+
+    final response = await http.post(
+      Uri.parse('https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Feedback/new'),
+      headers: {'Content-Type': 'application/json',
+        "Authorization": 'Bearer ${UserManager().token}'
+
+      },
+      body: jsonEncode(requestBody),
+    );
+
+    if (response.statusCode == 201) {
+      var responseData = jsonDecode(response.body);
+      if (responseData['statusCode'] == 201) {
+        print('Feedback added successfully');
+        getFeedbacks();
+      } else {
+        print('Failed to add feedback, status code: ${responseData['statusCode']}');
+      }
+    } else {
+      print('Error: ${response.statusCode}');
+      print('Response body: ${response.body}');
+    }
+  }
 
   void _showFeedbackDialog(BuildContext context) {
     double rating = 0;
@@ -138,7 +150,6 @@ class _ProductReviewsScreenState extends State<ProductReviewsScreen> {
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Rating bar for selecting 1 to 5 stars
               RatingBar.builder(
                 initialRating: 0,
                 minRating: 1,
@@ -154,8 +165,6 @@ class _ProductReviewsScreenState extends State<ProductReviewsScreen> {
                 },
               ),
               const SizedBox(height: 16),
-
-              // Feedback text field
               TextField(
                 controller: feedbackController,
                 decoration: InputDecoration(
@@ -171,18 +180,17 @@ class _ProductReviewsScreenState extends State<ProductReviewsScreen> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel', style: TextStyle(color: Colors.black),),
+              child: Text('Cancel', style: TextStyle(color: Colors.black)),
             ),
             ElevatedButton(
               onPressed: () {
-                // Submit feedback (you can handle the rating and feedback content here)
                 print('Rating: $rating');
                 print('Feedback: ${feedbackController.text}');
-
+                addFeedback(rating, feedbackController.text);
                 Navigator.of(context).pop();
               },
               style: ElevatedButton.styleFrom(backgroundColor: Colors.blueAccent),
-              child: Text('Submit', style: TextStyle(color: Colors.white),),
+              child: Text('Submit', style: TextStyle(color: Colors.white)),
             ),
           ],
         );
@@ -194,8 +202,6 @@ class _ProductReviewsScreenState extends State<ProductReviewsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
-      /// -- Appbar
       appBar: TAppBar(
         title: Text('Reviews & Ratings', style: Theme.of(context).textTheme.headlineMedium),
         showBackArrow: true,
@@ -206,8 +212,6 @@ class _ProductReviewsScreenState extends State<ProductReviewsScreen> {
           ),
         ],
       ),
-
-      /// -- Body
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(TSizes.defaultSpace),
@@ -215,58 +219,89 @@ class _ProductReviewsScreenState extends State<ProductReviewsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: TSizes.spaceBtwItems),
-
-              /// -- Overall Product Ratings
               Row(
-                mainAxisAlignment: MainAxisAlignment.center, // Center the entire row
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Average Rating Image with adjusted size
                   SizedBox(
-                    width: 80, // Adjust the width as needed
-                    height: 80, // Adjust the height as needed
-                    child: TCircularImage(
-                      image: 'assets/movies/conan.jpg',
+                    width: 80,
+                    height: 80,
+                    child: ClipOval(
+                      child: imageUser != null && imageUser!.isNotEmpty
+                          ? Image.network(
+                        imageUser!,
+                        fit: BoxFit.cover,
+                      )
+                          : Image.asset(
+                        'assets/images/default_image.png',
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-
-                  const SizedBox(width: 16), // Space between image and text
-
-                  // Rating Breakdown with larger text, centered vertically
+                  const SizedBox(width: 16),
                   Expanded(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center, // Center content vertically
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Name: Nam Le",
-                          style: TextStyle(
-                            fontSize: 20, // Increase font size as needed
-                            fontWeight: FontWeight.bold, // Optional: make text bold
-                          ),
+                          "Name: ${fullname ?? 'N/A'}",
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          "Point: 1000",
-                          style: TextStyle(
-                            fontSize: 18, // Increase font size as needed
-                          ),
+                          "Point: ${point ?? 'N/A'}",
+                          style: TextStyle(fontSize: 18),
                         ),
                       ],
                     ),
                   ),
                 ],
               ),
-
               const SizedBox(height: TSizes.spaceBtwItems),
               const SizedBox(height: TSizes.spaceBtwSections),
-
-              /// User Reviews List
-              const UserReviewCard(),
-              const UserReviewCard(),
-              const UserReviewCard(),
-              const UserReviewCard(),
-              //
-              // /// Input Comment
-              // const CommentInputWidget(),
+              // Hiển thị danh sách feedbacks
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: feedbacks.length,
+                itemBuilder: (context, index) {
+                  var feedback = feedbacks[index];
+                  return Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              const CircleAvatar(backgroundImage: AssetImage(TImages.user)),
+                              const SizedBox(width: TSizes.spaceBtwItems),
+                              Text(feedback['fullName'], style: Theme.of(context).textTheme.titleLarge),
+                            ],
+                          ),
+                          IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert)),
+                        ],
+                      ),
+                      const SizedBox(height: TSizes.spaceBtwItems),
+                      Row(
+                        children: [
+                          TRatingBarIndicator(rating: feedback['rating'].toDouble()),
+                          const SizedBox(width: TSizes.spaceBtwItems),
+                          Text(feedback['createdDate'], style: Theme.of(context).textTheme.bodyMedium),
+                        ],
+                      ),
+                      const SizedBox(height: TSizes.spaceBtwItems),
+                      ReadMoreText(
+                        feedback['context'].toString(),
+                        trimLines: 2,
+                        trimMode: TrimMode.Line,
+                        trimExpandedText: ' show less',
+                        trimCollapsedText: ' show more',
+                        moreStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.blueAccent),
+                        lessStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.blueAccent),
+                      ),
+                      const SizedBox(height: TSizes.spaceBtwItems),
+                    ],
+                  );
+                },
+              ),
             ],
           ),
         ),

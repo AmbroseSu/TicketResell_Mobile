@@ -19,7 +19,7 @@ class _ReviewTicketPageState extends State<ReviewTicketPage> {
   @override
   void initState() {
     super.initState();
-    fetchTickets(); // Lấy dữ liệu khi widget được khởi tạo
+    fetchTickets();
   }
 
   Future<List<PostResponse>> fetchTickets() async {
@@ -40,16 +40,7 @@ class _ReviewTicketPageState extends State<ReviewTicketPage> {
             .map((json) => PostResponse.fromJson(json))
             .toList();
       });
-      // List<Map<String, dynamic>> tickets = [];
-      // for (var item in data['content']) {
-      //   tickets.add({
-      //     'ticketName': item['ticketName'],
-      //     'price': item['price'],
-      //     'quantity': item['quantity'],
-      //     'expirationDate': item['expirationDate'],
-      //     'imageUrl': item['imageTicketDTOs'][0]['imageUrl'], // Use the first image URL
-      //   });
-      // }
+
       return postResponses;
     } else {
       throw Exception('Failed to load tickets');

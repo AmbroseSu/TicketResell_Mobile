@@ -2,42 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/screens/platform_fee/single_platform.dart';
-import '../../styles&text&sizes/colors.dart';
-import '../../styles&text&sizes/sizes.dart';
-
-// class PlatformFeeScreen extends StatelessWidget {
-//   const PlatformFeeScreen({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         backgroundColor: Colors.white,
-//         title: Text('Platform Fee', style: Theme.of(context).textTheme.headlineMedium),
-//         centerTitle: true,
-//       ),
-//       backgroundColor: Colors.white,
-//       body: const SingleChildScrollView(
-//         child: Padding(
-//           padding: EdgeInsets.all(TSizes.defaultSpace),
-//           child: Column(
-//             children: [
-//               TSinglePlatform(),
-//               // TSingleAddress(selectedAddress: true),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import '../../widgets/helper_functions.dart';
-import '../../widgets/rounded_container.dart';
 
 class PlatformFeeScreen extends StatefulWidget {
   const PlatformFeeScreen({super.key});

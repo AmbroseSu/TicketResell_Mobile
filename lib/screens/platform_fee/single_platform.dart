@@ -6,90 +6,9 @@ import 'package:ticket_resell/api/response/checkout_package_fee.dart';
 import 'package:ticket_resell/screens/platform_fee/qr_code_platform.dart';
 import 'package:ticket_resell/widgets/rounded_container.dart';
 import '../../styles&text&sizes/colors.dart';
-import '../../styles&text&sizes/sizes.dart';
 import '../../widgets/helper_functions.dart';
-import '../checkout/checkout.dart';
 import 'package:http/http.dart' as http;
-//
-// class TSinglePlatform extends StatelessWidget {
-//   const TSinglePlatform({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final dark = THelperFunctions.isDarkMode(context);
-//     return TRoundedContainer(
-//       showBorder: true,
-//       padding: const EdgeInsets.all(TSizes.md),
-//       width: double.infinity,
-//       backgroundColor: Colors.transparent,
-//       borderColor: dark ? TColors.darkerGrey : TColors.grey,
-//       margin: const EdgeInsets.only(bottom: TSizes.spaceBtwItems),
-//       child: Stack(
-//         children: [
-//           Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Text(
-//                 'Silver Platform',
-//                 maxLines: 1,
-//                 overflow: TextOverflow.ellipsis,
-//                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-//                   fontWeight: FontWeight.bold,
-//                   fontSize: 22,
-//                 ),
-//               ),
-//               const SizedBox(height: TSizes.sm),
-//
-//               // Hàng "3000 slots" và "500000 VND"
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: [
-//                   Text(
-//                     '3000 slots',
-//                     style: TextStyle(
-//                       fontSize: 20,
-//                       color: dark ? TColors.lightGrey : TColors.darkerGrey,
-//                     ),
-//                   ),
-//                   Text(
-//                     '500000 VND',
-//                     style: TextStyle(
-//                       fontSize: 22,
-//                       fontWeight: FontWeight.bold,
-//                       color: TColors.primary,
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//               const SizedBox(height: TSizes.sm),
-//
-//               ElevatedButton(
-//                 onPressed: () {
-//                   Navigator.push(
-//                     context,
-//                     MaterialPageRoute(builder: (context) => CheckoutScreen()),
-//                   );
-//                 },
-//                 style: ElevatedButton.styleFrom(
-//                   minimumSize: Size(double.infinity, 50), // Kích thước nút
-//                   backgroundColor: TColors.primary,
-//                 ),
-//                 child: Text(
-//                   'Book Now',
-//                   style: TextStyle(
-//                     fontSize: 18,
-//                     fontWeight: FontWeight.bold,
-//                     color: Colors.white,
-//                   ),
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
+
 
 class TSinglePlatform extends StatefulWidget {
   final int platformFeeId;
@@ -215,15 +134,14 @@ class _TSinglePlatform extends State<TSinglePlatform> {
 
           await generateQrCode(
             platformFeeId: widget.platformFeeId,
-            userId: userManager.id ?? 0, // Ensure `userManager.id` is not null
+            userId: userManager.id ?? 0, 
             quantity: widget.quantity,
           );
 
           setState(() {
-            isLoading = false; // Reset loading state after API call
+            isLoading = false;
           });
 
-          // Check if checkoutPackageFee is not null before navigating
           if (checkoutPackageFee != null) {
             Navigator.push(
               context,
@@ -232,7 +150,6 @@ class _TSinglePlatform extends State<TSinglePlatform> {
               ),
             );
           } else {
-            // Print a message if checkoutPackageFee is null (API call might have failed)
             print('Failed to generate QR code: checkoutPackageFee is null');
           }
         },

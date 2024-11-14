@@ -255,13 +255,6 @@ class _CreatePostState extends State<CreatePost> {
                     /// Create New Post Button
                     GestureDetector(
                       onTap: createPost,
-                      //     () {
-                      //   Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) => const PlatformFeeScreen()),
-                      //   );
-                      // },
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 15),
                         decoration: BoxDecoration(

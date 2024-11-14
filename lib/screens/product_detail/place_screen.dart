@@ -27,11 +27,6 @@ class PlaceScreen extends StatefulWidget {
 }
 
 class _PlaceScreenState extends State<PlaceScreen> {
-  // final List<String> imageUrls = [
-  //   'https://i.pinimg.com/736x/97/cf/7e/97cf7e8590acb5361a34ff7d4ee8f8e2.jpg',
-  //   'https://i.pinimg.com/736x/91/bf/74/91bf74698893832860c8e0246193371c.jpg',
-  //   'https://i.pinimg.com/564x/44/39/a8/4439a886cd0531c666108771348e6b49.jpg',
-  // ];
 
   int _currentIndex = 0;
 
@@ -87,10 +82,8 @@ class _PlaceScreenState extends State<PlaceScreen> {
             "Authorization": 'Bearer ${UserManager().token}'
           });
       if (response.statusCode == 200) {
-        // Xử lý khi thêm thành công
         print('Added to favorites successfully.');
       } else {
-        // Xử lý khi có lỗi
         print('Failed to add to favorites: ${response.statusCode}');
       }
     } catch (e) {
@@ -109,19 +102,15 @@ class _PlaceScreenState extends State<PlaceScreen> {
       );
 
       if (response.statusCode == 200) {
-        // Nếu xóa thành công
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Ticket removed from favorites')),
         );
-        // Cập nhật lại UI nếu cần thiết (ví dụ, quay lại màn hình trước đó hoặc cập nhật dữ liệu yêu thích)
       } else {
-        // Nếu có lỗi trong việc xóa
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to remove from favorites')),
         );
       }
     } catch (e) {
-      // Nếu có lỗi khi gọi API
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
       );
@@ -140,15 +129,14 @@ class _PlaceScreenState extends State<PlaceScreen> {
         print(
             "000000000000000000000000000000000000000000000000000000000000000000");
         print(widget.ticket.email);
-        print(otherUser!.uid); // Assigning the first user profile to otherUser
-        print(otherUser!.name); // Assigning the first user profile to otherUser
+        print(otherUser!.uid);
+        print(otherUser!.name);
         print(
-            otherUser!.pfpURL); // Assigning the first user profile to otherUser
+            otherUser!.pfpURL);
       });
     } else {
       print(
           "111111111111111111111111111111111111111111111111111111111111111111111111111");
-      // Handle the case where the user is not found
       print("User not found");
     }
   }
@@ -222,37 +210,13 @@ class _PlaceScreenState extends State<PlaceScreen> {
                         ),
                       ),
                     ),
-                    // Nút yêu thích
-                    // Positioned(
-                    //   bottom: -20,
-                    //   right: 20,
-                    //   child: Container(
-                    //     padding: EdgeInsets.all(8),
-                    //     decoration: BoxDecoration(
-                    //       color: Colors.white,
-                    //       shape: BoxShape.circle,
-                    //       boxShadow: [
-                    //         BoxShadow(
-                    //           color: Colors.black12,
-                    //           blurRadius: 2,
-                    //           spreadRadius: 4,
-                    //         ),
-                    //       ],
-                    //     ),
-                    //     child: Icon(
-                    //       Iconsax.heart,
-                    //       size: 30,
-                    //       color: Colors.redAccent,
-                    //     ),
-                    //   ),
-                    // ),
 
                     Positioned(
                       bottom: -20,
                       right: 20,
                       child: GestureDetector(
                         onTap: () {
-                          final userId = UserManager().id ?? 0; // Lấy `userId` từ `otherUser`
+                          final userId = UserManager().id ?? 0;
                           final ticketId = widget.ticket.ticketId;
                           addTicketToFavorite(userId, ticketId);
                         },
@@ -278,40 +242,11 @@ class _PlaceScreenState extends State<PlaceScreen> {
                       ),
                     ),
 
-                    // Nút xóa (Delete)
-                    // Positioned(
-                    //   bottom: -20,
-                    //   right: 80, // Điều chỉnh vị trí sao cho cách xa icon yêu thích
-                    //   child: Container(
-                    //     padding: EdgeInsets.all(8),
-                    //     decoration: BoxDecoration(
-                    //       color: Colors.white,
-                    //       shape: BoxShape.circle,
-                    //       boxShadow: [
-                    //         BoxShadow(
-                    //           color: Colors.black12,
-                    //           blurRadius: 2,
-                    //           spreadRadius: 4,
-                    //         ),
-                    //       ],
-                    //     ),
-                    //     child: IconButton(
-                    //       onPressed: () {
-                    //         // Xử lý xóa ở đây
-                    //         print("Delete clicked");
-                    //       },
-                    //       icon: Icon(
-                    //         Icons.delete,
-                    //         size: 30,
-                    //         color: Colors.red, // Màu đỏ cho nút xóa
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
+
 
                     Positioned(
                       bottom: -20,
-                      right: 80, // Điều chỉnh vị trí sao cho cách xa icon yêu thích
+                      right: 80,
                       child: Container(
                         padding: EdgeInsets.all(8),
                         decoration: BoxDecoration(
@@ -327,20 +262,19 @@ class _PlaceScreenState extends State<PlaceScreen> {
                         ),
                         child: IconButton(
                           onPressed: () {
-                            // Gọi hàm xóa khỏi yêu thích khi nhấn vào nút xóa
                             removeFromFavorites();
                           },
                           icon: Icon(
                             Icons.delete,
                             size: 30,
-                            color: Colors.red, // Màu đỏ cho nút xóa
+                            color: Colors.red,
                           ),
                         ),
                       ),
                     ),
                     // Chỉ báo ảnh
                     Positioned(
-                      bottom: 20, // Đặt chỉ báo ở vị trí dưới cùng
+                      bottom: 20,
                       left: MediaQuery.of(context).size.width / 2 -
                           30, // Đặt giữa
                       child: Row(
@@ -352,8 +286,8 @@ class _PlaceScreenState extends State<PlaceScreen> {
                             height: 8,
                             decoration: BoxDecoration(
                               color: _currentIndex == index
-                                  ? Colors.blue // Màu của chấm hiện tại
-                                  : Colors.grey, // Màu của chấm không hiện tại
+                                  ? Colors.blue
+                                  : Colors.grey,
                               shape: BoxShape.circle,
                             ),
                           );
