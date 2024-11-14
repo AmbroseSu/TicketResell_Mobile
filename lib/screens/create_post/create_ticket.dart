@@ -383,6 +383,21 @@ class _CreateTicketState extends State<CreateTicket> {
     try {
       final expirationDate = _dateController.text.isNotEmpty ? _dateController.text : null;
 
+      // Validate expiration date
+      if (expirationDate != null) {
+        DateTime selectedDate = DateFormat("dd/MM/yyyy HH:mm").parse(expirationDate);
+
+        DateTime currentDate = DateTime.now();
+        DateTime oneYearLater = currentDate.add(Duration(days: 365));
+
+        if (selectedDate.isBefore(currentDate) || selectedDate.isAfter(oneYearLater)) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Invalid date. Please choose expiration date again')),
+          );
+          return;
+        }
+      }
+
       final response = await http.post(
         Uri.parse("https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/new"),
         headers: {"Content-Type": "application/json"},
@@ -424,6 +439,57 @@ class _CreateTicketState extends State<CreateTicket> {
       );
     }
   }
+
+
+  // Future<void> createTicket() async {
+  //   if (!_formKey.currentState!.validate()) {
+  //     return;
+  //   }
+  //
+  //   try {
+  //     final expirationDate = _dateController.text.isNotEmpty ? _dateController.text : null;
+  //
+  //     final response = await http.post(
+  //       Uri.parse("https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/new"),
+  //       headers: {"Content-Type": "application/json"},
+  //       body: jsonEncode({
+  //         "name": _ticketNameController.text,
+  //         "price": int.tryParse(_priceController.text) ?? 0,
+  //         "quantity": int.tryParse(_quantityController.text) ?? 1,
+  //         "expirationDate": expirationDate,
+  //         "venue": _venueController.text,
+  //         "categoryId": categoryMap[selectedCategory] ?? 0, // Ensure categoryId is valid
+  //         "userId": userId,
+  //       }),
+  //     );
+  //
+  //     if (response.statusCode == 200) {
+  //       final data = json.decode(response.body);
+  //       final ticketId = data['content']['id']; // Get ticketId from response
+  //
+  //       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  //         content: Text(data['message'] ?? "Ticket created successfully"),
+  //       ));
+  //
+  //       // Navigate to UploadFile screen and pass ticketId
+  //       Navigator.push(
+  //         context,
+  //         MaterialPageRoute(builder: (context) => UploadFile(ticketId: ticketId)),
+  //       );
+  //     } else {
+  //       print("Error: ${response.statusCode}");
+  //       print("Response: ${response.body}"); // Print error response
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('Failed to create ticket: ${response.body}')),
+  //       );
+  //     }
+  //   } catch (e) {
+  //     print("Exception: $e");
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text('An error occurred while creating ticket: $e')),
+  //     );
+  //   }
+  // }
 
   Future<void> _selectDate(BuildContext context) async {
     pickedDate = await showDatePicker(
@@ -526,6 +592,17 @@ class _CreateTicketState extends State<CreateTicket> {
                   },
                 ),
                 const SizedBox(height: 16),
+                // TextFormField(
+                //   controller: _dateController,
+                //   decoration: const InputDecoration(
+                //     labelText: 'Expire Date',
+                //     prefixIcon: Icon(Iconsax.calendar),
+                //     suffixIcon: Icon(Icons.calendar_today),
+                //   ),
+                //   readOnly: true,
+                //   onTap: () => _selectDate(context),
+                // ),
+
                 TextFormField(
                   controller: _dateController,
                   decoration: const InputDecoration(
@@ -535,6 +612,26 @@ class _CreateTicketState extends State<CreateTicket> {
                   ),
                   readOnly: true,
                   onTap: () => _selectDate(context),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Expiration date is required';
+                    }
+
+                    try {
+                      DateTime selectedDate = DateFormat("dd/MM/yyyy HH:mm").parse(value);
+
+                      DateTime currentDate = DateTime.now();
+                      DateTime oneYearLater = currentDate.add(Duration(days: 365));
+
+                      if (selectedDate.isBefore(currentDate) || selectedDate.isAfter(oneYearLater)) {
+                        return 'Invalid date. Please choose expiration date again';
+                      }
+                    } catch (e) {
+                      return 'Please enter a valid date';
+                    }
+
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
