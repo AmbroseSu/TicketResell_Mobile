@@ -35,7 +35,10 @@ class _ExploreScreenState extends State<ExploreScreen>
   List<Map<String, dynamic>> _categories = [];
   Ticket? ticket = Ticket(ticketId: 0, ticketName: '', price: 0, quantity: 0, expirationDate: '', venue: '', status: '', isDeleted: true, categoryId: 1, categoryName: '', postId: 2, postTitle: '', postDescription: '', currentPostStatus: '', createdDate: '', userId: 2, email: '', imageUrls: [], feedbackDTOs: []);
   List<PostResponse> posts = [];
+  List<PostResponse> postCategories = [];
   late TextEditingController _searchController;
+  bool _isLoading = false;
+  bool _isLoadingCategories = true;
 
 
   @override
@@ -61,13 +64,24 @@ class _ExploreScreenState extends State<ExploreScreen>
       if (response.statusCode == 200) {
         final data = json.decode(utf8.decode(response.bodyBytes));
         final List categories = data['content'];
-
         setState(() {
           _categories = categories.map((category) => {
             'id': category['id'],
             'name': category['name']
           }).toList();
           _tabController = TabController(length: _categories.length, vsync: this);
+          _isLoadingCategories = false;
+          // if (_categories.isNotEmpty) {
+          //   fetchTicketByCategories(_categories[3]['id']);
+          // }else{
+            _tabController.addListener(() {
+              if (_tabController.indexIsChanging == false) {
+                final categoryId = _categories[_tabController.index]['id'];
+                fetchTicketByCategories(categoryId);
+              }
+            });
+          //}
+
         });
 
         // // Gọi API để lấy tour cho mỗi category
@@ -79,6 +93,7 @@ class _ExploreScreenState extends State<ExploreScreen>
       }
     } catch (e) {
       print("Error fetching categories: $e");
+      setState(() => _isLoadingCategories = false);
     }
   }
 
@@ -98,6 +113,30 @@ class _ExploreScreenState extends State<ExploreScreen>
     } else {
       // Xử lý lỗi ở đây (hiển thị thông báo lỗi hoặc xử lý khác)
       print('Failed to load tickets');
+    }
+  }
+
+  Future<void> fetchTicketByCategories(int categoryId) async {
+    setState(() => _isLoading = true); // Bắt đầu load
+
+    try {
+      final response = await http.get(Uri.parse(
+          'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Post/get-by-category?status=ACTIVE&id=$categoryId&page=1&limit=1000'));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          postCategories = (data['content'] as List)
+              .map((json) => PostResponse.fromJson(json))
+              .toList();
+          _isLoading = false; // Dừng load sau khi có dữ liệu
+        });
+      } else {
+        print('Failed to load tickets by category');
+        setState(() => _isLoading = false); // Dừng load nếu thất bại
+      }
+    } catch (e) {
+      print("Error fetching tickets by category: $e");
+      setState(() => _isLoading = false); // Dừng load nếu có lỗi
     }
   }
 
@@ -154,7 +193,7 @@ Widget build(BuildContext context) {
       },
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: _tabController == null || _categories.isEmpty
+        body: _isLoadingCategories || _categories.isEmpty
             ? Center(child: CircularProgressIndicator())
             : Column(
           children: [
@@ -316,17 +355,33 @@ Widget buildTabContent(String categoryName) {
             ],
           ),
           SizedBox(height: 12),
-          SingleChildScrollView(
+          // SingleChildScrollView(
+          //   scrollDirection: Axis.horizontal,
+          //   child: Row(
+          //     children: [
+          //       PopularItem(postResponse: postCategories,),
+          //       SizedBox(width: 16),
+          //       PopularItem(postResponse: postCategories,)
+          //     ],
+          //   ),
+          // ),
+
+          _isLoading
+              ? Center(child: CircularProgressIndicator())
+              : postCategories.isEmpty
+              ? Center(child: Text("No posts available"))
+              : SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
-              children: [
-                PopularItem(title: "Conan", rating: "4.1", image: TImages.conan),
-                SizedBox(width: 16),
-                PopularItem(
-                    title: "Exhuma", rating: "4.9", image: TImages.exhuma)
-              ],
+              children: postCategories.take(8).map((postCategory) {
+                return Padding(
+                  padding: EdgeInsets.only(right: 16),
+                  child: RecommendCard(postResponse: postCategory),
+                );
+              }).toList(),
             ),
           ),
+
           SizedBox(height: 32),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
