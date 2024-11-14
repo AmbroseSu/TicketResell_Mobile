@@ -1,90 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ticket_resell/api/response/post.dart';
 import 'package:ticket_resell/screens/product_detail/post_status.dart';
-
-//
-// class ReviewTicketPage extends StatelessWidget {
-//   final List<Map<String, dynamic>> tickets = [
-//     {
-//       "ticketName": "2 Ngay 1 Dem",
-//       "price": 500,
-//       "quantity": 10,
-//       "expirationDate": "2024-11-14T21:00:00+07:00",
-//     },
-//     // Thêm các vé khác nếu cần
-//   ];
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Review Ticket'),
-//       ),
-//       body: ListView.builder(
-//         itemCount: tickets.length,
-//         itemBuilder: (context, index) {
-//           var ticket = tickets[index];
-//           return Card(
-//             margin: EdgeInsets.all(10),
-//             elevation: 5,
-//             child: Padding(
-//               padding: EdgeInsets.all(15),
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   Text(
-//                     ticket['ticketName'],
-//                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-//                   ),
-//                   SizedBox(height: 10),
-//                   Text('Price: \$${ticket['price']}'),
-//                   Text('Quantity: ${ticket['quantity']}'),
-//                   Text('Expiration Date: ${ticket['expirationDate']}'),
-//                   SizedBox(height: 20),
-//                   ElevatedButton(
-//                     onPressed: () {
-//                       // Xử lý sự kiện khi nhấn nút "View Post"
-//                       showDialog(
-//                         context: context,
-//                         builder: (BuildContext context) {
-//                           return AlertDialog(
-//                             title: Text('View Post'),
-//                             content: Text('Here is the post content for ${ticket['ticketName']}'),
-//                             actions: <Widget>[
-//                               TextButton(
-//                                 onPressed: () {
-//                                   Navigator.of(context).pop();
-//                                 },
-//                                 child: Text('Close'),
-//                               ),
-//                             ],
-//                           );
-//                         },
-//                       );
-//                     },
-//                     child: TextButton(
-//                        onPressed: () {
-//                          Navigator.push(
-//                            context,
-//                            MaterialPageRoute(builder: (context) => PostStatusPage()),
-//                          );
-//                        }, child: Text( 'View Post'),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
-
-
-
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import '../../api/global_variables/user_manage.dart';
@@ -146,7 +63,7 @@ class _ReviewTicketPageState extends State<ReviewTicketPage> {
       ),
       backgroundColor: Colors.white,
       body: postResponses.isEmpty
-          ? Center(child: CircularProgressIndicator()) // Hiển thị loading khi chưa có dữ liệu
+          ? Center(child: CircularProgressIndicator())
           : ListView.builder(
         itemCount: postResponses.length,
         itemBuilder: (context, index) {
@@ -169,12 +86,9 @@ class _ReviewTicketPageState extends State<ReviewTicketPage> {
                   Text('Quantity: ${ticket.quantity}'),
                   Text('Expiration Date: ${ticket.expirationDate}'),
                   SizedBox(height: 10),
-                  // Nếu có hình ảnh, bạn có thể hiển thị nó như thế này:
-                  // Image.network(ticket.imageUrl),
                   SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
-                      // Navigate to PostStatusPage or handle other logic
                       Navigator.push(
                         context,
                         MaterialPageRoute(
