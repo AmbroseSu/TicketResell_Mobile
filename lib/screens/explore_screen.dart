@@ -318,7 +318,7 @@ Widget buildTabContent(String categoryName) {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Popular",
+                "Related",
                 style: GoogleFonts.montserrat(
                   fontWeight: FontWeight.w600,
                   fontSize: 18,
