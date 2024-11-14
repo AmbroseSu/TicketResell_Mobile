@@ -1,119 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:path/path.dart';
 import 'package:ticket_resell/api/response/ticket.dart';
 import 'package:ticket_resell/styles&text&sizes/image_strings.dart';
 import '../../styles&text&sizes/sizes.dart';
 import '../../widgets/appbar.dart';
-import '../../widgets/comment_input_icon.dart';
-import '../../widgets/primary_header_container.dart';
-import '../../widgets/progress_indicator_and_rating.dart';
-import '../../widgets/rating_progress_indicator.dart';
 import '../../widgets/t_circular_icon.dart';
 import '../../widgets/t_circular_image.dart';
-import '../../widgets/user_profile_tile.dart';
 import '../../widgets/user_review_card.dart';
-import '../profile/profile.dart';
-
-//
-// class ProductReviewsScreen extends StatelessWidget {
-//   const ProductReviewsScreen({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.white,
-//
-//       /// -- Appbar
-//       appBar: TAppBar(
-//         title: Text('Reviews & Ratings', style: Theme.of(context).textTheme.headlineMedium),
-//         showBackArrow: true,
-//         actions: [
-//           TCircularIcon(
-//             icon: Iconsax.add,
-//             onPressed: () {},
-//           )
-//         ],
-//       ),
-//
-//       /// -- Body
-//       body: SingleChildScrollView(
-//         child: Padding(
-//           padding: const EdgeInsets.all(TSizes.defaultSpace),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               const SizedBox(height: TSizes.spaceBtwItems),
-//
-//               /// -- Overall Product Ratings
-//
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.center, // Center the entire row
-//                 children: [
-//                   // Average Rating Image with adjusted size
-//                   SizedBox(
-//                     width: 80, // Adjust the width as needed
-//                     height: 80, // Adjust the height as needed
-//                     child: TCircularImage(
-//                       image: 'assets/movies/conan.jpg',
-//                     ),
-//                   ),
-//
-//                   const SizedBox(width: 16), // Space between image and text
-//
-//                   // Rating Breakdown with larger text, centered vertically
-//                   Expanded(
-//                     child: Column(
-//                       mainAxisAlignment: MainAxisAlignment.center, // Center content vertically
-//                       crossAxisAlignment: CrossAxisAlignment.start,
-//                       children: [
-//                         Text(
-//                           "Name: Nam Le",
-//                           style: TextStyle(
-//                             fontSize: 20, // Increase font size as needed
-//                             fontWeight: FontWeight.bold, // Optional: make text bold
-//                           ),
-//                         ),
-//                         Text(
-//                           "Point: 1000",
-//                           style: TextStyle(
-//                             fontSize: 18, // Increase font size as needed
-//                           ),
-//                         ),
-//                       ],
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//
-//
-//               const SizedBox(height: TSizes.spaceBtwItems),
-//               // TRatingBarIndicator(rating: 4.8),
-//               // Text('12,611 reviews', style: Theme.of(context).textTheme.bodySmall),
-//               const SizedBox(height: TSizes.spaceBtwSections),
-//
-//               /// User Reviews List
-//               const UserReviewCard(),
-//               const UserReviewCard(),
-//               const UserReviewCard(),
-//               const UserReviewCard(),
-//
-//               // /// Input Comment
-//               // const CommentInputWidget(),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-
-import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:iconsax/iconsax.dart';
 
 class ProductReviewsScreen extends StatefulWidget {
   final Ticket ticket;
