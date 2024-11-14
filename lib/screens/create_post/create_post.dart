@@ -22,6 +22,7 @@ class _CreatePostState extends State<CreatePost> {
 
   TimeOfDay? selectedTime;
   Map<String, int> TicketMap = {};
+  int? number;
 
   @override
   void initState() {
@@ -35,6 +36,25 @@ class _CreatePostState extends State<CreatePost> {
     _ticketNameController.dispose();
     _ticketDescriptionController.dispose();
     super.dispose();
+  }
+
+  Future<void> getnumber() async {
+    final response = await http.get(Uri.parse(
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Quota/get-total-quota/${UserManager().id}'),
+        headers: {
+          "Authorization": 'Bearer ${UserManager().token}'
+        });
+    print(response.statusCode);
+    var responseData = jsonDecode(response.body);
+    if (responseData['statusCode'] == 200) {
+      final data = json.decode(response.body);
+      setState(() {
+        number = int.parse(data['content']);
+      });
+    } else {
+      // Xử lý lỗi ở đây (hiển thị thông báo lỗi hoặc xử lý khác)
+      print('Failed to load tickets');
+    }
   }
 
 // Fetch categories from the API
@@ -108,10 +128,6 @@ class _CreatePostState extends State<CreatePost> {
           content: Text(data['message'] ?? "Post created successfully"),
         ));
 
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => PlatformFeeScreen()),
-        );
       } else {
         print("Error: ${response.statusCode}");
         print("Response: ${response.body}");
@@ -254,7 +270,17 @@ class _CreatePostState extends State<CreatePost> {
 
                     /// Create New Post Button
                     GestureDetector(
-                      onTap: createPost,
+                      onTap: () {
+                        getnumber();
+                        if(number == 0){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => PlatformFeeScreen()),
+                          );
+                        }else{
+                          createPost();
+                        }
+                      },
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 15),
                         decoration: BoxDecoration(
