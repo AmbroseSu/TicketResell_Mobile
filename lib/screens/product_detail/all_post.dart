@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
+import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/api/response/post.dart';
 import 'package:ticket_resell/styles&text&sizes/post_card_vertical.dart';
 import '../../styles&text&sizes/sizes.dart';
@@ -27,7 +28,10 @@ class _AllPostState extends State<AllPost> {
 
   Future<void> fetchTickets() async {
     final response = await http.get(Uri.parse(
-        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Post/get-lists?status=ACTIVE&page=1&limit=100'));
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Post/get-lists?status=ACTIVE&page=1&limit=100'),
+        headers: {
+          "Authorization": 'Bearer ${UserManager().token}'
+        });
     print(response.statusCode);
     var responseData = jsonDecode(response.body);
     if (responseData['statusCode'] == 200) {

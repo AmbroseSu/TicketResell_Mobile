@@ -33,7 +33,10 @@ class _AllTicketRequestBuyScreenState extends State<AllTicketRequestBuyScreen> {
     final userId = UserManager().id;
 
     final response = await http.get(Uri.parse(
-        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/TicketRequest/get-ticket-request-for-buyer?userId=$userId&page=1&limit=1000'));
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/TicketRequest/get-ticket-request-for-buyer?userId=$userId&page=1&limit=1000'),
+        headers: {
+          "Authorization": 'Bearer ${UserManager().token}'
+        });
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -56,7 +59,10 @@ class _AllTicketRequestBuyScreenState extends State<AllTicketRequestBuyScreen> {
 
   Future<void> fetchTicketName(int ticketId) async {
     final response = await http.get(Uri.parse(
-        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get?ticketId=$ticketId'));
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get?ticketId=$ticketId'),
+        headers: {
+          "Authorization": 'Bearer ${UserManager().token}'
+        });
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);

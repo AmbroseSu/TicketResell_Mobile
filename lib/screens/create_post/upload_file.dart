@@ -3,6 +3,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/navigation_menu.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -94,7 +95,9 @@ class _UploadFileState extends State<UploadFile> {
 
       final response = await http.post(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',
+            "Authorization": 'Bearer ${UserManager().token}'
+        },
         body: body,
       );
 

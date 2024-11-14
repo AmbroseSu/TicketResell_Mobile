@@ -30,7 +30,10 @@ class _AllOrderTicketScreenState extends State<AllOrderTicketScreen> {
     final userId = UserManager().id;
 
     final response = await http.get(Uri.parse(
-        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Order/get-order-by-userid?userId=$userId&page=1&limit=1000'));
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Order/get-order-by-userid?userId=$userId&page=1&limit=1000'),
+        headers: {
+          "Authorization": 'Bearer ${UserManager().token}'
+        });
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -57,7 +60,10 @@ class _AllOrderTicketScreenState extends State<AllOrderTicketScreen> {
 
   Future<void> fetchTicket(int ticketId) async {
     final response = await http.get(Uri.parse(
-        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get?ticketId=$ticketId'));
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get?ticketId=$ticketId'),
+        headers: {
+          "Authorization": 'Bearer ${UserManager().token}'
+        });
     print(response.statusCode);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);

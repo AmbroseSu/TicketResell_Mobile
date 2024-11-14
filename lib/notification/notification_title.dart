@@ -68,6 +68,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
+import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/api/response/ticket_request.dart';
 import 'package:ticket_resell/models/notification.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -143,6 +144,7 @@ class _NotificationTileState extends State<NotificationTile> {
     final headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
+        "Authorization": 'Bearer ${UserManager().token}'
     };
     //final body = jsonEncode({'email': email});
 

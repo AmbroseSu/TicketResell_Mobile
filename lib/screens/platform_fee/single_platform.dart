@@ -128,6 +128,7 @@ class _TSinglePlatform extends State<TSinglePlatform> {
     final headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
+        "Authorization": 'Bearer ${UserManager().token}'
     };
 
     try {

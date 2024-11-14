@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/api/response/ticket_request.dart';
 import 'package:ticket_resell/screens/request_ticket/all_ticket_seller.dart';
 import 'package:ticket_resell/screens/request_ticket/ticket_request_detail.dart';
@@ -31,7 +32,10 @@ class _AllRequestTicketScreenState extends State<AllRequestTicketScreen> {
 
   Future<void> fetchTickets() async {
     final response = await http.get(Uri.parse(
-        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/TicketRequest/get-ticket-request?ticketId=${widget.ticketId}&page=1&limit=1000'));
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/TicketRequest/get-ticket-request?ticketId=${widget.ticketId}&page=1&limit=1000'),
+        headers: {
+          "Authorization": 'Bearer ${UserManager().token}'
+        });
     print(response.statusCode);
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
@@ -65,6 +69,8 @@ class _AllRequestTicketScreenState extends State<AllRequestTicketScreen> {
       final headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
+          "Authorization": 'Bearer ${UserManager().token}'
+
       };
       final response = await http.post(
         url,

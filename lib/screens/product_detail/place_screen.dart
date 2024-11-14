@@ -82,7 +82,10 @@ class _PlaceScreenState extends State<PlaceScreen> {
   Future<void> addTicketToFavorite(int userId, int ticketId) async {
     final url = 'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Favorite/add-ticket-favorite/${UserManager().id}?ticketId=${widget.ticket.ticketId}';
     try {
-      final response = await http.post(Uri.parse(url));
+      final response = await http.post(Uri.parse(url),
+          headers: {
+            "Authorization": 'Bearer ${UserManager().token}'
+          });
       if (response.statusCode == 200) {
         // Xử lý khi thêm thành công
         print('Added to favorites successfully.');
@@ -100,6 +103,9 @@ class _PlaceScreenState extends State<PlaceScreen> {
       final response = await http.post(
         Uri.parse(
             'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Favorite/remove-favorite/${UserManager().id}?ticketId=${widget.ticket.ticketId}'),
+          headers: {
+            "Authorization": 'Bearer ${UserManager().token}'
+          }
       );
 
       if (response.statusCode == 200) {
@@ -544,7 +550,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
                         title: 'Reviews (345)', showActionButton: false),
                     IconButton(
                         onPressed: () =>
-                            Get.to(() => const ProductReviewsScreen()),
+                            Get.to(() => ProductReviewsScreen(ticket: widget.ticket)),
                         icon: const Icon(Iconsax.arrow_right_3))
                   ],
                 ),

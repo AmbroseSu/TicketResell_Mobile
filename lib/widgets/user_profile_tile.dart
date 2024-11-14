@@ -25,6 +25,9 @@ class TUserProfileTile extends StatelessWidget {
 
     final response = await http.get(
       Uri.parse("https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/User/get-user-by-id?id=$userId"),
+        headers: {
+          "Authorization": 'Bearer ${UserManager().token}'
+        }
     );
 
     if (response.statusCode == 200) {

@@ -209,6 +209,7 @@ class _TicketRequestDetailScreen extends State<TicketRequestDetailScreen> {
       final headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
+          "Authorization": 'Bearer ${UserManager().token}'
       };
       final response = await http.post(
         url,

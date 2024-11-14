@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/screens/platform_fee/single_platform.dart';
 import '../../styles&text&sizes/colors.dart';
 import '../../styles&text&sizes/sizes.dart';
@@ -59,7 +60,9 @@ class _PlatformFeeScreenState extends State<PlatformFeeScreen> {
         'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/PlatformFee/get-platform-fee/all?page=1&limit=1000');
 
     try {
-      final response = await http.get(url);
+      final response = await http.get(url,headers: {
+        "Authorization": 'Bearer ${UserManager().token}'
+      });
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);

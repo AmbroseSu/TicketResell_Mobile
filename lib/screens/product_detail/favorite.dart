@@ -27,7 +27,10 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
 
   Future<void> fetchTickets() async {
     final response = await http.get(Uri.parse(
-        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Favorite/get-all-favorite/${UserManager().id}'));
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Favorite/get-all-favorite/${UserManager().id}'),
+        headers: {
+          "Authorization": 'Bearer ${UserManager().token}'
+        });
     print(response.statusCode);
     var responseData = jsonDecode(response.body);
 

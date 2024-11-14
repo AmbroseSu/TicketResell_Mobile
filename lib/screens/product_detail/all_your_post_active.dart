@@ -35,7 +35,10 @@ class _AllYourPostActiveState extends State<AllYourPostActive> {
     final int? userId = UserManager().id;
 
     final response = await http.get(Uri.parse(
-        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Post/get-by-user?status=ACTIVE&id=$userId&page=1&limit=100'));
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Post/get-by-user?status=ACTIVE&id=$userId&page=1&limit=100'),
+        headers: {
+          "Authorization": 'Bearer ${UserManager().token}'
+        });
     print(response.statusCode);
     var responseData = jsonDecode(response.body);
     if (responseData['statusCode'] == 200) {

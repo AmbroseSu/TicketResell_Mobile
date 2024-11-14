@@ -509,6 +509,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
+        "Authorization": 'Bearer ${UserManager().token}'
     };
 
     try {
@@ -541,6 +542,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final headers = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
+        "Authorization": 'Bearer ${UserManager().token}',
     };
     //final body = jsonEncode({'email': email});
 
@@ -548,7 +550,6 @@ class _ChatScreenState extends State<ChatScreen> {
       final response = await http.get(
         Uri.parse(url),
         headers: headers,
-        //body: body,
       );
 
       print('Status code: ${response.statusCode}');
