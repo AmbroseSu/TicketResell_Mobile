@@ -110,7 +110,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onSave(controller.text); // Gọi hàm onSave với giá trị mới
                 Navigator.of(context).pop(); // Đóng dialog
               },
-              child: const Text('Save', style: TextStyle(color: Color(0xFF55B97D))),
+              child: const Text('Save', style: TextStyle(color: Colors.blueAccent)),
             ),
           ],
         );

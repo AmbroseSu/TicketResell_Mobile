@@ -9,7 +9,8 @@ import 'package:ticket_resell/screens/create_post/create_options.dart';
 import 'package:ticket_resell/screens/create_post/create_ticket.dart';
 import 'package:ticket_resell/screens/platform_fee/platform.dart';
 import 'package:ticket_resell/screens/product_detail/all_post.dart';
-import 'package:ticket_resell/screens/product_detail/all_your_post.dart';
+import 'package:ticket_resell/screens/product_detail/all_your_post_active.dart';
+import 'package:ticket_resell/screens/product_detail/review_ticket.dart';
 import '../../styles&text&sizes/sizes.dart';
 import '../../styles&text&sizes/text_strings.dart';
 import '../../widgets/appbar.dart';
@@ -88,7 +89,7 @@ class SettingsScreen extends StatelessWidget {
                       icon: Iconsax.direct,
                       title: 'Your Post',
                       subTitle: 'List all your posts in TicketResell',
-                      onTap: () => Get.to(() => const AllYourPost())),
+                      onTap: () => Get.to(() =>  ReviewTicketPage())),
 
                   TSettingsMenuTile(
                       icon: Iconsax.ticket,

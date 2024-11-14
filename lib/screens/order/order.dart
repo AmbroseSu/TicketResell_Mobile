@@ -18,7 +18,7 @@ class OrderScreen extends StatelessWidget {
       /// -- AppBar
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('My Booking', style: Theme.of(context).textTheme.headlineMedium),
+        title: Text('Platform Order', style: Theme.of(context).textTheme.headlineMedium),
         centerTitle: true,
       ),
       body: const Padding(
