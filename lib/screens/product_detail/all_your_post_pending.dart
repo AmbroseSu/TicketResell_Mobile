@@ -5,33 +5,37 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:ticket_resell/api/response/post.dart';
+import 'package:ticket_resell/styles&text&sizes/my_post_card_vertical.dart';
 import 'package:ticket_resell/styles&text&sizes/post_card_vertical.dart';
 import '../../api/global_variables/user_manage.dart';
+import '../../api/response/post_element.dart';
 import '../../styles&text&sizes/sizes.dart';
 import '../../widgets/grid_layout.dart';
 
 
-class AllYourPost extends StatefulWidget {
-  const AllYourPost({super.key});
+class AllYourPostPending extends StatefulWidget {
+  final PostResponse postResponse;
+  final List<PostElement> postElements;
+  const AllYourPostPending({super.key, required this.postResponse, required this.postElements});
 
   @override
-  _AllYourPostState createState() => _AllYourPostState();
+  _AllYourPostPendingState createState() => _AllYourPostPendingState();
 }
 
-class _AllYourPostState extends State<AllYourPost> {
+class _AllYourPostPendingState extends State<AllYourPostPending> {
   List<PostResponse> posts = [];
 
   @override
   void initState() {
     super.initState();
-    fetchTickets();
+    //fetchTickets();
   }
 
   Future<void> fetchTickets() async {
     final int? userId = UserManager().id;
 
     final response = await http.get(Uri.parse(
-        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Post/get-by-user?status=ACTIVE&id=$userId&page=1&limit=100'));
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Post/get-by-user?status=PENDING&id=$userId&page=1&limit=100'));
     print(response.statusCode);
     var responseData = jsonDecode(response.body);
     if (responseData['statusCode'] == 200) {
@@ -54,7 +58,7 @@ class _AllYourPostState extends State<AllYourPost> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('All Your Posts', style: Theme.of(context).textTheme.headlineMedium),
+        title: Text('Your Pending Posts', style: Theme.of(context).textTheme.headlineMedium),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -62,7 +66,7 @@ class _AllYourPostState extends State<AllYourPost> {
           padding: EdgeInsets.all(TSizes.defaultSpace),
           child: Column(
             children: [
-              TGridLayout(itemCount: posts.length, itemBuilder: (_, index) => PostCardVertical(postResponse: posts[index],))
+              TGridLayout(itemCount: widget.postElements.length, itemBuilder: (_, index) => MyPostCardVertical(postResponse: widget.postResponse, postElement: widget.postElements[index],))
             ],
           ),
         ),
