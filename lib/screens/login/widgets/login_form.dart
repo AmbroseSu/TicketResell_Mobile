@@ -52,7 +52,6 @@ class _TLoginFormState extends State<TLoginForm> {
 
       print('00000000000000000000000000000' + request.email + request.password);
 
-      // Gửi yêu cầu POST đến API
       var response = await http.post(
         Uri.parse(
             'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Authentication/sign-in'),
@@ -80,41 +79,12 @@ class _TLoginFormState extends State<TLoginForm> {
         print(userManager.id);
         String? fcmToken = TokenManager().fcmToken;
 
-        // Send notification using PushNotificationService
-        // await PushNotificationService.sendNotificationToSelectedDrived(
-        //   fcmToken,
-        //   context
-        // );
+
 
         print("00000000000000000000000000000000000000000000000000000000000");
-        // Hiển thị dialog hoặc thực hiện hành động phù hợp sau khi đăng nhập thành công
-        // showDialog(
-        //   context: context,
-        //   builder: (BuildContext context) {
-        //     return AlertDialog(
-        //       title: Text('Sign in successfully'),
-        //       content: Column(
-        //         mainAxisSize: MainAxisSize.min,
-        //         children: <Widget>[
-        //           Text('ID: ${userDTO['id']}'),
-        //           Text('Email: ${userDTO['email']}'),
-        //           Text('Role: ${userDTO['role']}'),
-        //           Text('Token: $token'),
-        //         ],
-        //       ),
-        //       actions: <Widget>[
-        //         TextButton(
-        //           child: Text('OK'),
-        //           onPressed: () {
-        //             Navigator.of(context).pop();
-        //             // Navigate to another screen or perform another action
+
         Get.to(() => const NavigationMenu());
-        //           },
-        //         ),
-        //       ],
-        //     );
-        //   },
-        // );
+
       } else {
         // Phản hồi lỗi từ API, hiển thị thông báo lỗi
         showDialog(

@@ -1,13 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:ticket_resell/api/response/post.dart';
 import 'package:ticket_resell/styles&text&sizes/shadows.dart';
 import 'package:ticket_resell/styles&text&sizes/sizes.dart';
+import '../api/global_variables/user_manage.dart';
 import '../api/response/post_element.dart';
 import '../api/response/ticket.dart';
 import '../screens/product_detail/place_screen.dart';
@@ -15,11 +14,8 @@ import '../widgets/helper_functions.dart';
 import '../widgets/product_price_text.dart';
 import '../widgets/product_title_text.dart';
 import '../widgets/rounded_container.dart';
-import '../widgets/t_circular_icon.dart';
-import '../widgets/t_rounded_image.dart';
 import 'colors.dart';
 import 'package:http/http.dart' as http;
-import 'image_strings.dart';
 
 class PostCardVertical extends StatefulWidget {
   final PostResponse postResponse;
@@ -38,12 +34,16 @@ class _PostCardVertical extends State<PostCardVertical> {
   @override
   void initState() {
     super.initState();
-    findActivePostElement(); // Gọi hàm tìm phần tử ACTIVE khi widget được tạo
+    findActivePostElement();
   }
 
   Future<void> fetchTickets() async {
     final response = await http.get(Uri.parse(
-        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get?ticketId=${widget.postResponse.ticketId}'));
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get?ticketId=${widget.postResponse.ticketId}'),
+        headers: {
+          "Authorization": 'Bearer ${UserManager().token}'
+        }
+    );
     print(response.statusCode);
     var responseData = jsonDecode(response.body);
 
@@ -53,7 +53,6 @@ class _PostCardVertical extends State<PostCardVertical> {
       print("0101010101010101010101010101010101010101");
       Get.to(() => PlaceScreen(ticket: ticket!));
     } else {
-      // Xử lý lỗi ở đây (hiển thị thông báo lỗi hoặc xử lý khác)
       print('Failed to load tickets');
     }
   }
@@ -61,7 +60,6 @@ class _PostCardVertical extends State<PostCardVertical> {
   void findActivePostElement() {
     activePostElement = widget.postResponse.postElements
         .firstWhere((postElement) => postElement.status == 'ACTIVE');
-    // In ra post element có status là ACTIVE (nếu có)
     print('Active Post Element: $activePostElement');
   }
 

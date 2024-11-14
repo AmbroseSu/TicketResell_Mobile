@@ -1,21 +1,13 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
-import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:ticket_resell/api/global_variables/user_manage.dart';
-import 'package:ticket_resell/styles&text&sizes/product_card_vertical_fav.dart';
 import '../../api/response/ticket.dart';
 import '../../styles&text&sizes/product_card_vertical.dart';
-import '../../styles&text&sizes/product_card_vertical_fav.dart';
 import '../../styles&text&sizes/sizes.dart';
-import '../../widgets/appbar.dart';
 import '../../widgets/grid_layout.dart';
-import '../../widgets/t_circular_icon.dart';
-import '../explore_screen.dart';
 
 class AllTicket extends StatefulWidget {
   const AllTicket({super.key});
@@ -50,7 +42,6 @@ class _AllTicketState extends State<AllTicket> {
       print("0101010101010101010101010101010101010101");
       print(tickets[1]);
     } else {
-      // Xử lý lỗi ở đây (hiển thị thông báo lỗi hoặc xử lý khác)
       print('Failed to load tickets');
     }
   }

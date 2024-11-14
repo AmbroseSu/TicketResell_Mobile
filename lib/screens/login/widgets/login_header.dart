@@ -23,7 +23,6 @@ class TLoginHeader extends StatelessWidget {
         const SizedBox(height: TSizes.sm),
         Text("Welcome back! The world of Ticket ",
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 18)),
-        // const SizedBox(height: TSizes.sm),
         Text("Resell in your own way ",
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontSize: 18)),
       ],

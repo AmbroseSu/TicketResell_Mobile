@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
 import '../../navigation_menu.dart';
 import '../../styles&text&sizes/colors.dart';
 import '../../styles&text&sizes/image_strings.dart';
 import '../../styles&text&sizes/sizes.dart';
-import '../../widgets/appbar.dart';
 import '../../widgets/billing_address_section.dart';
 import '../../widgets/billing_payment_section.dart';
 import '../../widgets/helper_functions.dart';
 import '../../widgets/rounded_container.dart';
-import '../../widgets/t_circular_icon.dart';
 import '../cart/cart_item.dart';
-import '../explore_screen.dart';
 import '../success_screen/payment_success.dart';
-import '../success_screen/success_screen.dart';
 
 
 class CheckoutScreen extends StatelessWidget {
