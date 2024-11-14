@@ -9,10 +9,7 @@ import '../widgets/helper_functions.dart';
 import '../widgets/product_price_text.dart';
 import '../widgets/product_title_text.dart';
 import '../widgets/rounded_container.dart';
-import '../widgets/t_circular_icon.dart';
-import '../widgets/t_rounded_image.dart';
 import 'colors.dart';
-import 'image_strings.dart';
 
 
 class TProductCardVertical extends StatelessWidget {
@@ -44,7 +41,7 @@ class TProductCardVertical extends StatelessWidget {
                    AspectRatio(
                     aspectRatio: 4 / 4,
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10), // Adjust as needed for rounded corners
+                      borderRadius: BorderRadius.circular(10),
                       child: Image.network(
                         ticket.imageUrls.isNotEmpty
                             ? ticket.imageUrls[0]

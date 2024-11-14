@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:get/get.dart';
 import 'package:ticket_resell/screens/login/widgets/login_form.dart';
 import 'package:ticket_resell/screens/login/widgets/login_header.dart';
