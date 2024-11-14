@@ -8,6 +8,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:ticket_resell/api/response/post.dart';
 import 'package:ticket_resell/styles&text&sizes/shadows.dart';
 import 'package:ticket_resell/styles&text&sizes/sizes.dart';
+import '../api/global_variables/user_manage.dart';
 import '../api/response/post_element.dart';
 import '../api/response/ticket.dart';
 import '../screens/product_detail/place_screen.dart';
@@ -255,7 +256,9 @@ class _MyPostCardVertical extends State<MyPostCardVertical> {
 
     final response = await http.put(
       Uri.parse('https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Post/manager-action?postId=$postId&status=CLOSED'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Content-Type': 'application/json',
+        "Authorization": 'Bearer ${UserManager().token}'
+      },
     );
 
     if (response.statusCode == 200) {

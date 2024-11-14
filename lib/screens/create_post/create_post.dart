@@ -14,6 +14,7 @@ class CreatePost extends StatefulWidget {
 }
 
 class _CreatePostState extends State<CreatePost> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String? selectedTicket;
   List<String> tickets = [];
   TextEditingController _dateController = TextEditingController();
@@ -62,7 +63,7 @@ class _CreatePostState extends State<CreatePost> {
     final int? userId = UserManager().id;
 
     final response = await http.get(
-      Uri.parse("https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get-user?id=$userId&page=1&limit=100"),
+      Uri.parse("https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get-user?status=ACTIVE&id=$userId&page=1&limit=100"),
         headers: {
           "Authorization": 'Bearer ${UserManager().token}'
         }
@@ -95,6 +96,9 @@ class _CreatePostState extends State<CreatePost> {
 // Create post
   Future<void> createPost() async {
     try {
+      if (!_formKey.currentState!.validate()) {
+        return; // Nếu có lỗi, dừng lại và không gọi API
+      }
       if (_ticketNameController.text.isEmpty ||
           _ticketDescriptionController.text.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Please fill all the fields')));
@@ -165,144 +169,96 @@ class _CreatePostState extends State<CreatePost> {
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(
-            left: 16.0,
-            right: 16.0,
-            top: 16.0,
-            bottom: 0,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              /// Form
-              Form(
-                child: Column(
-                  children: [
-                    /// Post Title
-                    TextFormField(
-                      controller: _ticketNameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Post Title',
-                        prefixIcon: Icon(Icons.post_add),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-
-                    /// Description
-                    TextFormField(
-                      controller: _ticketDescriptionController,
-                      decoration: const InputDecoration(
-                        labelText: 'Description',
-                        prefixIcon: Icon(Icons.description),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-
-                    /// Ticket Dropdown
-                    DropdownButtonFormField<String>(
-                      decoration: const InputDecoration(
-                        labelText: 'Ticket',
-                        prefixIcon: Icon(Iconsax.user_tag),
-                      ),
-                      dropdownColor: Colors.white,
-                      value: selectedTicket,
-                      items: tickets.isEmpty
-                          ? [DropdownMenuItem(child: Text("Loading..."))]
-                          : tickets.toSet().map((String value) {  // Convert to Set to ensure unique items
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (newValue) {
-                        setState(() {
-                          selectedTicket = newValue;
-                        });
-                      },
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    /// Terms & Conditions Checkbox
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: Checkbox(
-                            value: true,
-                            onChanged: (value) {},
-                            checkColor: Colors.white,
-                            activeColor: Colors.blueAccent,
-                            side: const BorderSide(color: Colors.black),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text.rich(
-                          TextSpan(children: [
-                            TextSpan(
-                                text: 'By using TicketResell, you agree to ',
-                                style: Theme.of(context).textTheme.bodySmall),
-                            TextSpan(
-                                text: 'Terms ',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .apply(
-                                    color: Colors.black,
-                                    decorationColor: Colors.black)),
-                            TextSpan(
-                                text: 'and ',
-                                style: Theme.of(context).textTheme.bodySmall),
-                            TextSpan(
-                                text: '\nPrivacy Policy',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .apply(
-                                    color: Colors.black,
-                                    decorationColor: Colors.black)),
-                          ]),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-
-                    /// Create New Post Button
-                    GestureDetector(
-                      onTap: () {
-                        getnumber();
-                        if(number == 0){
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => PlatformFeeScreen()),
-                          );
-                        }else{
-                          createPost();
-                        }
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: Colors.blueAccent,
-                        ),
-                        child: Center(
-                          child: Text(
-                            "Create",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
-                              fontSize: 18,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey, // Sử dụng GlobalKey để quản lý trạng thái form
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                TextFormField(
+                  controller: _ticketNameController,
+                  decoration: InputDecoration(
+                    labelText: 'Post Title',
+                    prefixIcon: Icon(Icons.post_add),
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a post title';
+                    }
+                    return null;
+                  },
                 ),
-              ),
-            ],
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _ticketDescriptionController,
+                  decoration: InputDecoration(
+                    labelText: 'Description',
+                    prefixIcon: Icon(Icons.description),
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a description';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(
+                    labelText: 'Ticket',
+                    prefixIcon: Icon(Iconsax.user_tag),
+                    border: OutlineInputBorder(),
+                  ),
+                  value: selectedTicket,
+                  items: tickets.isEmpty
+                      ? [DropdownMenuItem(child: Text("Loading..."))]
+                      : tickets.map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (newValue) {
+                    setState(() {
+                      selectedTicket = newValue;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Please select a ticket';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 16),
+                GestureDetector(
+                  onTap: () {
+                    if (_formKey.currentState!.validate()) {
+                      createPost();
+                    }
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15),
+                      color: Colors.blueAccent,
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Create",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
