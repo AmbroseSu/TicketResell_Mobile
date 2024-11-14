@@ -375,7 +375,7 @@ Widget buildTabContent(String categoryName) {
               children: postCategories.take(8).map((postCategory) {
                 return Padding(
                   padding: EdgeInsets.only(right: 16),
-                  child: RecommendCard(postResponse: postCategory),
+                  child: PopularItem(postResponse: postCategory),
                 );
               }).toList(),
             ),

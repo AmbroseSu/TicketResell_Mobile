@@ -28,6 +28,12 @@ class _PopularItemState extends State<PopularItem> {
 
   Ticket? ticket;
   PostElement? activePostElement;
+  @override
+  void initState() {
+    super.initState();
+    findActivePostElement();
+    fetchTickets();
+  }
 
   @override
   Widget build(BuildContext context) {

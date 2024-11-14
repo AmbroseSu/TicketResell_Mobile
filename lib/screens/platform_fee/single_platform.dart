@@ -123,7 +123,7 @@ class _TSinglePlatform extends State<TSinglePlatform> {
     final body = json.encode({
       'platformFeeId': platformFeeId,
       'userId': userId,
-      'quantity': quantity,
+      'quantity': 1,
     });
     final headers = {
       'Content-Type': 'application/json',
@@ -141,8 +141,10 @@ class _TSinglePlatform extends State<TSinglePlatform> {
         // Yêu cầu thành công
         final data = json.decode(response.body);
         setState(() {
-          checkoutPackageFee = CheckoutPackageFee.fromJson(data);
+          checkoutPackageFee = CheckoutPackageFee.fromJson(data['content']);
         });
+
+        print(checkoutPackageFee!.qrCode);
         //CheckoutPackageFee checkoutPackageFee = CheckoutPackageFee.fromJson(data);
 
         // Bạn có thể thêm logic xử lý khi thành công ở đây
@@ -204,42 +206,46 @@ class _TSinglePlatform extends State<TSinglePlatform> {
           ),
           const SizedBox(height: 8.0),
 
-          ElevatedButton(
-            onPressed: isLoading ? null : () async {
-              setState(() {
-                isLoading = true; // Bật trạng thái loading khi bắt đầu gọi API
-              });
-              await generateQrCode(
-                platformFeeId: widget.platformFeeId,
-                userId: userManager.id!,
-                quantity: widget.quantity,
-              );
-              if (checkoutPackageFee != null) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => QrCodePlatformScreen(checkoutPackageFee: checkoutPackageFee!),
-                  ),
-                );
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size(double.infinity, 50),
-              backgroundColor: TColors.primary,
-            ),
-            child: isLoading
-                ? const CircularProgressIndicator(
-              color: Colors.white,
-            )
-                : const Text(
-              'Book Now',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+      ElevatedButton(
+        onPressed: isLoading ? null : () async {
+          setState(() {
+            isLoading = true;
+          });
+
+          await generateQrCode(
+            platformFeeId: widget.platformFeeId,
+            userId: userManager.id ?? 0, // Ensure `userManager.id` is not null
+            quantity: widget.quantity,
+          );
+
+          setState(() {
+            isLoading = false; // Reset loading state after API call
+          });
+
+          // Check if checkoutPackageFee is not null before navigating
+          if (checkoutPackageFee != null) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => QrCodePlatformScreen(checkoutPackageFee: checkoutPackageFee!),
               ),
-            ),
-          ),
+            );
+          } else {
+            // Print a message if checkoutPackageFee is null (API call might have failed)
+            print('Failed to generate QR code: checkoutPackageFee is null');
+          }
+        },
+        style: ElevatedButton.styleFrom(
+          minimumSize: const Size(double.infinity, 50),
+          backgroundColor: TColors.primary,
+        ),
+        child: isLoading
+            ? const CircularProgressIndicator(color: Colors.white)
+            : const Text(
+          'Book Now',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+      ),
         ],
       ),
     );
