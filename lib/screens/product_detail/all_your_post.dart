@@ -6,17 +6,19 @@ import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:ticket_resell/api/response/post.dart';
 import 'package:ticket_resell/styles&text&sizes/post_card_vertical.dart';
+import '../../api/global_variables/user_manage.dart';
 import '../../styles&text&sizes/sizes.dart';
 import '../../widgets/grid_layout.dart';
 
-class AllPost extends StatefulWidget {
-  const AllPost({super.key});
+
+class AllYourPost extends StatefulWidget {
+  const AllYourPost({super.key});
 
   @override
-  _AllPostState createState() => _AllPostState();
+  _AllYourPostState createState() => _AllYourPostState();
 }
 
-class _AllPostState extends State<AllPost> {
+class _AllYourPostState extends State<AllYourPost> {
   List<PostResponse> posts = [];
 
   @override
@@ -26,8 +28,10 @@ class _AllPostState extends State<AllPost> {
   }
 
   Future<void> fetchTickets() async {
+    final int? userId = UserManager().id;
+
     final response = await http.get(Uri.parse(
-        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Post/get-lists?status=ACTIVE&page=1&limit=100'));
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Post/get-by-user?status=ACTIVE&id=$userId&page=1&limit=100'));
     print(response.statusCode);
     var responseData = jsonDecode(response.body);
     if (responseData['statusCode'] == 200) {
@@ -50,7 +54,7 @@ class _AllPostState extends State<AllPost> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('All Posts', style: Theme.of(context).textTheme.headlineMedium),
+        title: Text('All Your Posts', style: Theme.of(context).textTheme.headlineMedium),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
