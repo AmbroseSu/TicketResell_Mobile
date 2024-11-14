@@ -111,7 +111,6 @@ class _ExploreScreenState extends State<ExploreScreen>
       });
       print(posts);
     } else {
-      // Xử lý lỗi ở đây (hiển thị thông báo lỗi hoặc xử lý khác)
       print('Failed to load tickets');
     }
   }

@@ -210,10 +210,68 @@ class _MyPostCardVertical extends State<MyPostCardVertical> {
     print('Active Post Element: $activePostElement');
   }
 
-  void deletePost() {
-    // Logic xử lý xóa bài viết ở đây
-    print('Post Deleted');
+
+  // void deletePost() {
+  //   // Logic xử lý xóa bài viết ở đây
+  //   print('Post Deleted');
+  // }
+
+
+  // void deletePost() async {
+  //   // Đảm bảo bạn có postId từ PostElement hoặc PostResponse
+  //   String postId = widget.postElement.id.toString(); // hoặc widget.postResponse.postId tùy thuộc vào cấu trúc của bạn
+  //
+  //   // Gọi API để thay đổi trạng thái của bài viết thành CLOSED
+  //   final response = await http.put(
+  //     Uri.parse('https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Post/manager-action?postId=$postId&status=CLOSED'),
+  //     headers: {'Content-Type': 'application/json'},
+  //   );
+  //
+  //   if (response.statusCode == 200) {
+  //     // API gọi thành công, bạn có thể cập nhật trạng thái UI hoặc thông báo cho người dùng
+  //     print("Post status updated to CLOSED");
+  //
+  //     // Cập nhật lại widget UI nếu cần thiết (ví dụ: gọi setState để thay đổi giao diện)
+  //     // setState(() {
+  //     //   // Nếu bạn muốn cập nhật trạng thái bài viết sau khi xóa
+  //     //   widget.postElement.status = 'CLOSED';
+  //     // });
+  //
+  //     // Hiển thị thông báo cho người dùng (ví dụ: sử dụng Flutter Toast, hoặc AlertDialog)
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text('Post has been closed successfully.')),
+  //     );
+  //   } else {
+  //     // Xử lý khi API gọi thất bại
+  //     print('Failed to close the post. Error: ${response.statusCode}');
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text('Failed to close the post.')),
+  //     );
+  //   }
+  // }
+
+  void deletePost() async {
+    String postId = widget.postElement.id.toString(); // Hoặc widget.postResponse.postId tùy thuộc vào cấu trúc của bạn
+
+    final response = await http.put(
+      Uri.parse('https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Post/manager-action?postId=$postId&status=CLOSED'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      print("Post status updated to CLOSED");
+
+      // Quay lại trang trước và làm mới dữ liệu ở đó
+      Navigator.pop(context, true); // Trả về giá trị true để thông báo trang trước cần làm mới
+
+    } else {
+      print('Failed to close the post. Error: ${response.statusCode}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to close the post.')),
+      );
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {

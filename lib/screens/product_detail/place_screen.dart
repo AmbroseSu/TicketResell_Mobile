@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/api/response/ticket.dart';
 import 'package:ticket_resell/models/user_profile.dart';
 import 'package:ticket_resell/screens/chat/chat_screen.dart';
@@ -13,6 +14,8 @@ import '../../styles&text&sizes/image_strings.dart';
 import '../../styles&text&sizes/sizes.dart';
 import '../../widgets/gallery_slider.dart';
 import '../../widgets/section_heading.dart';
+import 'package:http/http.dart' as http;
+
 
 class PlaceScreen extends StatefulWidget {
   final Ticket ticket;
@@ -76,6 +79,50 @@ class _PlaceScreenState extends State<PlaceScreen> {
     fetchOtherUserProfile();
   }
 
+  Future<void> addTicketToFavorite(int userId, int ticketId) async {
+    final url = 'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Favorite/add-ticket-favorite/${UserManager().id}?ticketId=${widget.ticket.ticketId}';
+    try {
+      final response = await http.post(Uri.parse(url));
+      if (response.statusCode == 200) {
+        // Xử lý khi thêm thành công
+        print('Added to favorites successfully.');
+      } else {
+        // Xử lý khi có lỗi
+        print('Failed to add to favorites: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  Future<void> removeFromFavorites() async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+            'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Favorite/remove-favorite/${UserManager().id}?ticketId=${widget.ticket.ticketId}'),
+      );
+
+      if (response.statusCode == 200) {
+        // Nếu xóa thành công
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Ticket removed from favorites')),
+        );
+        // Cập nhật lại UI nếu cần thiết (ví dụ, quay lại màn hình trước đó hoặc cập nhật dữ liệu yêu thích)
+      } else {
+        // Nếu có lỗi trong việc xóa
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to remove from favorites')),
+        );
+      }
+    } catch (e) {
+      // Nếu có lỗi khi gọi API
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
+
+
   Future<void> fetchOtherUserProfile() async {
     final userStream = _databaseService.getUserProfile(widget.ticket.email);
 
@@ -106,12 +153,13 @@ class _PlaceScreenState extends State<PlaceScreen> {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
-          child: Padding(
+          child:  Padding(
             padding: EdgeInsets.all(10),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+
                 Stack(
                   clipBehavior: Clip.none,
                   children: [
@@ -169,9 +217,95 @@ class _PlaceScreenState extends State<PlaceScreen> {
                       ),
                     ),
                     // Nút yêu thích
+                    // Positioned(
+                    //   bottom: -20,
+                    //   right: 20,
+                    //   child: Container(
+                    //     padding: EdgeInsets.all(8),
+                    //     decoration: BoxDecoration(
+                    //       color: Colors.white,
+                    //       shape: BoxShape.circle,
+                    //       boxShadow: [
+                    //         BoxShadow(
+                    //           color: Colors.black12,
+                    //           blurRadius: 2,
+                    //           spreadRadius: 4,
+                    //         ),
+                    //       ],
+                    //     ),
+                    //     child: Icon(
+                    //       Iconsax.heart,
+                    //       size: 30,
+                    //       color: Colors.redAccent,
+                    //     ),
+                    //   ),
+                    // ),
+
                     Positioned(
                       bottom: -20,
                       right: 20,
+                      child: GestureDetector(
+                        onTap: () {
+                          final userId = UserManager().id ?? 0; // Lấy `userId` từ `otherUser`
+                          final ticketId = widget.ticket.ticketId;
+                          addTicketToFavorite(userId, ticketId);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 2,
+                                spreadRadius: 4,
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            Iconsax.heart,
+                            size: 30,
+                            color: Colors.redAccent,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // Nút xóa (Delete)
+                    // Positioned(
+                    //   bottom: -20,
+                    //   right: 80, // Điều chỉnh vị trí sao cho cách xa icon yêu thích
+                    //   child: Container(
+                    //     padding: EdgeInsets.all(8),
+                    //     decoration: BoxDecoration(
+                    //       color: Colors.white,
+                    //       shape: BoxShape.circle,
+                    //       boxShadow: [
+                    //         BoxShadow(
+                    //           color: Colors.black12,
+                    //           blurRadius: 2,
+                    //           spreadRadius: 4,
+                    //         ),
+                    //       ],
+                    //     ),
+                    //     child: IconButton(
+                    //       onPressed: () {
+                    //         // Xử lý xóa ở đây
+                    //         print("Delete clicked");
+                    //       },
+                    //       icon: Icon(
+                    //         Icons.delete,
+                    //         size: 30,
+                    //         color: Colors.red, // Màu đỏ cho nút xóa
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+
+                    Positioned(
+                      bottom: -20,
+                      right: 80, // Điều chỉnh vị trí sao cho cách xa icon yêu thích
                       child: Container(
                         padding: EdgeInsets.all(8),
                         decoration: BoxDecoration(
@@ -185,10 +319,16 @@ class _PlaceScreenState extends State<PlaceScreen> {
                             ),
                           ],
                         ),
-                        child: Icon(
-                          Icons.favorite,
-                          size: 30,
-                          color: Colors.redAccent,
+                        child: IconButton(
+                          onPressed: () {
+                            // Gọi hàm xóa khỏi yêu thích khi nhấn vào nút xóa
+                            removeFromFavorites();
+                          },
+                          icon: Icon(
+                            Icons.delete,
+                            size: 30,
+                            color: Colors.red, // Màu đỏ cho nút xóa
+                          ),
                         ),
                       ),
                     ),
@@ -216,6 +356,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
                     ),
                   ],
                 ),
+
                 SizedBox(height: 20),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 8, horizontal: 5),
@@ -437,7 +578,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
                       ),
                     ),
                     Text(
-                      "\$199",
+                      "${widget.ticket.price}",
                       style: GoogleFonts.getFont(
                         "Montserrat",
                         fontWeight: FontWeight.w700,

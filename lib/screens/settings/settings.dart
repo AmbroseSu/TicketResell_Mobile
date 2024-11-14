@@ -89,7 +89,7 @@ class SettingsScreen extends StatelessWidget {
                       icon: Iconsax.direct,
                       title: 'Your Post',
                       subTitle: 'List all your posts in TicketResell',
-                      onTap: () => Get.to(() =>  ReviewTicketPage())),
+                      onTap: () => Get.to(() => ReviewTicketPage())),
 
                   TSettingsMenuTile(
                       icon: Iconsax.ticket,
