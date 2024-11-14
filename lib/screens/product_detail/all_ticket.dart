@@ -27,7 +27,10 @@ class _AllTicketState extends State<AllTicket> {
 
   Future<void> fetchTickets() async {
     final response = await http.get(Uri.parse(
-        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get-user?id=${UserManager().id}&page=1&limit=10'));
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get-user?id=${UserManager().id}&page=1&limit=10'),
+        headers: {
+          "Authorization": 'Bearer ${UserManager().token}'
+        });
     print(response.statusCode);
     var responseData = jsonDecode(response.body);
 

@@ -27,6 +27,9 @@ class _ReviewTicketPageState extends State<ReviewTicketPage> {
 
     final response = await http.get(
       Uri.parse('https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Post/get-by-user?id=$userId&page=1&limit=1000'),
+        headers: {
+          "Authorization": 'Bearer ${UserManager().token}'
+        }
     );
 
     if (response.statusCode == 200) {

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/api/response/ticket.dart';
 import 'package:ticket_resell/navigation_menu.dart';
 import 'package:ticket_resell/notification/notification_screen.dart';
@@ -55,6 +56,9 @@ class _ExploreScreenState extends State<ExploreScreen>
     try {
       final response = await http.get(
         Uri.parse('https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/TicketCategory/categories?page=1&limit=100'),
+          headers: {
+            "Authorization": 'Bearer ${UserManager().token}'
+          }
       );
 
       if (response.statusCode == 200) {
@@ -89,7 +93,10 @@ class _ExploreScreenState extends State<ExploreScreen>
 
   Future<void> fetchTickets() async {
     final response = await http.get(Uri.parse(
-        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Post/get-lists?status=ACTIVE&page=1&limit=100'));
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Post/get-lists?status=ACTIVE&page=1&limit=100'),
+        headers: {
+          "Authorization": 'Bearer ${UserManager().token}'
+        });
     print(response.statusCode);
     var responseData = jsonDecode(response.body);
     if (responseData['statusCode'] == 200) {
@@ -110,7 +117,10 @@ class _ExploreScreenState extends State<ExploreScreen>
 
     try {
       final response = await http.get(Uri.parse(
-          'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Post/get-by-category?status=ACTIVE&id=$categoryId&page=1&limit=1000'));
+          'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Post/get-by-category?status=ACTIVE&id=$categoryId&page=1&limit=1000'),
+          headers: {
+            "Authorization": 'Bearer ${UserManager().token}'
+          });
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         setState(() {
@@ -138,6 +148,9 @@ class _ExploreScreenState extends State<ExploreScreen>
     try {
       final response = await http.get(
         Uri.parse('https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Post/get-lists?status=ACTIVE&page=1&limit=100'),
+          headers: {
+            "Authorization": 'Bearer ${UserManager().token}'
+          }
       );
 
       if (response.statusCode == 200) {

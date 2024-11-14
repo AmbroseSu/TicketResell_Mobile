@@ -158,7 +158,10 @@ class _TicketRequestForBuyerDetailScreen extends State<TicketRequestForBuyerDeta
     final ticketId = widget.ticketRequest.ticketId;
 
     final response = await http.get(Uri.parse(
-        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get?ticketId=$ticketId'));
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get?ticketId=$ticketId'),
+        headers: {
+          "Authorization": 'Bearer ${UserManager().token}'
+        });
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
+import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import '../../api/response/transaction.dart';
 import '../../styles&text&sizes/colors.dart';
 import '../../styles&text&sizes/sizes.dart';
@@ -24,6 +25,9 @@ class _TOrderListItemsState extends State<TOrderListItems> {
   Future<List<Transaction>> fetchTransactions() async {
     final response = await http.get(
       Uri.parse('https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Transaction/get-all-transaction?userId=4'),
+        headers: {
+          "Authorization": 'Bearer ${UserManager().token}'
+        }
     );
 
     if (response.statusCode == 200) {

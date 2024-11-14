@@ -80,8 +80,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
       final response = await http.post(Uri.parse(url),
           headers: {
             "Authorization": 'Bearer ${UserManager().token}'
-          }
-      );
+          });
       if (response.statusCode == 200) {
         print('Added to favorites successfully.');
       } else {
@@ -485,7 +484,7 @@ class _PlaceScreenState extends State<PlaceScreen> {
                         title: 'Reviews (345)', showActionButton: false),
                     IconButton(
                         onPressed: () =>
-                            Get.to(() => ProductReviewsScreen(ticket: widget.ticket,)),
+                            Get.to(() => ProductReviewsScreen(ticket: widget.ticket)),
                         icon: const Icon(Iconsax.arrow_right_3))
                   ],
                 ),

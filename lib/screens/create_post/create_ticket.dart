@@ -50,6 +50,9 @@ class _CreateTicketState extends State<CreateTicket> {
   Future<void> fetchCategories() async {
     final response = await http.get(
       Uri.parse("https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/TicketCategory/categories?page=1&limit=1000"),
+        headers: {
+          "Authorization": 'Bearer ${UserManager().token}'
+        }
     );
 
     if (response.statusCode == 200) {
@@ -94,7 +97,9 @@ class _CreateTicketState extends State<CreateTicket> {
 
       final response = await http.post(
         Uri.parse("https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/new"),
-        headers: {"Content-Type": "application/json"},
+        headers: {"Content-Type": "application/json",
+            "Authorization": 'Bearer ${UserManager().token}'
+          },
         body: jsonEncode({
           "name": _ticketNameController.text,
           "price": int.tryParse(_priceController.text) ?? 0,

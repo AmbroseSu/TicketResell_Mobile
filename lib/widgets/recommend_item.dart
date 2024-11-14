@@ -115,6 +115,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/api/response/post.dart';
 import 'package:http/http.dart' as http;
 import 'package:ticket_resell/api/response/ticket.dart';
@@ -151,7 +152,10 @@ class _RecommendCardState extends State<RecommendCard>{
 
   Future<void> fetchTickets() async {
     final response = await http.get(Uri.parse(
-        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get?ticketId=${widget.postResponse.ticketId}'));
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get?ticketId=${widget.postResponse.ticketId}'),
+        headers: {
+          "Authorization": 'Bearer ${UserManager().token}'
+        });
     print(response.statusCode);
     var responseData = jsonDecode(response.body);
 
@@ -180,7 +184,10 @@ class _RecommendCardState extends State<RecommendCard>{
 
   Future<void> fetchTicketsOnTap() async {
     final response = await http.get(Uri.parse(
-        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get?ticketId=${widget.postResponse.ticketId}'));
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get?ticketId=${widget.postResponse.ticketId}'),
+        headers: {
+          "Authorization": 'Bearer ${UserManager().token}'
+        });
     print(response.statusCode);
     var responseData = jsonDecode(response.body);
 

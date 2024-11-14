@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/api/response/checkout_package_fee.dart';
 import 'package:ticket_resell/screens/explore_screen.dart';
 
@@ -55,7 +56,10 @@ class _QrCodePlatformScreenState extends State<QrCodePlatformScreen> {
 
   Future<void> changeStatus(int orderId) async {
     final response = await http.post(Uri.parse(
-        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Transaction/update-status-transaction?orderCode=$orderId&status=SUCCESS'));
+        'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Transaction/update-status-transaction?orderCode=$orderId&status=SUCCESS'),
+        headers: {
+          "Authorization": 'Bearer ${UserManager().token}'
+        });
 
     print(widget.checkoutPackageFee.orderCode);
     print(response.statusCode); // For debugging

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:ticket_resell/api/global_variables/user_manage.dart';
 import 'package:ticket_resell/api/response/post.dart';
 import 'package:ticket_resell/styles&text&sizes/shadows.dart';
 import 'package:ticket_resell/styles&text&sizes/sizes.dart';
@@ -42,8 +43,7 @@ class _PostCardVertical extends State<PostCardVertical> {
         'https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get?ticketId=${widget.postResponse.ticketId}'),
         headers: {
           "Authorization": 'Bearer ${UserManager().token}'
-        }
-    );
+        });
     print(response.statusCode);
     var responseData = jsonDecode(response.body);
 

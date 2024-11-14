@@ -43,6 +43,9 @@ class _CreatePostState extends State<CreatePost> {
 
     final response = await http.get(
       Uri.parse("https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Ticket/get-user?id=$userId&page=1&limit=100"),
+        headers: {
+          "Authorization": 'Bearer ${UserManager().token}'
+        }
     );
     final data = json.decode(response.body);
 
@@ -88,7 +91,9 @@ class _CreatePostState extends State<CreatePost> {
 
       final response = await http.post(
         Uri.parse("https://ticketresellapi-ckhsduaycsfccjek.eastasia-01.azurewebsites.net/api/Post/new"),
-        headers: {"Content-Type": "application/json"},
+        headers: {"Content-Type": "application/json",
+            "Authorization": 'Bearer ${UserManager().token}'
+          },
         body: jsonEncode({
           "title": _ticketNameController.text,
           "description": _ticketDescriptionController.text,
